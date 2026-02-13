@@ -1,0 +1,63 @@
+{
+  "requests": [
+    {
+      "id": "CR_20260201_f524092f48",
+      "type": "INSERT",
+      "sessionId": "TEACHER_NEW_1769985629_d89d0326",
+      "teacherId": "14017",
+      "oldData": {},
+      "newData": {
+        "formateur": "14017",
+        "groupe": "DEV103",
+        "module": "DEVM103",
+        "jour": "jeudi",
+        "creneau": 3,
+        "salle": "S16"
+      },
+      "status": "APPROVED",
+      "submittedAt": "2026-02-01T22:40:29Z",
+      "decidedAt": "2026-02-01T22:45:04Z",
+      "decidedBy": "DIRECTEUR"
+    },
+    {
+      "id": "CR_20260201_4b91a24837",
+      "type": "DELETE",
+      "sessionId": "S202_0",
+      "teacherId": "14017",
+      "oldData": {
+        "jour": "lundi",
+        "creneau": 1,
+        "salle": "S16"
+      },
+      "newData": {
+        "motif": null
+      },
+      "status": "REJECTED",
+      "submittedAt": "2026-02-01T22:40:48Z",
+      "decidedAt": "2026-02-01T22:45:10Z",
+      "decidedBy": "DIRECTEUR",
+      "decisionReason": "Rejeté par le directeur"
+    },
+    {
+      "id": "CR_20260201_4f63f19406",
+      "type": "MOVE",
+      "sessionId": "SES_1769218131_ca213e85",
+      "teacherId": "14017",
+      "oldData": {
+        "jour": "lundi",
+        "creneau": 2,
+        "salle": "S21"
+      },
+      "newData": {
+        "jour": "jeudi",
+        "creneau": 1,
+        "salle": "S22",
+        "motif": null
+      },
+      "status": "APPROVED",
+      "submittedAt": "2026-02-01T22:41:10Z",
+      "decidedAt": "2026-02-01T22:44:46Z",
+      "decidedBy": "DIRECTEUR"
+    }
+  ]
+}

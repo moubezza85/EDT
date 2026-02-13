@@ -1,0 +1,344 @@
+{
+  "teachers": [
+    {
+      "id": "10984",
+      "name": "ABDELALI SAMR"
+    },
+    {
+      "id": "11712",
+      "name": "ABDELHAK ELHAJJI"
+    },
+    {
+      "id": "18410",
+      "name": "ABDELKHALEQ EL KADERI"
+    },
+    {
+      "id": "V30169",
+      "name": "ABDELLAH FORTASS"
+    },
+    {
+      "id": "D618126",
+      "name": "ABDENBI KERRITA"
+    },
+    {
+      "id": "UC3690",
+      "name": "ABDERRAHMANE AMIMI"
+    },
+    {
+      "id": "14039",
+      "name": "ABDESLAM SABER"
+    },
+    {
+      "id": "13580",
+      "name": "ALI AISSAOUI"
+    },
+    {
+      "id": "10760",
+      "name": "ALI SADIQUI"
+    },
+    {
+      "id": "8267",
+      "name": "AZIZ RAMI"
+    },
+    {
+      "id": "13800",
+      "name": "AZIZ RAMI"
+    },
+    {
+      "id": "13587",
+      "name": "AZZEDDINE EL AMRANI"
+    },
+    {
+      "id": "20158",
+      "name": "BOUTAINA AHIDAR"
+    },
+    {
+      "id": "20618",
+      "name": "BOUTAINA AHIDAR"
+    },
+    {
+      "id": "13801",
+      "name": "CHAMA TOUIL"
+    },
+    {
+      "id": "11422",
+      "name": "DRISS KELMOUS"
+    },
+    {
+      "id": "D335784",
+      "name": "EL FAHIME BENAISSA"
+    },
+    {
+      "id": "U125710",
+      "name": "EL KASMI ABDELKARIM"
+    },
+    {
+      "id": "13243",
+      "name": "FATIMA ZAHRA OULDARABA"
+    },
+    {
+      "id": "12337",
+      "name": "HAJAR DAOUDI"
+    },
+    {
+      "id": "18855",
+      "name": "HANAE LASMI"
+    },
+    {
+      "id": "20204",
+      "name": "HANANE TAKI"
+    },
+    {
+      "id": "10658",
+      "name": "HASSAN OULEMKDM"
+    },
+    {
+      "id": "13155",
+      "name": "HASSANE EL KARTOUBI"
+    },
+    {
+      "id": "D161271",
+      "name": "HASSANE RHALLAMI"
+    },
+    {
+      "id": "13582",
+      "name": "HICHAM BERRACHID"
+    },
+    {
+      "id": "8403",
+      "name": "HODA SENTISSI"
+    },
+    {
+      "id": "U168584",
+      "name": "HOURIA ZAYDAN"
+    },
+    {
+      "id": "8741",
+      "name": "ILHAM BENABDELHADI"
+    },
+    {
+      "id": "8112",
+      "name": "JAOUAD LHOUSSAIN RABAI"
+    },
+    {
+      "id": "20427",
+      "name": "JAOUHARA EL GOUR"
+    },
+    {
+      "id": "D465745",
+      "name": "KARIMA OULEGHZAL"
+    },
+    {
+      "id": "D145987",
+      "name": "KHADIJA HOSNI"
+    },
+    {
+      "id": "12321",
+      "name": "KHADIJA MOUSTAHFAD"
+    },
+    {
+      "id": "12326",
+      "name": "KHALID BANI"
+    },
+    {
+      "id": "11167",
+      "name": "KHALID EL ATTARI"
+    },
+    {
+      "id": "8071",
+      "name": "LAHCEN HAMOUICHI"
+    },
+    {
+      "id": "12415",
+      "name": "LAILA MOUFDI"
+    },
+    {
+      "id": "13554",
+      "name": "MAHMOUD ACHRIT"
+    },
+    {
+      "id": "10346",
+      "name": "MOHAMED EL HARI"
+    },
+    {
+      "id": "14017",
+      "name": "MOHAMED OUBEZZA"
+    },
+    {
+      "id": "11845",
+      "name": "MORAD LACHKAR"
+    },
+    {
+      "id": "D143887",
+      "name": "MOSTAFA CHERITE"
+    },
+    {
+      "id": "20428",
+      "name": "MOUNIR LAKHAL"
+    },
+    {
+      "id": "13133",
+      "name": "MOURAD KAAOUAN"
+    },
+    {
+      "id": "10035",
+      "name": "MUSTAPHA SAID ALLAH"
+    },
+    {
+      "id": "10974",
+      "name": "MY RACHID FILALI"
+    },
+    {
+      "id": "D304508",
+      "name": "NAIMA RGUIBI"
+    },
+    {
+      "id": "8539",
+      "name": "NOURDDINE AKHDOUCHE"
+    },
+    {
+      "id": "D121187",
+      "name": "NOUREDDINE LAAGOUD"
+    },
+    {
+      "id": "7497",
+      "name": "NOUZHA HARCHLI"
+    },
+    {
+      "id": "12198",
+      "name": "OUAFAE BAKHIR"
+    },
+    {
+      "id": "D49474",
+      "name": "RACHID EL AAJJAL"
+    },
+    {
+      "id": "11121",
+      "name": "SAAD LYAZGHI"
+    },
+    {
+      "id": "10662",
+      "name": "SAKINA FECHTALI"
+    },
+    {
+      "id": "D125549",
+      "name": "SAMIR AMANI"
+    },
+    {
+      "id": "19489",
+      "name": "SAMIR BOULHOUT"
+    },
+    {
+      "id": "14159",
+      "name": "WAFAA EL MAUDNI EL ALAMI"
+    },
+    {
+      "id": "13426",
+      "name": "WIAM AARAB"
+    },
+    {
+      "id": "V29484",
+      "name": "ZOULIKHA TOUFIQ"
+    }
+  ],
+  "groups": [
+    "DEV101",
+    "DEV102",
+    "DEV103",
+    "DEV104",
+    "DEV105",
+    "DEV106",
+    "DEVOAM201",
+    "DEVOAM202",
+    "DEVOWFS201",
+    "DEVOWFS202",
+    "DEVOWFS203"
+  ],
+  "onlineFusions": [
+    {
+      "id": "DEV101_DEV102_DEV106",
+      "groupes": [
+        "DEV101",
+        "DEV102",
+        "DEV106"
+      ]
+    },
+    {
+      "id": "DEV103_DEV104_DEV105",
+      "groupes": [
+        "DEV103",
+        "DEV104",
+        "DEV105"
+      ]
+    },
+    {
+      "id": "DEVOAM201_DEVOAM202",
+      "groupes": [
+        "DEVOAM201",
+        "DEVOAM202"
+      ]
+    },
+    {
+      "id": "DEVOWFS201_DEVOWFS202_DEVOWFS203",
+      "groupes": [
+        "DEVOWFS202",
+        "DEVOWFS203",
+        "DEVOWFS201"
+      ]
+    }
+  ],
+  "modules": [
+    "DEVM101",
+    "DEVM102",
+    "DEVM103",
+    "DEVM104",
+    "DEVM105",
+    "DEVM106",
+    "DEVM107",
+    "DEVOWFSM101"
+  ],
+  "assignments": [
+    {
+      "group": "DEV102",
+      "module": "DEVM102",
+      "teacher": "14017",
+      "mode": "PRESENTIEL"
+    },
+    {
+      "group": "DEV103",
+      "module": "DEVM103",
+      "teacher": "14017",
+      "mode": "PRESENTIEL"
+    },
+    {
+      "group": "DEV102",
+      "module": "DEVM101",
+      "teacher": "10658",
+      "mode": "PRESENTIEL"
+    },
+    {
+      "group": "DEV101_DEV102_DEV106",
+      "module": "DEVM101",
+      "teacher": "14017",
+      "mode": "ONLINE"
+    },
+    {
+      "group": "DEVOWFS202",
+      "module": "DEVOWFSM101",
+      "teacher": "10035",
+      "mode": "PRESENTIEL"
+    },
+    {
+      "group": "DEV101_DEV102_DEV106",
+      "module": "DEVM102",
+      "teacher": "14017",
+      "mode": "ONLINE"
+    },
+    {
+      "group": "DEVOAM201_DEVOAM202",
+      "module": "DEVOWFSM101",
+      "teacher": "13155",
+      "mode": "ONLINE"
+    }
+  ]
+}

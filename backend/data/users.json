@@ -1,0 +1,32 @@
+{
+  "users": [
+    {
+      "id": "admin",
+      "name": "Admin",
+      "password": "pbkdf2:sha256:1000000$5QA3wfDZV7NG5jGj$57dd110f2215b69807bfb24d6ed3ef94e3dc6c72fe96a41fc43098e2a96c0e36",
+      "lastLogin": "2026-02-05T15:38:46.461634+00:00",
+      "role": "admin"
+    },
+    {
+      "id": "surv1",
+      "name": "Surveillant",
+      "password": "pbkdf2:sha256:1000000$c2QNbBDYTVPapRZD$fbe5a1286da1fb78ce7b7a14c5c01ab097bc5cfa1c2221011383ec8fa70ed52e",
+      "lastLogin": "2026-02-05T15:37:28.978022+00:00",
+      "role": "surveillant"
+    },
+    {
+      "id": "14017",
+      "name": "MOHAMED OUBEZZA",
+      "password": "pbkdf2:sha256:1000000$X8Q9BEAX0GHWub7V$4c4fcf3ef3406a6f341782222d22c47caa6069adaaed98263d04c6bcdd1f2259",
+      "lastLogin": "2026-02-05T15:35:13.755338+00:00",
+      "role": "formateur"
+    },
+    {
+      "id": "8403",
+      "name": "HOUDA SENTISSI",
+      "password": "pbkdf2:sha256:1000000$mjUV4vnJtYh3xf6m$c2781c6c531afa78b625080184c6cc77b66f9e37a0c2f5ea52fb3c968b641434",
+      "lastLogin": "",
+      "role": "formateur"
+    }
+  ]
+}

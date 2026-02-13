@@ -1,0 +1,65 @@
+{
+  "nomEtablissement": "ISTAG BAB TIZIMI",
+  "jours": [
+    "lundi",
+    "mardi",
+    "mercredi",
+    "jeudi",
+    "vendredi",
+    "samedi"
+  ],
+  "creneaux": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "typeSalle": [
+    "Confection",
+    "Cours",
+    "Informatique",
+	"Virtuelle",
+    "Mecanique"
+  ],
+  "salles": [
+    {
+      "id": "Conference",
+      "type": "Cours"
+    }
+	,
+    {
+      "id": "TEAMS",
+      "type": "Virtuelle"
+    },
+	{ "id": "At CI", "type": "Cours" },
+    { "id": "At Mod", "type": "Cours" },
+    { "id": "At Rep", "type": "Cours" },
+    { "id": "At THP", "type": "Cours" },
+    { "id": "At TMMC", "type": "Cours" },
+    { "id": "S1", "type": "Cours" },
+    { "id": "S2", "type": "Cours" },
+    { "id": "S3", "type": "Informatique" },
+    { "id": "S4", "type": "Informatique" },
+    { "id": "S5", "type": "Informatique" },
+    { "id": "S6", "type": "Cours" },
+    { "id": "S7", "type": "Cours" },
+    { "id": "S8", "type": "Informatique" },
+    { "id": "S9", "type": "Cours" },
+    { "id": "S10", "type": "Cours" },
+    { "id": "S11", "type": "Cours" },
+    { "id": "S12", "type": "Cours" },
+    { "id": "S13", "type": "Cours" },
+    { "id": "S14", "type": "Cours" },
+    { "id": "S15", "type": "Informatique" },
+    { "id": "S16", "type": "Informatique" },
+    { "id": "S17", "type": "Cours" },
+    { "id": "S18", "type": "Cours" },
+    { "id": "S19", "type": "Informatique" },
+    { "id": "S20", "type": "Cours" },
+    { "id": "S21", "type": "Informatique" },
+    { "id": "S22", "type": "Cours" }
+	
+  ],
+  "maxSessionsPerDayTeacher": 3,
+  "maxSessionsPerDayGroup": 3
+}
