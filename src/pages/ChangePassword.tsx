@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Phone } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 
-import { changePassword, updatePhone } from "@/api/authApi";
+import { changePassword, updateEmail, updatePhone } from "@/api/authApi";
 import { useAuth } from "@/auth/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -19,16 +19,21 @@ export default function ChangePassword() {
   const [phone, setPhone] = useState("");
   const [savingPhone, setSavingPhone] = useState(false);
 
+  // --- Email state ---
+  const [email, setEmail] = useState("");
+  const [savingEmail, setSavingEmail] = useState(false);
+
   // --- Password state ---
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword1, setNewPassword1] = useState("");
   const [newPassword2, setNewPassword2] = useState("");
   const [savingPwd, setSavingPwd] = useState(false);
 
-  // Pré-remplir le téléphone depuis le contexte utilisateur
+  // Pr\u00e9-remplir depuis le contexte utilisateur
   useEffect(() => {
     setPhone(user?.phone ?? "");
-  }, [user?.phone]);
+    setEmail(user?.email ?? "");
+  }, [user?.phone, user?.email]);
 
   const canSavePwd = useMemo(() => {
     if (!oldPassword.trim()) return false;
@@ -43,17 +48,37 @@ export default function ChangePassword() {
       await updatePhone(phone);
       await refresh();
       toast({
-        title: "Téléphone mis à jour",
-        description: "Votre numéro de téléphone a été enregistré.",
+        title: "T\u00e9l\u00e9phone mis \u00e0 jour",
+        description: "Votre num\u00e9ro de t\u00e9l\u00e9phone a \u00e9t\u00e9 enregistr\u00e9.",
       });
     } catch (e: any) {
       toast({
         variant: "destructive",
-        title: "Échec",
-        description: e?.body?.message || e?.message || "Impossible de mettre à jour le téléphone",
+        title: "\u00c9chec",
+        description: e?.body?.message || e?.message || "Impossible de mettre \u00e0 jour le t\u00e9l\u00e9phone",
       });
     } finally {
       setSavingPhone(false);
+    }
+  }
+
+  async function onSubmitEmail() {
+    setSavingEmail(true);
+    try {
+      await updateEmail(email);
+      await refresh();
+      toast({
+        title: "Email mis \u00e0 jour",
+        description: "Votre adresse email a \u00e9t\u00e9 enregistr\u00e9e.",
+      });
+    } catch (e: any) {
+      toast({
+        variant: "destructive",
+        title: "\u00c9chec",
+        description: e?.body?.message || e?.message || "Impossible de mettre \u00e0 jour l'email",
+      });
+    } finally {
+      setSavingEmail(false);
     }
   }
 
@@ -63,16 +88,15 @@ export default function ChangePassword() {
     try {
       await changePassword(oldPassword, newPassword1, newPassword2);
       toast({
-        title: "Mot de passe modifié",
+        title: "Mot de passe modifi\u00e9",
         description: "Reconnectez-vous avec votre nouveau mot de passe.",
       });
-      // Par sécurité, on déconnecte et on renvoie au login.
       logout();
       nav("/login");
     } catch (e: any) {
       toast({
         variant: "destructive",
-        title: "Échec",
+        title: "\u00c9chec",
         description: e?.body?.message || e?.message || "Impossible de modifier le mot de passe",
       });
     } finally {
@@ -83,12 +107,12 @@ export default function ChangePassword() {
   return (
     <div className="max-w-xl space-y-6">
 
-      {/* ---- Carte Téléphone ---- */}
+      {/* ---- Carte T\u00e9l\u00e9phone ---- */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Phone className="h-5 w-5" />
-            Numéro de téléphone
+            Num\u00e9ro de t\u00e9l\u00e9phone
           </CardTitle>
           <CardDescription>
             {user ? `Utilisateur : ${user.name ?? user.id}` : ""}
@@ -96,7 +120,7 @@ export default function ChangePassword() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="phone">Téléphone</Label>
+            <Label htmlFor="phone">T\u00e9l\u00e9phone</Label>
             <Input
               id="phone"
               type="tel"
@@ -108,7 +132,35 @@ export default function ChangePassword() {
           </div>
           <div className="flex items-center justify-end">
             <Button onClick={onSubmitPhone} disabled={savingPhone}>
-              {savingPhone ? "Enregistrement…" : "Mettre à jour"}
+              {savingPhone ? "Enregistrement\u2026" : "Mettre \u00e0 jour"}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* ---- Carte Email ---- */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Mail className="h-5 w-5" />
+            Adresse email
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Ex: prenom.nom@exemple.com"
+              autoComplete="email"
+            />
+          </div>
+          <div className="flex items-center justify-end">
+            <Button onClick={onSubmitEmail} disabled={savingEmail}>
+              {savingEmail ? "Enregistrement\u2026" : "Mettre \u00e0 jour"}
             </Button>
           </div>
         </CardContent>
@@ -139,7 +191,7 @@ export default function ChangePassword() {
               type="password"
               value={newPassword1}
               onChange={(e) => setNewPassword1(e.target.value)}
-              placeholder="Minimum 6 caractères"
+              placeholder="Minimum 6 caract\u00e8res"
               autoComplete="new-password"
             />
           </div>
@@ -151,7 +203,7 @@ export default function ChangePassword() {
               type="password"
               value={newPassword2}
               onChange={(e) => setNewPassword2(e.target.value)}
-              placeholder="Répétez le nouveau mot de passe"
+              placeholder="R\u00e9p\u00e9tez le nouveau mot de passe"
               autoComplete="new-password"
             />
           </div>
@@ -165,7 +217,7 @@ export default function ChangePassword() {
               Annuler
             </Button>
             <Button onClick={onSubmitPwd} disabled={!canSavePwd || savingPwd}>
-              {savingPwd ? "Enregistrement…" : "Valider"}
+              {savingPwd ? "Enregistrement\u2026" : "Valider"}
             </Button>
           </div>
         </CardContent>

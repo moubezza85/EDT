@@ -11,6 +11,7 @@ export type MeResponse = {
     role: UserRole;
     modules?: string[];
     phone?: string;
+    email?: string;
   };
 };
 
@@ -46,5 +47,14 @@ export async function updatePhone(phone: string) {
   return await http<UpdatePhoneResponse>("/api/auth/update-phone", {
     method: "POST",
     body: JSON.stringify({ phone }),
+  });
+}
+
+export type UpdateEmailResponse = { ok: boolean };
+
+export async function updateEmail(email: string) {
+  return await http<UpdateEmailResponse>("/api/auth/update-email", {
+    method: "POST",
+    body: JSON.stringify({ email }),
   });
 }

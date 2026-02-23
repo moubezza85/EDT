@@ -7,6 +7,7 @@ export type AuthUser = {
   role: UserRole;
   modules?: string[];
   phone?: string;
+  email?: string;
 };
 
 type AuthState = {
@@ -50,10 +51,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const me = await getMe();
       setUser(me.user as AuthUser);
     } catch (e: any) {
-      // token invalide/expiré => on le supprime
       setStoredToken("");
       setUser(null);
-      setError(e?.body?.message || e?.message || "Session expirée");
+      setError(e?.body?.message || e?.message || "Session expir\u00e9e");
     } finally {
       setLoading(false);
     }

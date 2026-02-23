@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Tuple
 from services.timetable_service import TimetableService
 from services.timetable_repo import TimetableRepo
 from services.timetable_rules import validate_move, apply_move, validate_delete, apply_delete
-from services.auth import find_user, ensure_password_hashes, verify_login, update_last_login, change_password, update_phone
+from services.auth import find_user, ensure_password_hashes, verify_login, update_last_login, change_password, update_phone, update_email
 from services.jwt_auth import decode_jwt, make_access_token
 from services.rbac import require_roles, require_authenticated
 
@@ -34,7 +34,6 @@ draft_repo = TimetableRepo(DATA_DIR, filename="nextTimetable.json")
 try:
     draft_repo.ensure_exists(seed_from=repo.read())
 except Exception:
-    # Do not crash startup if a JSON is temporarily invalid; routes will surface errors.
     pass
 
 # Ensure users.json contains hashed passwords (fills empty password with default hash).
@@ -49,18 +48,10 @@ except Exception:
 # ----------------------------
 @app.before_request
 def _load_current_user():
-    """Populate g.user from JWT.
-
-    By default, all API endpoints (except /api/auth/login) require a valid
-    Bearer token. This prevents direct, unauthenticated access to Flask routes.
-
-    Dev-only fallback:
-      - If ALLOW_HEADER_AUTH=1, X-User-Id can still be used.
-    """
+    """Populate g.user from JWT."""
     if request.method == "OPTIONS":
         return None
 
-    # Public endpoint
     if request.path.rstrip("/") in {"/api/auth/login"}:
         g.user = {}
         return None
@@ -76,11 +67,9 @@ def _load_current_user():
             uid = str(payload.get("sub") or "").strip()
             u = find_user(DATA_DIR, uid) if uid else None
             if u:
-                # Trust role/name from users.json (server-side source of truth)
                 g.user = u
                 return None
 
-    # Optional legacy header auth (dev / transition)
     allow_header = (os.environ.get("ALLOW_HEADER_AUTH") or "").strip() == "1"
     if allow_header:
         user_id = request.headers.get("X-User-Id") or request.headers.get("x-user-id")
@@ -97,18 +86,19 @@ def _load_current_user():
 @require_authenticated
 def auth_me():
     u = g.user or {}
-    # never expose passwords (we don't store any)
-    return jsonify({"ok": True, "user": {"id": u.get("id"), "name": u.get("name"), "role": u.get("role"), "modules": u.get("modules", []), "phone": u.get("phone", "")}})
+    return jsonify({"ok": True, "user": {
+        "id": u.get("id"),
+        "name": u.get("name"),
+        "role": u.get("role"),
+        "modules": u.get("modules", []),
+        "phone": u.get("phone", ""),
+        "email": u.get("email", ""),
+    }})
 
 
 @app.post("/api/auth/login")
 def auth_login():
-    """Login and get a JWT.
-
-    Rules:
-      - user must exist in users.json
-      - login by id + password (hashed password stored in users.json)
-    """
+    """Login and get a JWT."""
     body = request.get_json(silent=True) or {}
     username = str(body.get("username") or body.get("login") or body.get("id") or "").strip()
     password = str(body.get("password") or "").strip()
@@ -120,7 +110,6 @@ def auth_login():
     if not u:
         return jsonify({"ok": False, "code": "UNAUTHORIZED", "message": "Utilisateur introuvable"}), 401
 
-    # Update lastLogin on successful auth
     try:
         update_last_login(DATA_DIR, u.get("id"))
     except Exception:
@@ -141,7 +130,7 @@ def auth_change_password():
     if not old_pw or not new_pw or not confirm:
         return jsonify({"ok": False, "code": "BAD_REQUEST", "message": "Champs requis"}), 400
     if new_pw != confirm:
-        return jsonify({"ok": False, "code": "BAD_REQUEST", "message": "Confirmation différente"}), 400
+        return jsonify({"ok": False, "code": "BAD_REQUEST", "message": "Confirmation diff\u00e9rente"}), 400
 
     uid = str((g.user or {}).get("id") or "").strip()
     ok, msg = change_password(DATA_DIR, uid, old_pw, new_pw)
@@ -166,11 +155,26 @@ def auth_update_phone():
     return jsonify({"ok": True})
 
 
-# Optionnel: idempotence basique en mémoire
+@app.post("/api/auth/update-email")
+@require_authenticated
+def auth_update_email():
+    """Update the email address for the current authenticated user."""
+    body = request.get_json(silent=True) or {}
+    email = str(body.get("email") or "").strip()
+
+    uid = str((g.user or {}).get("id") or "").strip()
+    ok, msg = update_email(DATA_DIR, uid, email)
+    if not ok:
+        return jsonify({"ok": False, "code": "BAD_REQUEST", "message": msg}), 400
+
+    return jsonify({"ok": True})
+
+
+# Optionnel: idempotence basique en m\u00e9moire
 _seen_commands = set()
 
 # ----------------------------
-# Helpers JSON (lecture/écriture)
+# Helpers JSON (lecture/\u00e9criture)
 # ----------------------------
 def _path(filename: str) -> str:
     return os.path.join(DATA_DIR, filename)
@@ -183,7 +187,7 @@ def load_json(filename: str):
 
 
 def save_json_atomic(filename: str, data: Any):
-    """Écriture atomique (évite les fichiers corrompus)."""
+    """\u00c9criture atomique (\u00e9vite les fichiers corrompus)."""
     os.makedirs(DATA_DIR, exist_ok=True)
     final_path = _path(filename)
 
@@ -275,7 +279,7 @@ def move_session():
     to_salle = payload.get("toSalle")
 
     if not session_id or not to_jour or to_creneau is None or not to_salle:
-        return bad_request("Paramètres manquants")
+        return bad_request("Param\u00e8tres manquants")
 
     ok, msg, sessions = service.move(session_id, to_jour, int(to_creneau), to_salle)
     if not ok:
@@ -305,7 +309,6 @@ def get_seances():
 @app.route("/api/timetable/commands", methods=["POST"])
 @require_roles("admin")
 def timetable_commands():
-    # scope=official|draft
     scope = (request.args.get("scope") or "official").strip().lower()
     if scope not in {"official", "draft"}:
         return bad_request("scope invalide (official|draft)")
@@ -319,7 +322,7 @@ def timetable_commands():
     payload = body.get("payload") or {}
 
     if not command_id or expected_version is None or not cmd_type:
-        return bad_request("Paramètres manquants")
+        return bad_request("Param\u00e8tres manquants")
 
     seen_key = f"{scope}:{command_id}"
     if seen_key in _seen_commands:
@@ -331,7 +334,7 @@ def timetable_commands():
             return (False, current, {
                 "ok": False,
                 "code": "VERSION_MISMATCH",
-                "message": "L'emploi du temps a changé. Rechargez.",
+                "message": "L'emploi du temps a chang\u00e9. Rechargez.",
                 "serverVersion": current["version"]
             })
 
@@ -399,7 +402,6 @@ def rooms_available():
     if not jour or creneau is None:
         return bad_request("jour/creneau requis")
 
-    # RBAC: scope=draft est réservé à l'admin
     if scope not in {"official", "draft"}:
         return bad_request("scope invalide (official|draft)")
 
@@ -407,21 +409,17 @@ def rooms_available():
         from services.rbac import current_user
         role = str((current_user() or {}).get("role", "")).strip().lower()
         if role != "admin":
-            return jsonify({"ok": False, "code": "FORBIDDEN", "message": "scope=draft réservé à l'admin"}), 403
+            return jsonify({"ok": False, "code": "FORBIDDEN", "message": "scope=draft r\u00e9serv\u00e9 \u00e0 l'admin"}), 403
 
     cfg = load_json("config.json")
-
-    # salles depuis config
-    salles_cfg = cfg.get("salles", [])  # [{id,type}] ou ancien ["S1","S2"]
+    salles_cfg = cfg.get("salles", [])
 
     filename = "nextTimetable.json" if scope == "draft" else "timetable.json"
     data = load_json(filename)
     sessions = data.get("sessions", []) if isinstance(data, dict) else data
 
-    # 1) salles occupées sur (jour, creneau)
     occupied = set()
     for s in sessions:
-        # Draft/virtuel: une séance marquée MOVED_AWAY ne bloque plus l'ancien créneau
         if str(s.get("_virtualState", "")).strip() == "MOVED_AWAY":
             continue
         if (
@@ -432,7 +430,6 @@ def rooms_available():
             if salle:
                 occupied.add(salle)
 
-    # 2) extraire UNIQUEMENT les salles physiques (≠ VIRTUEL)
     salle_ids = []
     for r in salles_cfg:
         if isinstance(r, dict):
@@ -440,21 +437,17 @@ def rooms_available():
             rtype = str(r.get("type", "")).strip().upper()
             if not rid:
                 continue
-            # 🔴 on ignore explicitement les salles virtuelles
             if rtype == "VIRTUELLE":
                 continue
             salle_ids.append(rid)
         else:
-            # ancien format string → considéré comme salle physique
             rid = str(r).strip()
             if rid:
                 salle_ids.append(rid)
 
-    # dédoublonnage stable
     seen = set()
     salle_ids = [x for x in salle_ids if not (x in seen or seen.add(x))]
 
-    # 3) salles libres = physiques - occupées
     available = [rid for rid in salle_ids if rid not in occupied]
 
     return jsonify({
@@ -469,7 +462,6 @@ def rooms_available():
 def get_teachers():
     catalog = load_json("catalog.json")
     teachers = catalog.get("teachers", []) or []
-    # sécurité minimale : garantir id/name
     out = []
     for t in teachers:
         tid = str(t.get("id", "")).strip()
@@ -477,7 +469,6 @@ def get_teachers():
         if tid:
             out.append({"id": tid, "name": name})
     return jsonify({"ok": True, "teachers": out})
-
 
 
 @app.route("/api/timetable/sessions", methods=["POST"])
@@ -501,7 +492,6 @@ def add_session():
     creneau = int(payload["creneau"])
     salle = str(payload["salle"]).strip()
 
-    # IMPORTANT: scope=official => timetable.json ; scope=draft => nextTimetable.json
     target_repo = draft_repo if scope == "draft" else repo
     target_repo.ensure_exists(seed_from=repo.read())
 
@@ -514,11 +504,11 @@ def add_session():
         sc = int(s.get("creneau", 0) or 0)
         if sj == jour and sc == creneau:
             if str(s.get("salle", "")).strip() == salle:
-                return conflict("Conflit: salle déjà occupée sur ce créneau")
+                return conflict("Conflit: salle d\u00e9j\u00e0 occup\u00e9e sur ce cr\u00e9neau")
             if str(s.get("formateur", "")).strip() == formateur:
-                return conflict("Conflit: formateur déjà occupé sur ce créneau")
+                return conflict("Conflit: formateur d\u00e9j\u00e0 occup\u00e9 sur ce cr\u00e9neau")
             if str(s.get("groupe", "")).strip() == groupe:
-                return conflict("Conflit: groupe déjà occupé sur ce créneau")
+                return conflict("Conflit: groupe d\u00e9j\u00e0 occup\u00e9 sur ce cr\u00e9neau")
 
     new_id = f"SES_{int(time.time())}_{uuid.uuid4().hex[:8]}"
     new_session = {
@@ -532,7 +522,6 @@ def add_session():
     }
 
     sessions.append(new_session)
-    # preserve draft metadata if any
     out = dict(data)
     out["version"] = version + 1
     out["sessions"] = sessions
@@ -546,34 +535,34 @@ def add_session():
 # ----------------------------
 def _validate_config(cfg: Dict[str, Any]) -> Tuple[bool, str]:
     if not isinstance(cfg, dict):
-        return False, "config doit être un objet JSON."
+        return False, "config doit \u00eatre un objet JSON."
     if "jours" in cfg and not _is_list_of_str(cfg["jours"]):
-        return False, "config.jours doit être une liste de chaînes."
+        return False, "config.jours doit \u00eatre une liste de cha\u00eenes."
     if "creneaux" in cfg and not _is_list_of_int(cfg["creneaux"]):
-        return False, "config.creneaux doit être une liste d'entiers."
+        return False, "config.creneaux doit \u00eatre une liste d'entiers."
     if "salles" in cfg and not _is_list_of_str(cfg["salles"]):
-        return False, "config.salles doit être une liste de chaînes."
+        return False, "config.salles doit \u00eatre une liste de cha\u00eenes."
     return True, ""
 
 
 def _validate_catalog(cat: Dict[str, Any]) -> Tuple[bool, str]:
     if not isinstance(cat, dict):
-        return False, "catalog doit être un objet JSON."
+        return False, "catalog doit \u00eatre un objet JSON."
     for key in ["trainers", "groups", "modules", "assignments"]:
         if key in cat and not isinstance(cat[key], list):
-            return False, f"catalog.{key} doit être une liste."
+            return False, f"catalog.{key} doit \u00eatre une liste."
     return True, ""
 
 
 def _validate_indispo(ind: Any) -> Tuple[bool, str]:
     if not isinstance(ind, dict):
-        return False, "indispo doit être un objet JSON (dictionnaire)."
+        return False, "indispo doit \u00eatre un objet JSON (dictionnaire)."
     return True, ""
 
 
 def _validate_constraints(cst: Any) -> Tuple[bool, str]:
     if not isinstance(cst, dict):
-        return False, "constraints doit être un objet JSON (dictionnaire)."
+        return False, "constraints doit \u00eatre un objet JSON (dictionnaire)."
     return True, ""
 
 
@@ -586,12 +575,10 @@ def _validate_constraints(cst: Any) -> Tuple[bool, str]:
 def admin_config():
     if request.method == "GET":
         return jsonify(load_json("config.json"))
-
     payload = request.get_json(force=True)
     ok, msg = _validate_config(payload)
     if not ok:
         return bad_request(msg, code="VALIDATION_ERROR")
-
     save_json_atomic("config.json", payload)
     return jsonify({"ok": True})
 
@@ -601,12 +588,10 @@ def admin_config():
 def admin_catalog():
     if request.method == "GET":
         return jsonify(load_json("catalog.json"))
-
     payload = request.get_json(force=True)
     ok, msg = _validate_catalog(payload)
     if not ok:
         return bad_request(msg, code="VALIDATION_ERROR")
-
     save_json_atomic("catalog.json", payload)
     return jsonify({"ok": True})
 
@@ -616,12 +601,10 @@ def admin_catalog():
 def admin_indispo():
     if request.method == "GET":
         return jsonify(load_json("indispo.json"))
-
     payload = request.get_json(force=True)
     ok, msg = _validate_indispo(payload)
     if not ok:
         return bad_request(msg, code="VALIDATION_ERROR")
-
     save_json_atomic("indispo.json", payload)
     return jsonify({"ok": True})
 
@@ -631,21 +614,18 @@ def admin_indispo():
 def admin_constraints():
     if request.method == "GET":
         return jsonify(load_json("constraints.json"))
-
     payload = request.get_json(force=True)
     ok, msg = _validate_constraints(payload)
     if not ok:
         return bad_request(msg, code="VALIDATION_ERROR")
-
     save_json_atomic("constraints.json", payload)
     return jsonify({"ok": True})
 
 
 # ----------------------------
-# NOUVEAU : Génération (MVP) /api/generate/run
+# NOUVEAU : G\u00e9n\u00e9ration (MVP)
 # ----------------------------
 def _conflict_in_slot(slot_sessions: List[Dict[str, Any]], s: Dict[str, Any]) -> bool:
-    # conflit salle / formateur / groupe sur le même slot
     for x in slot_sessions:
         if x.get("salle") == s.get("salle"):
             return True
@@ -657,12 +637,6 @@ def _conflict_in_slot(slot_sessions: List[Dict[str, Any]], s: Dict[str, Any]) ->
 
 
 def _generate_mvp_sessions() -> Tuple[List[Dict[str, Any]], List[str]]:
-    """
-    Générateur MVP:
-    - lit seances.json: seances:[{id,formateur,groupe,module,volume}]
-    - place les séances séquentiellement dans (jours×créneaux×salles)
-    - évite conflits (salle/formateur/groupe) sur un même slot.
-    """
     warnings: List[str] = []
 
     cfg = load_json("config.json")
@@ -678,10 +652,8 @@ def _generate_mvp_sessions() -> Tuple[List[Dict[str, Any]], List[str]]:
     if not isinstance(seances, list) or len(seances) == 0:
         raise ValueError("seances.json est vide ou invalide (attendu: {seances:[...]}).")
 
-    # Construire une liste de "sessions à placer" en fonction du volume
     tasks: List[Dict[str, Any]] = []
     for item in seances:
-        # volume = nombre de séances (créneaux) à planifier
         vol = int(item.get("volume", 1) or 1)
         for i in range(vol):
             tasks.append({
@@ -691,28 +663,21 @@ def _generate_mvp_sessions() -> Tuple[List[Dict[str, Any]], List[str]]:
                 "module": item.get("module"),
             })
 
-    # Index des sessions par slot (jour,creneau) pour check conflits
     by_slot: Dict[Tuple[str, int], List[Dict[str, Any]]] = {}
     for j in jours:
         for c in creneaux:
             by_slot[(j, int(c))] = []
 
     out_sessions: List[Dict[str, Any]] = []
-
-    # Parcours des slots, essai de placer les tasks
     slot_list = [(j, int(c)) for j in jours for c in creneaux]
     slot_idx = 0
 
     for t in tasks:
         placed = False
-
-        # On tente chaque slot à partir du slot_idx pour répartir
         tries = 0
         while tries < len(slot_list) and not placed:
             jour, creneau = slot_list[(slot_idx + tries) % len(slot_list)]
             slot_sessions = by_slot[(jour, creneau)]
-
-            # essaye toutes les salles
             for salle in salles:
                 candidate = {
                     "id": f"SES_GEN_{int(time.time())}_{uuid.uuid4().hex[:6]}",
@@ -728,7 +693,6 @@ def _generate_mvp_sessions() -> Tuple[List[Dict[str, Any]], List[str]]:
                     out_sessions.append(candidate)
                     placed = True
                     break
-
             tries += 1
 
         if not placed:
@@ -743,15 +707,10 @@ def _generate_mvp_sessions() -> Tuple[List[Dict[str, Any]], List[str]]:
 @require_roles("admin")
 def generate_run():
     body = request.get_json(force=True) or {}
-
-    # options MVP (compatibles avec votre page)
     strategy = str(body.get("strategy", "cp_sat"))
     max_seconds = int(body.get("maxSeconds", 10) or 10)
     seed = int(body.get("seed", 0) or 0)
     apply = bool(body.get("apply", True))
-
-    # Pour l'instant: MVP generator (vous remplacerez selon strategy)
-    # seed/max_seconds sont acceptés pour compatibilité mais non utilisés dans ce MVP.
     _ = (strategy, max_seconds, seed)
 
     try:
@@ -760,7 +719,6 @@ def generate_run():
         return jsonify({"ok": False, "message": str(e)}), 400
 
     if apply:
-        # On applique via repo: version increment + write atomique
         def do_update(current):
             new_data = {"version": int(current["version"]) + 1, "sessions": sessions}
             repo.write(new_data)
@@ -772,39 +730,33 @@ def generate_run():
 
         return jsonify({
             "ok": True,
-            "message": "Génération terminée et appliquée (timetable.json mis à jour).",
+            "message": "G\u00e9n\u00e9ration termin\u00e9e et appliqu\u00e9e (timetable.json mis \u00e0 jour).",
             "warnings": warnings,
             "version": data_or_current["version"],
             "sessions": data_or_current["sessions"],
         })
 
-    # apply = False: on renvoie seulement le résultat
     return jsonify({
         "ok": True,
-        "message": "Génération terminée (non appliquée).",
+        "message": "G\u00e9n\u00e9ration termin\u00e9e (non appliqu\u00e9e).",
         "warnings": warnings,
         "sessions": sessions,
     })
-    
+
 
 from routes.reports_routes import reports_bp
 app.register_blueprint(reports_bp)
-
 
 from routes.admin_routes import admin_bp
 app.register_blueprint(admin_bp)
 
 from routes.requests_routes import create_requests_blueprint
-
 requests_bp = create_requests_blueprint(DATA_DIR)
 app.register_blueprint(requests_bp)
 
-
 from routes.publish_routes import create_publish_blueprint
-
 publish_bp = create_publish_blueprint(DATA_DIR)
 app.register_blueprint(publish_bp)
-
 
 
 print(app.url_map)

@@ -110,7 +110,6 @@ def verify_login(data_dir: str, user_id: str, password: str) -> Optional[Dict[st
 
     stored_hash = str(rec.get("password") or "").strip()
     if not stored_hash:
-        # treat as not configured
         return None
 
     if not check_password_hash(stored_hash, password):
@@ -138,7 +137,7 @@ def change_password(data_dir: str, user_id: str, old_password: str, new_password
     if not old_password or not new_password:
         return False, "Ancien et nouveau mot de passe requis"
     if len(new_password) < 6:
-        return False, "Mot de passe trop court (min 6 caractères)"
+        return False, "Mot de passe trop court (min 6 caract\u00e8res)"
 
     rec, data = _find_user_record(data_dir, user_id)
     if not rec or not isinstance(rec, dict):
@@ -159,11 +158,26 @@ def update_phone(data_dir: str, user_id: str, phone: str) -> Tuple[bool, str]:
     if not user_id:
         return False, "Utilisateur invalide"
     phone = str(phone or "").strip()
-    if phone and not re.match(r"^[+\d\s\-().]{6,20}$", phone):
-        return False, "Numéro de téléphone invalide (6-20 caractères, chiffres et +/-/espace autorisés)"
+    if phone and not re.match(r"^[+\d\s\-(). ]{6,20}$", phone):
+        return False, "Num\u00e9ro de t\u00e9l\u00e9phone invalide (6-20 caract\u00e8res)"
     rec, data = _find_user_record(data_dir, user_id)
     if not rec or not isinstance(rec, dict):
         return False, "Utilisateur introuvable"
     rec["phone"] = phone
+    _save_users_atomic(data_dir, data)
+    return True, ""
+
+
+def update_email(data_dir: str, user_id: str, email: str) -> Tuple[bool, str]:
+    """Update the email address for a user."""
+    if not user_id:
+        return False, "Utilisateur invalide"
+    email = str(email or "").strip()
+    if email and not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email):
+        return False, "Adresse email invalide"
+    rec, data = _find_user_record(data_dir, user_id)
+    if not rec or not isinstance(rec, dict):
+        return False, "Utilisateur introuvable"
+    rec["email"] = email
     _save_users_atomic(data_dir, data)
     return True, ""
