@@ -10,6 +10,7 @@ export type MeResponse = {
     name?: string;
     role: UserRole;
     modules?: string[];
+    phone?: string;
   };
 };
 
@@ -36,5 +37,14 @@ export async function changePassword(oldPassword: string, newPassword: string, c
   return await http<ChangePasswordResponse>("/api/auth/change-password", {
     method: "POST",
     body: JSON.stringify({ oldPassword, newPassword, confirmPassword }),
+  });
+}
+
+export type UpdatePhoneResponse = { ok: boolean };
+
+export async function updatePhone(phone: string) {
+  return await http<UpdatePhoneResponse>("/api/auth/update-phone", {
+    method: "POST",
+    body: JSON.stringify({ phone }),
   });
 }

@@ -6,6 +6,7 @@ export type AuthUser = {
   name?: string;
   role: UserRole;
   modules?: string[];
+  phone?: string;
 };
 
 type AuthState = {

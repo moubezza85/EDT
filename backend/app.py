@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Tuple
 from services.timetable_service import TimetableService
 from services.timetable_repo import TimetableRepo
 from services.timetable_rules import validate_move, apply_move, validate_delete, apply_delete
-from services.auth import find_user, ensure_password_hashes, verify_login, update_last_login, change_password
+from services.auth import find_user, ensure_password_hashes, verify_login, update_last_login, change_password, update_phone
 from services.jwt_auth import decode_jwt, make_access_token
 from services.rbac import require_roles, require_authenticated
 
@@ -98,7 +98,7 @@ def _load_current_user():
 def auth_me():
     u = g.user or {}
     # never expose passwords (we don't store any)
-    return jsonify({"ok": True, "user": {"id": u.get("id"), "name": u.get("name"), "role": u.get("role"), "modules": u.get("modules", [])}})
+    return jsonify({"ok": True, "user": {"id": u.get("id"), "name": u.get("name"), "role": u.get("role"), "modules": u.get("modules", []), "phone": u.get("phone", "")}})
 
 
 @app.post("/api/auth/login")
@@ -149,6 +149,22 @@ def auth_change_password():
         return jsonify({"ok": False, "code": "UNAUTHORIZED", "message": msg}), 401
 
     return jsonify({"ok": True})
+
+
+@app.post("/api/auth/update-phone")
+@require_authenticated
+def auth_update_phone():
+    """Update the phone number for the current authenticated user."""
+    body = request.get_json(silent=True) or {}
+    phone = str(body.get("phone") or "").strip()
+
+    uid = str((g.user or {}).get("id") or "").strip()
+    ok, msg = update_phone(DATA_DIR, uid, phone)
+    if not ok:
+        return jsonify({"ok": False, "code": "BAD_REQUEST", "message": msg}), 400
+
+    return jsonify({"ok": True})
+
 
 # Optionnel: idempotence basique en mémoire
 _seen_commands = set()
@@ -525,99 +541,40 @@ def add_session():
     return jsonify({"ok": True, "version": out["version"], "session": new_session})
 
 
-# # ----------------------------
-# # NOUVEAU : Admin JSON (GET/PUT)
-# # ----------------------------
-# def _validate_config(cfg: Dict[str, Any]) -> Tuple[bool, str]:
-#     if not isinstance(cfg, dict):
-#         return False, "config doit être un objet JSON."
-#     if "jours" in cfg and not _is_list_of_str(cfg["jours"]):
-#         return False, "config.jours doit être une liste de chaînes."
-#     if "creneaux" in cfg and not _is_list_of_int(cfg["creneaux"]):
-#         return False, "config.creneaux doit être une liste d'entiers."
-#     if "salles" in cfg and not _is_list_of_str(cfg["salles"]):
-#         return False, "config.salles doit être une liste de chaînes."
-#     return True, ""
+# ----------------------------
+# Validation helpers
+# ----------------------------
+def _validate_config(cfg: Dict[str, Any]) -> Tuple[bool, str]:
+    if not isinstance(cfg, dict):
+        return False, "config doit être un objet JSON."
+    if "jours" in cfg and not _is_list_of_str(cfg["jours"]):
+        return False, "config.jours doit être une liste de chaînes."
+    if "creneaux" in cfg and not _is_list_of_int(cfg["creneaux"]):
+        return False, "config.creneaux doit être une liste d'entiers."
+    if "salles" in cfg and not _is_list_of_str(cfg["salles"]):
+        return False, "config.salles doit être une liste de chaînes."
+    return True, ""
 
 
-# def _validate_catalog(cat: Dict[str, Any]) -> Tuple[bool, str]:
-#     if not isinstance(cat, dict):
-#         return False, "catalog doit être un objet JSON."
-#     # validation minimale (MVP)
-#     for key in ["trainers", "groups", "modules", "assignments"]:
-#         if key in cat and not isinstance(cat[key], list):
-#             return False, f"catalog.{key} doit être une liste."
-#     return True, ""
+def _validate_catalog(cat: Dict[str, Any]) -> Tuple[bool, str]:
+    if not isinstance(cat, dict):
+        return False, "catalog doit être un objet JSON."
+    for key in ["trainers", "groups", "modules", "assignments"]:
+        if key in cat and not isinstance(cat[key], list):
+            return False, f"catalog.{key} doit être une liste."
+    return True, ""
 
 
-# def _validate_indispo(ind: Any) -> Tuple[bool, str]:
-#     # Souvent un dict: { "14017": { "lundi":[1,2], ... } }
-#     if not isinstance(ind, dict):
-#         return False, "indispo doit être un objet JSON (dictionnaire)."
-#     return True, ""
+def _validate_indispo(ind: Any) -> Tuple[bool, str]:
+    if not isinstance(ind, dict):
+        return False, "indispo doit être un objet JSON (dictionnaire)."
+    return True, ""
 
 
-# def _validate_constraints(cst: Any) -> Tuple[bool, str]:
-#     if not isinstance(cst, dict):
-#         return False, "constraints doit être un objet JSON (dictionnaire)."
-#     return True, ""
-
-
-# @app.route("/api/admin/config", methods=["GET", "PUT"])
-# def admin_config():
-#     if request.method == "GET":
-#         return jsonify(load_json("config.json"))
-
-#     payload = request.get_json(force=True)
-#     ok, msg = _validate_config(payload)
-#     if not ok:
-#         return bad_request(msg, code="VALIDATION_ERROR")
-
-#     save_json_atomic("config.json", payload)
-#     return jsonify({"ok": True})
-
-
-# @app.route("/api/admin/catalog", methods=["GET", "PUT"])
-# def admin_catalog():
-#     if request.method == "GET":
-#         return jsonify(load_json("catalog.json"))
-
-#     payload = request.get_json(force=True)
-#     ok, msg = _validate_catalog(payload)
-#     if not ok:
-#         return bad_request(msg, code="VALIDATION_ERROR")
-
-#     save_json_atomic("catalog.json", payload)
-#     return jsonify({"ok": True})
-
-
-# @app.route("/api/admin/indispo", methods=["GET", "PUT"])
-# def admin_indispo():
-#     if request.method == "GET":
-#         return jsonify(load_json("indispo.json"))
-
-#     payload = request.get_json(force=True)
-#     ok, msg = _validate_indispo(payload)
-#     if not ok:
-#         return bad_request(msg, code="VALIDATION_ERROR")
-
-#     save_json_atomic("indispo.json", payload)
-#     return jsonify({"ok": True})
-
-
-# @app.route("/api/admin/constraints", methods=["GET", "PUT"])
-# def admin_constraints():
-#     if request.method == "GET":
-#         return jsonify(load_json("constraints.json"))
-
-#     payload = request.get_json(force=True)
-#     ok, msg = _validate_constraints(payload)
-#     if not ok:
-#         return bad_request(msg, code="VALIDATION_ERROR")
-
-#     save_json_atomic("constraints.json", payload)
-#     return jsonify({"ok": True})
-
+def _validate_constraints(cst: Any) -> Tuple[bool, str]:
+    if not isinstance(cst, dict):
+        return False, "constraints doit être un objet JSON (dictionnaire)."
+    return True, ""
 
 
 # ----------------------------
@@ -793,7 +750,7 @@ def generate_run():
     seed = int(body.get("seed", 0) or 0)
     apply = bool(body.get("apply", True))
 
-    # Pour l’instant: MVP generator (vous remplacerez selon strategy)
+    # Pour l'instant: MVP generator (vous remplacerez selon strategy)
     # seed/max_seconds sont acceptés pour compatibilité mais non utilisés dans ce MVP.
     _ = (strategy, max_seconds, seed)
 

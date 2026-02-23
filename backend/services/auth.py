@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import tempfile
 from datetime import datetime, timezone
 from typing import Any, Dict, Optional, Tuple
@@ -149,5 +150,20 @@ def change_password(data_dir: str, user_id: str, old_password: str, new_password
 
     rec["password"] = generate_password_hash(new_password, method="pbkdf2:sha256")
     rec["lastPasswordChange"] = datetime.now(timezone.utc).isoformat()
+    _save_users_atomic(data_dir, data)
+    return True, ""
+
+
+def update_phone(data_dir: str, user_id: str, phone: str) -> Tuple[bool, str]:
+    """Update the phone number for a user."""
+    if not user_id:
+        return False, "Utilisateur invalide"
+    phone = str(phone or "").strip()
+    if phone and not re.match(r"^[+\d\s\-().]{6,20}$", phone):
+        return False, "Numéro de téléphone invalide (6-20 caractères, chiffres et +/-/espace autorisés)"
+    rec, data = _find_user_record(data_dir, user_id)
+    if not rec or not isinstance(rec, dict):
+        return False, "Utilisateur introuvable"
+    rec["phone"] = phone
     _save_users_atomic(data_dir, data)
     return True, ""
