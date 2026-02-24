@@ -90,8 +90,14 @@ def _normalize_sessions(sessions: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             "creneau": s.get("creneau"),
             "salle": s.get("salle"),
         }
-        # Conserver les marqueurs virtuels
-        for vk in ("_virtualState", "_virtualRequestId", "_proposedGroupe", "_proposedModule"):
+        # Conserver tous les marqueurs virtuels
+        for vk in (
+            "_virtualState",
+            "_virtualRequestId",
+            "_proposedGroupe",
+            "_proposedModule",
+            "_proposedSalle",
+        ):
             if vk in s:
                 row[vk] = s.get(vk)
         out.append(row)
@@ -111,15 +117,16 @@ def _build_virtual_view(
 ) -> Dict[str, Any]:
     """Vue virtuelle (overlay des demandes PENDING).
 
-    États sessions_base:
-      - NORMAL             : aucune demande en attente
-      - MOVED_AWAY         : demande MOVE/CHANGE_ROOM
-      - TO_DELETE          : demande DELETE
-      - REASSIGN_PENDING   : demande CHANGE_MODULE_GROUP
+    États sessions_base :
+      NORMAL              : aucune demande
+      MOVED_AWAY          : demande MOVE (position changée)
+      TO_DELETE           : demande DELETE
+      REASSIGN_PENDING    : demande CHANGE_MODULE_GROUP
+      ROOM_CHANGE_PENDING : demande CHANGE_ROOM (même créneau, salle différente)
 
-    sessions_extra:
-      - PROPOSED_DESTINATION : destination d'un MOVE/CHANGE_ROOM
-      - INSERTED             : INSERT
+    sessions_extra :
+      PROPOSED_DESTINATION : destination d'un MOVE
+      INSERTED             : INSERT
     """
     # Index request par sessionId (PENDING) — garder la plus récente.
     by_session: Dict[str, Dict[str, Any]] = {}
@@ -143,7 +150,8 @@ def _build_virtual_view(
 
         rtype = str(req.get("type", "")).upper()
 
-        if rtype in ("MOVE", "CHANGE_ROOM"):
+        # ---- MOVE : ancienne position + destination dans une autre cellule ----
+        if rtype == "MOVE":
             ss = dict(s)
             ss["_virtualState"] = "MOVED_AWAY"
             ss["_virtualRequestId"] = req.get("id")
@@ -158,14 +166,24 @@ def _build_virtual_view(
             dest["_virtualRequestId"] = req.get("id")
             sessions_extra.append(dest)
 
+        # ---- CHANGE_ROOM : même créneau, salle différente → carte unique avec _proposedSalle ----
+        elif rtype == "CHANGE_ROOM":
+            nd = req.get("newData") or {}
+            ss = dict(s)
+            ss["_virtualState"] = "ROOM_CHANGE_PENDING"
+            ss["_virtualRequestId"] = req.get("id")
+            ss["_proposedSalle"] = nd.get("salle", s.get("salle"))
+            sessions_base.append(ss)
+
+        # ---- DELETE ----
         elif rtype == "DELETE":
             ss = dict(s)
             ss["_virtualState"] = "TO_DELETE"
             ss["_virtualRequestId"] = req.get("id")
             sessions_base.append(ss)
 
+        # ---- CHANGE_MODULE_GROUP ----
         elif rtype == "CHANGE_MODULE_GROUP":
-            # Afficher la séance avec son état actuel + marqueurs de la proposition
             nd = req.get("newData") or {}
             ss = dict(s)
             ss["_virtualState"] = "REASSIGN_PENDING"
@@ -210,13 +228,9 @@ def _build_virtual_view(
 
 
 def create_requests_blueprint(data_dir: str) -> Blueprint:
-    """
-    Factory : on injecte DATA_DIR depuis app.py
-    """
     requests_bp = Blueprint("requests_bp", __name__)
 
     store = ChangeRequestsStore(data_dir)
-
     official_repo = TimetableRepo(data_dir, filename="timetable.json")
     repo = TimetableRepo(data_dir, filename="nextTimetable.json")
 
@@ -302,9 +316,7 @@ def create_requests_blueprint(data_dir: str) -> Blueprint:
 
         allowed_modules = _allowed_modules_for_teacher(data_dir, str(teacher_id).strip())
 
-        # -----------------
         # INSERT
-        # -----------------
         if req_type == "INSERT":
             new_data = dict(new_data)
             new_data["formateur"] = str(teacher_id).strip()
@@ -340,7 +352,7 @@ def create_requests_blueprint(data_dir: str) -> Blueprint:
             )
             return jsonify({"ok": True, "request": created})
 
-        # Pour tous les autres types : récupérer la session cible
+        # Récupérer la session cible
         target = _get_session_or_none(sessions, str(session_id))
         if not target:
             return _bad_request("Session introuvable", code="NOT_FOUND")
@@ -354,9 +366,7 @@ def create_requests_blueprint(data_dir: str) -> Blueprint:
             "salle": target.get("salle"),
         }
 
-        # -----------------
         # DELETE
-        # -----------------
         if req_type == "DELETE":
             err = validate_delete(sessions, str(session_id).strip())
             if err:
@@ -365,7 +375,6 @@ def create_requests_blueprint(data_dir: str) -> Blueprint:
                     code=err.get("code", "CONSTRAINT_CONFLICT"),
                     details=err.get("details"),
                 )
-
             created = store.upsert_pending_for_session(
                 teacher_id=str(teacher_id).strip(),
                 session_id=str(session_id).strip(),
@@ -376,9 +385,7 @@ def create_requests_blueprint(data_dir: str) -> Blueprint:
             )
             return jsonify({"ok": True, "request": created})
 
-        # -----------------
         # CHANGE_ROOM
-        # -----------------
         if req_type == "CHANGE_ROOM":
             if not new_data.get("salle"):
                 return _bad_request("newData.salle requis pour CHANGE_ROOM")
@@ -411,9 +418,7 @@ def create_requests_blueprint(data_dir: str) -> Blueprint:
             )
             return jsonify({"ok": True, "request": created})
 
-        # -----------------
         # CHANGE_MODULE_GROUP
-        # -----------------
         if req_type == "CHANGE_MODULE_GROUP":
             new_groupe = str(new_data.get("groupe", "")).strip()
             new_module = str(new_data.get("module", "")).strip()
@@ -421,14 +426,12 @@ def create_requests_blueprint(data_dir: str) -> Blueprint:
             if not new_groupe or not new_module:
                 return _bad_request("newData.groupe et newData.module requis pour CHANGE_MODULE_GROUP")
 
-            # Vérifier que le module demandé est dans les affectations du formateur
             if allowed_modules and new_module not in allowed_modules:
                 return _bad_request(
                     "Le module demandé n'est pas dans vos affectations",
                     code="FORBIDDEN",
                 )
 
-            # Vérifier que le groupe demandé est bien affecté à ce formateur pour ce module
             allowed_groups = _allowed_groups_for_teacher_module(data_dir, str(teacher_id).strip(), new_module)
             if allowed_groups and new_groupe not in allowed_groups:
                 return _bad_request(
@@ -436,7 +439,6 @@ def create_requests_blueprint(data_dir: str) -> Blueprint:
                     code="FORBIDDEN",
                 )
 
-            # Valider côté règles (collision groupe sur même créneau)
             err = validate_change_module_group(
                 sessions,
                 str(session_id).strip(),
@@ -450,29 +452,17 @@ def create_requests_blueprint(data_dir: str) -> Blueprint:
                     details=err.get("details"),
                 )
 
-            old_data_reassign = {
-                "groupe": target.get("groupe"),
-                "module": target.get("module"),
-            }
-            new_data_reassign = {
-                "groupe": new_groupe,
-                "module": new_module,
-                "motif": new_data.get("motif"),
-            }
-
             created = store.upsert_pending_for_session(
                 teacher_id=str(teacher_id).strip(),
                 session_id=str(session_id).strip(),
                 req_type=req_type,
-                old_data=old_data_reassign,
-                new_data=new_data_reassign,
+                old_data={"groupe": target.get("groupe"), "module": target.get("module")},
+                new_data={"groupe": new_groupe, "module": new_module, "motif": new_data.get("motif")},
                 supersede_previous=True,
             )
             return jsonify({"ok": True, "request": created})
 
-        # -----------------
         # MOVE (défaut)
-        # -----------------
         if not new_data.get("jour") or new_data.get("creneau") is None or not new_data.get("salle"):
             return _bad_request("newData.jour, newData.creneau, newData.salle requis pour MOVE")
 
@@ -624,11 +614,7 @@ def create_requests_blueprint(data_dir: str) -> Blueprint:
             if not session_id or not new_groupe or not new_module:
                 return (
                     False,
-                    {
-                        "ok": False,
-                        "code": "BAD_REQUEST",
-                        "message": "Demande invalide (sessionId/groupe/module manquant)",
-                    },
+                    {"ok": False, "code": "BAD_REQUEST", "message": "Demande invalide (sessionId/groupe/module manquant)"},
                 )
             err = validate_change_module_group(sessions, session_id, new_groupe, new_module)
             if err:

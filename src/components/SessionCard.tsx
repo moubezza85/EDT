@@ -53,8 +53,12 @@ const SessionCard = ({
   const virtualState = String((session as any)._virtualState ?? "");
   const toDelete = virtualState === "TO_DELETE";
   const isReassignPending = virtualState === "REASSIGN_PENDING";
+  const isRoomChangePending = virtualState === "ROOM_CHANGE_PENDING";
+  const hasPendingChange = isReassignPending || isRoomChangePending;
+
   const proposedModule = (session as any)._proposedModule as string | undefined;
   const proposedGroupe = (session as any)._proposedGroupe as string | undefined;
+  const proposedSalle  = (session as any)._proposedSalle  as string | undefined;
 
   const generateColor = (name: string) => {
     const colors = [
@@ -86,7 +90,7 @@ const SessionCard = ({
         colorClass,
         isDragging ? "opacity-50" : "opacity-100",
         toDelete && "opacity-50",
-        isReassignPending && "ring-1 ring-orange-400"
+        hasPendingChange && "ring-1 ring-orange-400"
       )}
     >
       {toDelete && (
@@ -125,9 +129,18 @@ const SessionCard = ({
         )}
 
         {/* Salle */}
-        <div className={cn("truncate", online ? "text-sky-700 font-medium" : "text-gray-500")}>
-          {online ? `En ligne (${session.salle})` : session.salle}
-        </div>
+        {isRoomChangePending && proposedSalle && proposedSalle !== session.salle ? (
+          <div className="leading-tight">
+            <span className="line-through text-gray-400 text-xs">{session.salle}</span>
+            <span className="block text-orange-600 text-xs truncate">
+              → {proposedSalle}
+            </span>
+          </div>
+        ) : (
+          <div className={cn("truncate", online ? "text-sky-700 font-medium" : "text-gray-500")}>
+            {online ? `En ligne (${session.salle})` : session.salle}
+          </div>
+        )}
 
         {/* Formateur */}
         {!isCompact && (
@@ -135,7 +148,7 @@ const SessionCard = ({
         )}
       </div>
 
-      {/* Boutons d'action — rangée compacte en bas */}
+      {/* Boutons d’action — rangée compacte en bas */}
       {hasActions && (
         <div
           className="flex items-center justify-end gap-0.5 mt-1.5 pt-1 border-t border-black/10"
@@ -200,7 +213,7 @@ const SessionCard = ({
 
               <AlertDialogContent onClick={(e) => e.stopPropagation()}>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Supprimer cette séance ?</AlertDialogTitle>
+                  <AlertDialogTitle>Supprimer cette séance ?</AlertDialogTitle>
                   <AlertDialogDescription>Cette action est irréversible.</AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
