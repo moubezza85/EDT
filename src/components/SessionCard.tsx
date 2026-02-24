@@ -23,8 +23,8 @@ interface SessionCardProps {
   groupLabel?: string;
   isCompact?: boolean;
   onDelete?: (sessionId: string) => void;
-  onChangeRoom?: (session: Session) => void; // (présentiel uniquement)
-  onChangeModule?: (session: Session) => void; // changer groupe/module
+  onChangeRoom?: (session: Session) => void;
+  onChangeModule?: (session: Session) => void;
   draggable?: boolean;
 }
 
@@ -52,7 +52,6 @@ const SessionCard = ({
   const online = isOnlineSession(session);
   const toDelete = String((session as any)._virtualState ?? "") === "TO_DELETE";
 
-  // couleur stable par module (présentiel)
   const generateColor = (name: string) => {
     const colors = [
       "bg-blue-100 border-blue-300",
@@ -63,18 +62,16 @@ const SessionCard = ({
       "bg-indigo-100 border-indigo-300",
       "bg-orange-100 border-orange-300",
     ];
-
     let hash = 0;
     for (let i = 0; i < name.length; i++) {
       hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
-
     return colors[Math.abs(hash) % colors.length];
   };
 
-  // style "en ligne" distinct
   const onlineClass = "bg-sky-50 border-sky-300 ring-1 ring-sky-200";
   const colorClass = online ? onlineClass : generateColor(session.module);
+  const hasActions = onChangeRoom || onChangeModule || onDelete || online;
 
   return (
     <div
@@ -92,104 +89,99 @@ const SessionCard = ({
           <X className="h-10 w-10 text-red-500/70" />
         </div>
       )}
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <div className="font-medium truncate">{session.module}</div>
-          <div className="text-gray-700 truncate">{groupLabel ?? session.groupe}</div>
 
-          <div className={cn("truncate", online ? "text-sky-700 font-medium" : "text-gray-500")}>
-            {online ? `En ligne (${session.salle})` : session.salle}
-          </div>
-
-          {!isCompact && (
-            <div className="text-gray-500 truncate pt-1 text-xs">{session.formateur}</div>
-          )}
+      {/* Contenu principal */}
+      <div className="min-w-0">
+        <div className="font-medium truncate">{session.module}</div>
+        <div className="text-gray-700 truncate">{groupLabel ?? session.groupe}</div>
+        <div className={cn("truncate", online ? "text-sky-700 font-medium" : "text-gray-500")}>
+          {online ? `En ligne (${session.salle})` : session.salle}
         </div>
+        {!isCompact && (
+          <div className="text-gray-500 truncate pt-0.5 text-xs">{session.formateur}</div>
+        )}
+      </div>
 
-        {(onChangeRoom || onChangeModule || onDelete || online) && (
-          <div className="flex flex-col items-center gap-1 shrink-0">
-            {/* Si en ligne: icône informative (sans action) */}
-            {online ? (
+      {/* Boutons d'action — rangée compacte en bas */}
+      {hasActions && (
+        <div
+          className="flex items-center justify-end gap-0.5 mt-1.5 pt-1 border-t border-black/10"
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          {/* Séance en ligne : icône informative */}
+          {online ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 shrink-0 cursor-default opacity-60"
+              title="Séance en ligne"
+              onClick={(e) => e.stopPropagation()}
+              disabled
+            >
+              <Video className="h-3.5 w-3.5" />
+            </Button>
+          ) : (
+            onChangeRoom && (
               <Button
                 variant="ghost"
                 size="icon"
-                className="shrink-0 cursor-default"
-                title="Séance en ligne"
-                onMouseDown={(e) => e.stopPropagation()}
-                onClick={(e) => e.stopPropagation()}
-                disabled
+                className="h-6 w-6 shrink-0"
+                title="Changer salle"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChangeRoom(session);
+                }}
               >
-                <Video className="h-4 w-4" />
+                <Shuffle className="h-3.5 w-3.5" />
               </Button>
-            ) : (
-              // Présentiel: bouton changer salle si fourni
-              onChangeRoom && (
+            )
+          )}
+
+          {onChangeModule && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 shrink-0"
+              title="Changer module / groupe"
+              onClick={(e) => {
+                e.stopPropagation();
+                onChangeModule(session);
+              }}
+            >
+              <BookOpen className="h-3.5 w-3.5" />
+            </Button>
+          )}
+
+          {onDelete && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="shrink-0"
-                  title="Changer salle"
-                  onMouseDown={(e) => e.stopPropagation()}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onChangeRoom(session);
-                  }}
+                  className="h-6 w-6 shrink-0"
+                  title="Supprimer"
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <Shuffle className="h-4 w-4" />
+                  <Trash2 className="h-3.5 w-3.5" />
                 </Button>
-              )
-            )}
+              </AlertDialogTrigger>
 
-            {/* Bouton changer module/groupe */}
-            {onChangeModule && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="shrink-0"
-                title="Changer module / groupe"
-                onMouseDown={(e) => e.stopPropagation()}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onChangeModule(session);
-                }}
-              >
-                <BookOpen className="h-4 w-4" />
-              </Button>
-            )}
-
-            {onDelete && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="shrink-0"
-                    title="Supprimer"
-                    onMouseDown={(e) => e.stopPropagation()}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </AlertDialogTrigger>
-
-                <AlertDialogContent onClick={(e) => e.stopPropagation()}>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Supprimer cette séance ?</AlertDialogTitle>
-                    <AlertDialogDescription>Cette action est irréversible.</AlertDialogDescription>
-                  </AlertDialogHeader>
-
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Annuler</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => onDelete(session.id)}>
-                      Supprimer
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            )}
-          </div>
-        )}
-      </div>
+              <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Supprimer cette séance ?</AlertDialogTitle>
+                  <AlertDialogDescription>Cette action est irréversible.</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Annuler</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => onDelete(session.id)}>
+                    Supprimer
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
+        </div>
+      )}
     </div>
   );
 };

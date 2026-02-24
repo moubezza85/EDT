@@ -28,11 +28,9 @@ function normalizeSessions(raw: any[]): Session[] {
   return (raw ?? []).map((s: any) => ({ ...s, id: s.id ?? s.sessionId })) as Session[];
 }
 
-
 function buildVirtualFromRequests(official: Session[], requests: ChangeRequest[]) {
   const base = official.map((s: any) => ({ ...s }));
   const extra: any[] = [];
-
   const byId = new Map<string, any>();
   base.forEach((s: any) => byId.set(String(s.id), s));
 
@@ -50,7 +48,6 @@ function buildVirtualFromRequests(official: Session[], requests: ChangeRequest[]
       }
       continue;
     }
-
     if (type === "INSERT") {
       extra.push({
         id: sessionId || `ghost:${(r as any).id ?? (r as any).requestId}`,
@@ -60,7 +57,6 @@ function buildVirtualFromRequests(official: Session[], requests: ChangeRequest[]
       });
       continue;
     }
-
     if (type === "MOVE" || type === "CHANGE_ROOM") {
       const s = byId.get(sessionId);
       if (s) {
@@ -80,26 +76,21 @@ function buildVirtualFromRequests(official: Session[], requests: ChangeRequest[]
       });
     }
   }
-
   return { base, extra };
 }
 
 export default function VirtualTimetable() {
   const { toast } = useToast();
   const { user } = useAuth();
-
   const role = user?.role;
 
-  // ---- config ----
   const [cfg, setCfg] = useState<Config | null>(null);
   const [catalog, setCatalog] = useState<Catalog | null>(null);
   const [loadingMeta, setLoadingMeta] = useState(false);
   const [metaErr, setMetaErr] = useState<string | null>(null);
 
-  // ---- add modal ----
   const [addOpen, setAddOpen] = useState(false);
 
-  // ---- teacher data ----
   const [officialSessions, setOfficialSessions] = useState<Session[]>([]);
   const [officialVersion, setOfficialVersion] = useState<number>(1);
   const officialVersionRef = useRef<number>(1);
@@ -109,11 +100,9 @@ export default function VirtualTimetable() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
-  // draft meta (for admin publish)
   const [draftWeekStart, setDraftWeekStart] = useState<string>("");
   const [draftRevision, setDraftRevision] = useState<number>(1);
 
-  // -------- helpers: virtual rooms + fusions --------
   const isVirtualRoom = useCallback(
     (roomId: string) => {
       const salles = cfg?.salles ?? [];
@@ -124,7 +113,6 @@ export default function VirtualTimetable() {
     [cfg]
   );
 
-  // FIX: OnlineFusion a "groupes"
   const fusionMap = useMemo(() => {
     const m = new Map<string, string[]>();
     (catalog?.onlineFusions ?? []).forEach((f: any) => m.set(f.id, f.groupes ?? []));
@@ -147,7 +135,6 @@ export default function VirtualTimetable() {
     [fusionMap]
   );
 
-  // ---- rooms for grid (salles physiques uniquement) ----
   const salleIdsPhysical = useMemo(() => {
     const raw = cfg?.salles ?? [];
     const ids = raw
@@ -156,7 +143,6 @@ export default function VirtualTimetable() {
     return ids.filter((id) => !isVirtualRoom(id));
   }, [cfg, isVirtualRoom]);
 
-  // ---- filter state (virtuel) ----
   const [filters, setFilters] = useState<{ formateur: string; groupe: string; salle: string }>({
     formateur: ALL,
     groupe: ALL,
@@ -171,7 +157,6 @@ export default function VirtualTimetable() {
     setFilters((p) => ({ ...p, [type]: ALL }));
   }, []);
 
-  // ---- hasConflict (sur les séances officielles du formateur) ----
   const hasConflict = useCallback(
     (session: Session, targetCell: { day: string; slot: number }): Session | null => {
       const groupsA = expandGroupIds(session.groupe);
@@ -191,7 +176,6 @@ export default function VirtualTimetable() {
     [officialSessions, expandGroupIds, isVirtualRoom]
   );
 
-  // ---- load meta (config + catalog) ----
   useEffect(() => {
     (async () => {
       try {
@@ -280,7 +264,6 @@ export default function VirtualTimetable() {
     }
   }, [draftWeekStart, refreshAdminVirtual, toast]);
 
-  // Keep ref in sync
   useEffect(() => {
     officialVersionRef.current = officialVersion;
   }, [officialVersion]);
@@ -293,7 +276,6 @@ export default function VirtualTimetable() {
     }
   }, [role, refreshTeacher, refreshAdminVirtual]);
 
-  // ---- ghost + moved ids (pour VirtualScheduleGrid) ----
   const movedSessionIds = useMemo(() => {
     const s = new Set<string>();
     virtualBase.forEach((x: any) => {
@@ -327,10 +309,8 @@ export default function VirtualTimetable() {
     });
   }, [virtualExtra, filters, expandGroupIds]);
 
-  // ---- filtres appliqués (sur base virtuelle) ----
   const filteredSessions = useMemo(() => {
-    const list = virtualBase;
-    return list.filter((s) => {
+    return virtualBase.filter((s) => {
       if (filters.formateur !== ALL && String(s.formateur) !== filters.formateur) return false;
       if (filters.salle !== ALL && String(s.salle) !== filters.salle) return false;
       if (filters.groupe !== ALL) {
@@ -350,9 +330,12 @@ export default function VirtualTimetable() {
     return fromCatalog.length ? fromCatalog : uniqueGroupeValues;
   }, [catalog, uniqueGroupeValues]);
 
-  const salleOptions = useMemo(() => uniqueSalleValues.filter((id) => !isVirtualRoom(id)), [uniqueSalleValues, isVirtualRoom]);
+  const salleOptions = useMemo(
+    () => uniqueSalleValues.filter((id) => !isVirtualRoom(id)),
+    [uniqueSalleValues, isVirtualRoom]
+  );
 
-  // ---- actions ----
+  // ---- Déplacer une séance ----
   const updateSession = useCallback(
     async (sessionId: string, updates: Partial<Session>) => {
       if (role === "admin") {
@@ -389,17 +372,12 @@ export default function VirtualTimetable() {
           return false;
         }
       }
-
       if (role !== "formateur") return false;
       try {
         await createTeacherChange({
           type: "MOVE",
           sessionId,
-          newData: {
-            jour: updates.jour,
-            creneau: updates.creneau,
-            salle: updates.salle,
-          },
+          newData: { jour: updates.jour, creneau: updates.creneau, salle: updates.salle },
         });
         toast({ title: "Demande envoyée", description: "Déplacement ajouté aux requêtes (PENDING)." });
         await refreshTeacher();
@@ -413,6 +391,7 @@ export default function VirtualTimetable() {
     [role, toast, refreshTeacher, refreshAdminVirtual]
   );
 
+  // ---- Supprimer une séance ----
   const onDeleteSession = useCallback(
     async (sessionId: string) => {
       if (role === "admin") {
@@ -445,7 +424,6 @@ export default function VirtualTimetable() {
           return { ok: false as const, error: e?.body?.message ?? e?.message ?? "Erreur" };
         }
       }
-
       if (role !== "formateur") return { ok: false as const, error: "Action non autorisée" };
       try {
         await createTeacherChange({ type: "DELETE", sessionId });
@@ -460,45 +438,73 @@ export default function VirtualTimetable() {
     [role, toast, refreshTeacher, refreshAdminVirtual]
   );
 
-  // ---- Changer module/groupe (admin uniquement : commande directe sur le draft) ----
+  // ---- Changer module / groupe ----
+  // Admin : commande directe sur le draft
+  // Formateur : création d'une demande PENDING (trainer verrouillé dans le modal)
   const onReassignSession = useCallback(
     async (args: { sessionId: string; newGroupe: string; newModule: string; scope?: any }) => {
-      if (role !== "admin") return { ok: false as const, error: "Action non autorisée" };
-      try {
-        const commandId =
-          (globalThis as any).crypto?.randomUUID?.() ?? `cmd_${Date.now()}_${Math.random().toString(16).slice(2)}`;
-        const res = await sendTimetableCommand(
-          {
-            commandId,
-            expectedVersion: officialVersionRef.current,
-            type: "CHANGE_MODULE_GROUP",
-            payload: {
-              sessionId: String(args.sessionId),
-              newGroupe: String(args.newGroupe),
-              newModule: String(args.newModule),
+      if (role === "admin") {
+        try {
+          const commandId =
+            (globalThis as any).crypto?.randomUUID?.() ??
+            `cmd_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+          const res = await sendTimetableCommand(
+            {
+              commandId,
+              expectedVersion: officialVersionRef.current,
+              type: "CHANGE_MODULE_GROUP",
+              payload: {
+                sessionId: String(args.sessionId),
+                newGroupe: String(args.newGroupe),
+                newModule: String(args.newModule),
+              },
             },
-          },
-          "draft"
-        );
-        if (typeof (res as any)?.version === "number") {
-          setOfficialVersion((res as any).version);
-          officialVersionRef.current = (res as any).version;
+            "draft"
+          );
+          if (typeof (res as any)?.version === "number") {
+            setOfficialVersion((res as any).version);
+            officialVersionRef.current = (res as any).version;
+          }
+          await refreshAdminVirtual();
+          return { ok: true as const };
+        } catch (e: any) {
+          toast({
+            variant: "destructive",
+            title: "Changement refusé",
+            description: e?.body?.message ?? e?.message ?? "Conflit ou version obsolète",
+          });
+          await refreshAdminVirtual();
+          return { ok: false as const, error: e?.body?.message ?? e?.message ?? "Erreur" };
         }
-        await refreshAdminVirtual();
-        return { ok: true as const };
-      } catch (e: any) {
-        toast({
-          variant: "destructive",
-          title: "Changement refusé",
-          description: e?.body?.message ?? e?.message ?? "Conflit ou version obsolète",
-        });
-        await refreshAdminVirtual();
-        return { ok: false as const, error: e?.body?.message ?? e?.message ?? "Erreur" };
       }
+
+      if (role === "formateur") {
+        try {
+          await createTeacherChange({
+            type: "CHANGE_MODULE_GROUP",
+            sessionId: args.sessionId,
+            newData: {
+              groupe: args.newGroupe,
+              module: args.newModule,
+            },
+          } as any);
+          toast({
+            title: "Demande envoyée",
+            description: "Changement groupe/module ajouté aux requêtes (PENDING).",
+          });
+          await refreshTeacher();
+          return { ok: true as const };
+        } catch (e: any) {
+          return { ok: false as const, error: e?.message ?? "Erreur" };
+        }
+      }
+
+      return { ok: false as const, error: "Action non autorisée" };
     },
-    [role, toast, refreshAdminVirtual]
+    [role, toast, refreshTeacher, refreshAdminVirtual]
   );
 
+  // ---- Ajouter une séance ----
   const handleAdd = useCallback(
     async (data: any) => {
       if (role === "admin") {
@@ -547,9 +553,7 @@ export default function VirtualTimetable() {
             {role === "admin" ? (
               <div className="flex items-center gap-2 mr-2">
                 <div className="text-xs text-gray-600">
-                  <div>
-                    <span className="font-medium">Draft</span> • revision {draftRevision}
-                  </div>
+                  <div><span className="font-medium">Draft</span> • revision {draftRevision}</div>
                   <div className="text-[11px]">week_start (lundi)</div>
                 </div>
                 <Input
@@ -609,11 +613,15 @@ export default function VirtualTimetable() {
               rooms={salleIdsPhysical}
               roomsScope={role === "admin" ? "draft" : "official"}
               isLoading={loading}
-              onDeleteSession={role === "formateur" || role === "admin" ? (id) => onDeleteSession(String(id)) : undefined}
+              onDeleteSession={
+                role === "formateur" || role === "admin"
+                  ? (id) => onDeleteSession(String(id))
+                  : undefined
+              }
               formatGroupLabel={formatGroupLabel}
-              catalog={role === "admin" ? (catalog ?? undefined) : undefined}
+              catalog={catalog ?? undefined}
               lockTrainer={role === "formateur"}
-              reassignSession={role === "admin" ? onReassignSession : undefined}
+              reassignSession={onReassignSession}
               timetableScope={role === "admin" ? "draft" : "official"}
             />
           </DndProvider>
