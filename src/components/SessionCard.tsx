@@ -50,7 +50,11 @@ const SessionCard = ({
   );
 
   const online = isOnlineSession(session);
-  const toDelete = String((session as any)._virtualState ?? "") === "TO_DELETE";
+  const virtualState = String((session as any)._virtualState ?? "");
+  const toDelete = virtualState === "TO_DELETE";
+  const isReassignPending = virtualState === "REASSIGN_PENDING";
+  const proposedModule = (session as any)._proposedModule as string | undefined;
+  const proposedGroupe = (session as any)._proposedGroupe as string | undefined;
 
   const generateColor = (name: string) => {
     const colors = [
@@ -81,7 +85,8 @@ const SessionCard = ({
         draggable ? "cursor-move" : "cursor-default",
         colorClass,
         isDragging ? "opacity-50" : "opacity-100",
-        toDelete ? "opacity-50" : ""
+        toDelete && "opacity-50",
+        isReassignPending && "ring-1 ring-orange-400"
       )}
     >
       {toDelete && (
@@ -91,12 +96,40 @@ const SessionCard = ({
       )}
 
       {/* Contenu principal */}
-      <div className="min-w-0">
-        <div className="font-medium truncate">{session.module}</div>
-        <div className="text-gray-700 truncate">{groupLabel ?? session.groupe}</div>
+      <div className="min-w-0 space-y-0.5">
+
+        {/* Module */}
+        {isReassignPending && proposedModule && proposedModule !== session.module ? (
+          <div className="font-medium leading-tight">
+            <span className="line-through text-gray-400 text-xs">{session.module}</span>
+            <span className="block text-orange-700 text-xs font-semibold truncate">
+              → {proposedModule}
+            </span>
+          </div>
+        ) : (
+          <div className="font-medium truncate">{session.module}</div>
+        )}
+
+        {/* Groupe */}
+        {isReassignPending && proposedGroupe && proposedGroupe !== session.groupe ? (
+          <div className="leading-tight">
+            <span className="line-through text-gray-400 text-xs">
+              {groupLabel ?? session.groupe}
+            </span>
+            <span className="block text-orange-600 text-xs truncate">
+              → {proposedGroupe}
+            </span>
+          </div>
+        ) : (
+          <div className="text-gray-700 truncate">{groupLabel ?? session.groupe}</div>
+        )}
+
+        {/* Salle */}
         <div className={cn("truncate", online ? "text-sky-700 font-medium" : "text-gray-500")}>
           {online ? `En ligne (${session.salle})` : session.salle}
         </div>
+
+        {/* Formateur */}
         {!isCompact && (
           <div className="text-gray-500 truncate pt-0.5 text-xs">{session.formateur}</div>
         )}
@@ -108,7 +141,6 @@ const SessionCard = ({
           className="flex items-center justify-end gap-0.5 mt-1.5 pt-1 border-t border-black/10"
           onMouseDown={(e) => e.stopPropagation()}
         >
-          {/* Séance en ligne : icône informative */}
           {online ? (
             <Button
               variant="ghost"
