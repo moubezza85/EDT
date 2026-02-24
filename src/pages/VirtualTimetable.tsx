@@ -213,11 +213,9 @@ export default function VirtualTimetable() {
       setLoading(true);
       setErr(null);
       const tt = await getTeacherTimetable();
-      // teacher endpoint peut ne pas exposer version, on garde celle du planning officiel
       setOfficialSessions(normalizeSessions(tt.sessions));
       setVirtualBase(normalizeSessions(tt.virtual?.sessionsBase ?? tt.sessions));
       setVirtualExtra(normalizeSessions(tt.virtual?.sessionsExtra ?? []));
-      // pendingRequests peut être présent
       const list = tt.pendingRequests?.length ? tt.pendingRequests : await listTeacherChanges("PENDING");
       setPending(list);
     } catch (e: any) {
@@ -231,21 +229,17 @@ export default function VirtualTimetable() {
     try {
       setLoading(true);
       setErr(null);
-
-      // Server-side virtual view is based on the draft timetable (nextTimetable.json)
       const tt = await getAdminVirtualDraft();
       const base = normalizeSessions((tt as any).sessions ?? []);
       const serverVersion = Number((tt as any).version ?? 1);
       setOfficialVersion(serverVersion);
       officialVersionRef.current = serverVersion;
       setOfficialSessions(base);
-
       const vb = normalizeSessions((tt as any).virtual?.sessionsBase ?? base);
       const ve = normalizeSessions((tt as any).virtual?.sessionsExtra ?? []);
       setVirtualBase(vb);
       setVirtualExtra(ve);
       setPending((tt as any).pendingRequests ?? (await listAdminChanges("PENDING")));
-
       const ws = String((tt as any).draft?.week_start ?? "");
       const rev = Number((tt as any).draft?.revision ?? 1);
       setDraftWeekStart(ws);
@@ -267,14 +261,13 @@ export default function VirtualTimetable() {
       return;
     }
     const ok = window.confirm(
-      `Publier le brouillon (week_start=${draftWeekStart}) ?\n\n- Backup timetable.json -> history/timetable_YYYYMMDD.json\n- nextTimetable.json -> timetable.json\n- Reset du cycle de négociation`
+      `Publier le brouillon (week_start=${draftWeekStart}) ?\n\n- Backup timetable.json -> history/timetable_YYYYMMDD.json\n- nextTimetable.json -> timetable.json\n- Reset du cycle de n\u00e9gociation`
     );
     if (!ok) return;
-
     try {
       setLoading(true);
       await publishDraftTimetable(draftWeekStart);
-      toast({ title: "Publié", description: "Le nouvel emploi du temps officiel a été publié." });
+      toast({ title: "Publi\u00e9", description: "Le nouvel emploi du temps officiel a \u00e9t\u00e9 publi\u00e9." });
       await refreshAdminVirtual();
     } catch (e: any) {
       toast({
@@ -296,7 +289,6 @@ export default function VirtualTimetable() {
     if (role === "formateur") {
       refreshTeacher();
     } else {
-      // admin: la page reste utilisable (mais moins critique)
       refreshAdminVirtual();
     }
   }, [role, refreshTeacher, refreshAdminVirtual]);
@@ -311,7 +303,6 @@ export default function VirtualTimetable() {
   }, [virtualBase]);
 
   const ghostSessions = useMemo(() => {
-    // Pour la grille, on affiche uniquement les destinations proposées + insert
     const base = virtualExtra.map((s: any) => ({
       id: `ghost:${String(s._virtualRequestId ?? s.id)}`,
       originalSessionId: String(s.id),
@@ -325,7 +316,6 @@ export default function VirtualTimetable() {
       motif: null,
       hasCollision: false,
     }));
-    // Filtrer les cartes de modifications selon les filtres actifs (formateur/groupe/salle)
     return base.filter((g: any) => {
       if (filters.formateur !== ALL && String(g.formateur) !== filters.formateur) return false;
       if (filters.salle !== ALL && String(g.salle) !== filters.salle) return false;
@@ -362,29 +352,27 @@ export default function VirtualTimetable() {
 
   const salleOptions = useMemo(() => uniqueSalleValues.filter((id) => !isVirtualRoom(id)), [uniqueSalleValues, isVirtualRoom]);
 
-  // ---- actions (formateur) ----
+  // ---- actions ----
   const updateSession = useCallback(
     async (sessionId: string, updates: Partial<Session>) => {
-      // Admin: appliquer directement au planning VIRTUEL (draft) via /api/timetable/commands?scope=draft
       if (role === "admin") {
         try {
           const commandId =
             (globalThis as any).crypto?.randomUUID?.() ?? `cmd_${Date.now()}_${Math.random().toString(16).slice(2)}`;
           const res = await sendTimetableCommand(
             {
-            commandId,
-            expectedVersion: officialVersionRef.current,
-            type: "MOVE_SESSION",
-            payload: {
-              sessionId: String(sessionId),
-              toJour: String(updates.jour),
-              toCreneau: Number(updates.creneau),
-              toSalle: String(updates.salle),
-            },
+              commandId,
+              expectedVersion: officialVersionRef.current,
+              type: "MOVE_SESSION",
+              payload: {
+                sessionId: String(sessionId),
+                toJour: String(updates.jour),
+                toCreneau: Number(updates.creneau),
+                toSalle: String(updates.salle),
+              },
             },
             "draft"
           );
-          // Update local version immediately to reduce VERSION_MISMATCH on rapid moves
           if (typeof (res as any)?.version === "number") {
             setOfficialVersion((res as any).version);
             officialVersionRef.current = (res as any).version;
@@ -402,7 +390,6 @@ export default function VirtualTimetable() {
         }
       }
 
-      // Formateur: créer une demande (avec validation conflit côté backend)
       if (role !== "formateur") return false;
       try {
         await createTeacherChange({
@@ -428,17 +415,16 @@ export default function VirtualTimetable() {
 
   const onDeleteSession = useCallback(
     async (sessionId: string) => {
-      // Admin: suppression directe (planning virtuel / draft)
       if (role === "admin") {
         try {
           const commandId =
             (globalThis as any).crypto?.randomUUID?.() ?? `cmd_${Date.now()}_${Math.random().toString(16).slice(2)}`;
           const res = await sendTimetableCommand(
             {
-            commandId,
-            expectedVersion: officialVersionRef.current,
-            type: "DELETE_SESSION",
-            payload: { sessionId: String(sessionId) },
+              commandId,
+              expectedVersion: officialVersionRef.current,
+              type: "DELETE_SESSION",
+              payload: { sessionId: String(sessionId) },
             },
             "draft"
           );
@@ -460,7 +446,6 @@ export default function VirtualTimetable() {
         }
       }
 
-      // Formateur: création d'une demande DELETE (PENDING)
       if (role !== "formateur") return { ok: false as const, error: "Action non autorisée" };
       try {
         await createTeacherChange({ type: "DELETE", sessionId });
@@ -475,16 +460,53 @@ export default function VirtualTimetable() {
     [role, toast, refreshTeacher, refreshAdminVirtual]
   );
 
+  // ---- Changer module/groupe (admin uniquement : commande directe sur le draft) ----
+  const onReassignSession = useCallback(
+    async (args: { sessionId: string; newGroupe: string; newModule: string; scope?: any }) => {
+      if (role !== "admin") return { ok: false as const, error: "Action non autorisée" };
+      try {
+        const commandId =
+          (globalThis as any).crypto?.randomUUID?.() ?? `cmd_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+        const res = await sendTimetableCommand(
+          {
+            commandId,
+            expectedVersion: officialVersionRef.current,
+            type: "CHANGE_MODULE_GROUP",
+            payload: {
+              sessionId: String(args.sessionId),
+              newGroupe: String(args.newGroupe),
+              newModule: String(args.newModule),
+            },
+          },
+          "draft"
+        );
+        if (typeof (res as any)?.version === "number") {
+          setOfficialVersion((res as any).version);
+          officialVersionRef.current = (res as any).version;
+        }
+        await refreshAdminVirtual();
+        return { ok: true as const };
+      } catch (e: any) {
+        toast({
+          variant: "destructive",
+          title: "Changement refusé",
+          description: e?.body?.message ?? e?.message ?? "Conflit ou version obsolète",
+        });
+        await refreshAdminVirtual();
+        return { ok: false as const, error: e?.body?.message ?? e?.message ?? "Erreur" };
+      }
+    },
+    [role, toast, refreshAdminVirtual]
+  );
+
   const handleAdd = useCallback(
     async (data: any) => {
       if (role === "admin") {
-        // admin: ajout direct sur le draft (planning virtuel)
         await addSession(data, "draft");
         toast({ title: "Séance ajoutée", description: "Séance ajoutée au brouillon (draft)." });
         await refreshAdminVirtual();
         return;
       }
-      // formateur: INSERT => change_requests
       await createTeacherChange({
         type: "INSERT",
         newData: {
@@ -589,6 +611,10 @@ export default function VirtualTimetable() {
               isLoading={loading}
               onDeleteSession={role === "formateur" || role === "admin" ? (id) => onDeleteSession(String(id)) : undefined}
               formatGroupLabel={formatGroupLabel}
+              catalog={role === "admin" ? (catalog ?? undefined) : undefined}
+              lockTrainer={role === "formateur"}
+              reassignSession={role === "admin" ? onReassignSession : undefined}
+              timetableScope={role === "admin" ? "draft" : "official"}
             />
           </DndProvider>
         </div>
@@ -608,7 +634,6 @@ export default function VirtualTimetable() {
         fixedTrainerId={role === "formateur" ? user?.id : undefined}
         lockTrainer={role === "formateur"}
         roomsScope={role === "admin" ? "draft" : "official"}
-        // formateur: AddSessionModal doit déjà filtrer ses modules côté UI; sinon backend refusera
         onSubmit={async (data) => {
           try {
             await handleAdd(data);
