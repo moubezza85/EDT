@@ -54,7 +54,7 @@ def validate_move(
         if target_formateur_n and _norm(s.get("formateur")) == target_formateur_n:
             return {
                 "code": "CONSTRAINT_CONFLICT",
-                "message": "Conflit\u00a0: formateur d\u00e9j\u00e0 occup\u00e9 sur ce cr\u00e9neau",
+                "message": "Conflit\u00a0: formateur déjà occupé sur ce créneau",
                 "details": {"conflictingSessionId": _sid(s), "kind": "teacher"},
             }
 
@@ -62,7 +62,7 @@ def validate_move(
         if target_groupe_n and _norm(s.get("groupe")) == target_groupe_n:
             return {
                 "code": "CONSTRAINT_CONFLICT",
-                "message": "Conflit\u00a0: groupe d\u00e9j\u00e0 occup\u00e9 sur ce cr\u00e9neau",
+                "message": "Conflit\u00a0: groupe déjà occupé sur ce créneau",
                 "details": {"conflictingSessionId": _sid(s), "kind": "group"},
             }
 
@@ -70,7 +70,7 @@ def validate_move(
         if _norm(s.get("salle")) == to_salle_n:
             return {
                 "code": "CONSTRAINT_CONFLICT",
-                "message": "Conflit\u00a0: salle d\u00e9j\u00e0 occup\u00e9e sur ce cr\u00e9neau",
+                "message": "Conflit\u00a0: salle déjà occupée sur ce créneau",
                 "details": {"conflictingSessionId": _sid(s), "kind": "room"},
             }
 
@@ -139,7 +139,7 @@ def validate_insert(
     sid = new_session.get("id") or new_session.get("sessionId")
     if sid:
         if any(_sid(s) == str(sid) for s in sessions):
-            return {"code": "CONSTRAINT_CONFLICT", "message": "Conflit\u00a0: id de s\u00e9ance d\u00e9j\u00e0 utilis\u00e9"}
+            return {"code": "CONSTRAINT_CONFLICT", "message": "Conflit\u00a0: id de séance déjà utilisé"}
 
     to_jour_n = _norm(new_session.get("jour", ""))
     to_creneau_n = int(new_session.get("creneau"))
@@ -157,7 +157,7 @@ def validate_insert(
         if formateur_n and _norm(s.get("formateur", "")) == formateur_n:
             return {
                 "code": "CONSTRAINT_CONFLICT",
-                "message": "Conflit\u00a0: formateur d\u00e9j\u00e0 occup\u00e9 sur ce cr\u00e9neau",
+                "message": "Conflit\u00a0: formateur déjà occupé sur ce créneau",
                 "details": {"conflictingSessionId": _sid(s)},
             }
 
@@ -165,7 +165,7 @@ def validate_insert(
         if groupe_n and _norm(s.get("groupe", "")) == groupe_n:
             return {
                 "code": "CONSTRAINT_CONFLICT",
-                "message": "Conflit\u00a0: groupe d\u00e9j\u00e0 occup\u00e9 sur ce cr\u00e9neau",
+                "message": "Conflit\u00a0: groupe déjà occupé sur ce créneau",
                 "details": {"conflictingSessionId": _sid(s)},
             }
 
@@ -173,7 +173,7 @@ def validate_insert(
         if _norm(s.get("salle", "")) == to_salle_n:
             return {
                 "code": "CONSTRAINT_CONFLICT",
-                "message": "Conflit\u00a0: salle d\u00e9j\u00e0 occup\u00e9e sur ce cr\u00e9neau",
+                "message": "Conflit\u00a0: salle déjà occupée sur ce créneau",
                 "details": {"conflictingSessionId": _sid(s)},
             }
 
@@ -223,7 +223,7 @@ def validate_reassign(
         if groupe_n and _norm(s.get("groupe")) == groupe_n:
             return {
                 "code": "CONSTRAINT_CONFLICT",
-                "message": "Conflit\u00a0: groupe d\u00e9j\u00e0 occup\u00e9 sur ce cr\u00e9neau",
+                "message": "Conflit\u00a0: groupe déjà occupé sur ce créneau",
                 "details": {"conflictingSessionId": _sid(s), "kind": "group"},
             }
     return None
@@ -247,3 +247,8 @@ def apply_reassign(
         else:
             out.append(s)
     return out
+
+
+# Aliases — noms utilisés dans requests_routes.py
+validate_change_module_group = validate_reassign
+apply_change_module_group = apply_reassign
