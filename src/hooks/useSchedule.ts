@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Session, Cell, Filter } from "../types";
 import { getTimetable } from "../api/scheduleApi";
 import { sendTimetableCommand } from "../api/commandsApi";
+import type { TimetableScope } from "../api/commandsApi";
 import { getAvailableRooms } from "../api/roomsApi";
 
 type TimetableDTO = {
@@ -43,6 +44,17 @@ function applyMoveLocal(
 
 function applyDeleteLocal(sessions: Session[], sessionId: string): Session[] {
   return sessions.filter((s) => s.id !== sessionId);
+}
+
+function applyReassignLocal(
+  sessions: Session[],
+  sessionId: string,
+  newGroupe: string,
+  newModule: string
+): Session[] {
+  return sessions.map((s) =>
+    s.id === sessionId ? { ...s, groupe: newGroupe, module: newModule } : s
+  );
 }
 
 function newCommandId(): string {
@@ -245,6 +257,53 @@ export const useSchedule = (opts: UseScheduleOptions = {}) => {
     [sessions, version, fetchData]
   );
 
+  const reassignSession = useCallback(
+    async (args: {
+      sessionId: string;
+      newGroupe: string;
+      newModule: string;
+      scope?: TimetableScope;
+    }) => {
+      const prevSessions = sessions;
+      const prevVersion = version;
+
+      setSessions(
+        applyReassignLocal(prevSessions, args.sessionId, args.newGroupe, args.newModule)
+      );
+
+      try {
+        const res = await sendTimetableCommand(
+          {
+            commandId: newCommandId(),
+            expectedVersion: prevVersion,
+            type: "CHANGE_MODULE_GROUP",
+            payload: {
+              sessionId: args.sessionId,
+              newGroupe: args.newGroupe,
+              newModule: args.newModule,
+            },
+          },
+          args.scope ?? "official"
+        );
+
+        setSessions(res.sessions);
+        setVersion(res.version);
+        return { ok: true as const };
+      } catch (e: any) {
+        setSessions(prevSessions);
+        const body = e?.body as any;
+        if (body?.code === "VERSION_MISMATCH") {
+          await fetchData();
+        }
+        return {
+          ok: false as const,
+          error: body?.message ?? e?.message ?? "Erreur",
+        };
+      }
+    },
+    [sessions, version, fetchData]
+  );
+
   const updateSession = useCallback(
     async (sessionId: string, updates: Partial<Session>) => {
       const hasMove =
@@ -315,6 +374,7 @@ export const useSchedule = (opts: UseScheduleOptions = {}) => {
     updateSession,
     moveSessionDnD,
     deleteSession,
+    reassignSession,
     requestMoveWithRoomCheck,
 
     hasConflict,
