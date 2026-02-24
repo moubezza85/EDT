@@ -9,8 +9,8 @@ from typing import Any, Dict, List, Tuple
 
 from services.timetable_repo import TimetableRepo
 from services.timetable_rules import validate_move, apply_move, validate_delete, apply_delete
-from services.auth import find_user, ensure_password_hashes, verify_login, update_last_login, change_password, update_phone, update_email
-from services.jwt_auth import decode_jwt, make_access_token
+from services.auth import find_user, ensure_password_hashes
+from services.jwt_auth import decode_jwt
 from services.rbac import require_roles, require_authenticated
 
 app = Flask(__name__)
@@ -73,88 +73,6 @@ def _load_current_user():
 
     g.user = {}
     return None
-
-
-@app.get("/api/auth/me")
-@require_authenticated
-def auth_me():
-    u = g.user or {}
-    return jsonify({"ok": True, "user": {
-        "id": u.get("id"),
-        "name": u.get("name"),
-        "role": u.get("role"),
-        "modules": u.get("modules", []),
-        "phone": u.get("phone", ""),
-        "email": u.get("email", ""),
-    }})
-
-
-@app.post("/api/auth/login")
-def auth_login():
-    """Login and get a JWT."""
-    body = request.get_json(silent=True) or {}
-    username = str(body.get("username") or body.get("login") or body.get("id") or "").strip()
-    password = str(body.get("password") or "").strip()
-
-    if not username or not password:
-        return jsonify({"ok": False, "code": "BAD_REQUEST", "message": "username/password requis"}), 400
-
-    u = verify_login(DATA_DIR, username, password)
-    if not u:
-        return jsonify({"ok": False, "code": "UNAUTHORIZED", "message": "Utilisateur introuvable"}), 401
-
-    try:
-        update_last_login(DATA_DIR, u.get("id"))
-    except Exception:
-        pass
-
-    token = make_access_token(u)
-    return jsonify({"ok": True, "token": token, "user": {"id": u.get("id"), "name": u.get("name"), "role": u.get("role"), "modules": u.get("modules", [])}})
-
-
-@app.post("/api/auth/change-password")
-@require_authenticated
-def auth_change_password():
-    body = request.get_json(silent=True) or {}
-    old_pw = str(body.get("oldPassword") or body.get("old_password") or "").strip()
-    new_pw = str(body.get("newPassword") or body.get("new_password") or "").strip()
-    confirm = str(body.get("confirmPassword") or body.get("confirm_password") or "").strip()
-
-    if not old_pw or not new_pw or not confirm:
-        return jsonify({"ok": False, "code": "BAD_REQUEST", "message": "Champs requis"}), 400
-    if new_pw != confirm:
-        return jsonify({"ok": False, "code": "BAD_REQUEST", "message": "Confirmation diff\u00e9rente"}), 400
-
-    uid = str((g.user or {}).get("id") or "").strip()
-    ok, msg = change_password(DATA_DIR, uid, old_pw, new_pw)
-    if not ok:
-        return jsonify({"ok": False, "code": "UNAUTHORIZED", "message": msg}), 401
-
-    return jsonify({"ok": True})
-
-
-@app.post("/api/auth/update-phone")
-@require_authenticated
-def auth_update_phone():
-    body = request.get_json(silent=True) or {}
-    phone = str(body.get("phone") or "").strip()
-    uid = str((g.user or {}).get("id") or "").strip()
-    ok, msg = update_phone(DATA_DIR, uid, phone)
-    if not ok:
-        return jsonify({"ok": False, "code": "BAD_REQUEST", "message": msg}), 400
-    return jsonify({"ok": True})
-
-
-@app.post("/api/auth/update-email")
-@require_authenticated
-def auth_update_email():
-    body = request.get_json(silent=True) or {}
-    email = str(body.get("email") or "").strip()
-    uid = str((g.user or {}).get("id") or "").strip()
-    ok, msg = update_email(DATA_DIR, uid, email)
-    if not ok:
-        return jsonify({"ok": False, "code": "BAD_REQUEST", "message": msg}), 400
-    return jsonify({"ok": True})
 
 
 # Idempotence basique en mémoire
@@ -273,7 +191,7 @@ def move_session():
     to_salle = payload.get("toSalle")
 
     if not session_id or not to_jour or to_creneau is None or not to_salle:
-        return bad_request("Param\u00e8tres manquants")
+        return bad_request("Paramètres manquants")
 
     def do_update(current):
         sessions = current.get("sessions", [])
@@ -332,7 +250,7 @@ def timetable_commands():
     payload = body.get("payload") or {}
 
     if not command_id or expected_version is None or not cmd_type:
-        return bad_request("Param\u00e8tres manquants")
+        return bad_request("Paramètres manquants")
 
     seen_key = f"{scope}:{command_id}"
     if seen_key in _seen_commands:
@@ -344,7 +262,7 @@ def timetable_commands():
             return (False, current, {
                 "ok": False,
                 "code": "VERSION_MISMATCH",
-                "message": "L'emploi du temps a chang\u00e9. Rechargez.",
+                "message": "L'emploi du temps a changé. Rechargez.",
                 "serverVersion": current["version"]
             })
 
@@ -419,7 +337,7 @@ def rooms_available():
         from services.rbac import current_user
         role = str((current_user() or {}).get("role", "")).strip().lower()
         if role != "admin":
-            return jsonify({"ok": False, "code": "FORBIDDEN", "message": "scope=draft r\u00e9serv\u00e9 \u00e0 l'admin"}), 403
+            return jsonify({"ok": False, "code": "FORBIDDEN", "message": "scope=draft réservé à l'admin"}), 403
 
     cfg = load_json("config.json")
     salles_cfg = cfg.get("salles", [])
@@ -514,11 +432,11 @@ def add_session():
         sc = int(s.get("creneau", 0) or 0)
         if sj == jour and sc == creneau:
             if str(s.get("salle", "")).strip() == salle:
-                return conflict("Conflit: salle d\u00e9j\u00e0 occup\u00e9e sur ce cr\u00e9neau")
+                return conflict("Conflit: salle déjà occupée sur ce créneau")
             if str(s.get("formateur", "")).strip() == formateur:
-                return conflict("Conflit: formateur d\u00e9j\u00e0 occup\u00e9 sur ce cr\u00e9neau")
+                return conflict("Conflit: formateur déjà occupé sur ce créneau")
             if str(s.get("groupe", "")).strip() == groupe:
-                return conflict("Conflit: groupe d\u00e9j\u00e0 occup\u00e9 sur ce cr\u00e9neau")
+                return conflict("Conflit: groupe déjà occupé sur ce créneau")
 
     new_id = f"SES_{int(time.time())}_{uuid.uuid4().hex[:8]}"
     new_session = {
@@ -538,99 +456,6 @@ def add_session():
     target_repo.write(out)
 
     return jsonify({"ok": True, "version": out["version"], "session": new_session})
-
-
-# ----------------------------
-# Validation helpers (pour les routes legacy GET/PUT JSON brut)
-# ----------------------------
-def _validate_config(cfg: Dict[str, Any]) -> Tuple[bool, str]:
-    if not isinstance(cfg, dict):
-        return False, "config doit \u00eatre un objet JSON."
-    if "jours" in cfg and not _is_list_of_str(cfg["jours"]):
-        return False, "config.jours doit \u00eatre une liste de cha\u00eenes."
-    if "creneaux" in cfg and not _is_list_of_int(cfg["creneaux"]):
-        return False, "config.creneaux doit \u00eatre une liste d'entiers."
-    if "salles" in cfg and not _is_list_of_str(cfg["salles"]):
-        return False, "config.salles doit \u00eatre une liste de cha\u00eenes."
-    return True, ""
-
-
-def _validate_catalog(cat: Dict[str, Any]) -> Tuple[bool, str]:
-    if not isinstance(cat, dict):
-        return False, "catalog doit \u00eatre un objet JSON."
-    for key in ["trainers", "groups", "modules", "assignments"]:
-        if key in cat and not isinstance(cat[key], list):
-            return False, f"catalog.{key} doit \u00eatre une liste."
-    return True, ""
-
-
-def _validate_indispo(ind: Any) -> Tuple[bool, str]:
-    if not isinstance(ind, dict):
-        return False, "indispo doit \u00eatre un objet JSON (dictionnaire)."
-    return True, ""
-
-
-def _validate_constraints(cst: Any) -> Tuple[bool, str]:
-    if not isinstance(cst, dict):
-        return False, "constraints doit \u00eatre un objet JSON (dictionnaire)."
-    return True, ""
-
-
-# ----------------------------
-# ADMIN JSON CRUD legacy (GET/PUT fichier entier)
-# Note : admin_bp (admin_routes.py) fournit les routes granulaires CRUD.
-# Ces routes-ci sont conservées pour compatibilité avec l'ancien front.
-# ----------------------------
-@app.route("/api/admin/config", methods=["GET", "PUT"])
-@require_roles("admin")
-def admin_config():
-    if request.method == "GET":
-        return jsonify(load_json("config.json"))
-    payload = request.get_json(force=True)
-    ok, msg = _validate_config(payload)
-    if not ok:
-        return bad_request(msg, code="VALIDATION_ERROR")
-    save_json_atomic("config.json", payload)
-    return jsonify({"ok": True})
-
-
-@app.route("/api/admin/catalog", methods=["GET", "PUT"])
-@require_roles("admin")
-def admin_catalog():
-    if request.method == "GET":
-        return jsonify(load_json("catalog.json"))
-    payload = request.get_json(force=True)
-    ok, msg = _validate_catalog(payload)
-    if not ok:
-        return bad_request(msg, code="VALIDATION_ERROR")
-    save_json_atomic("catalog.json", payload)
-    return jsonify({"ok": True})
-
-
-@app.route("/api/admin/indispo", methods=["GET", "PUT"])
-@require_roles("admin")
-def admin_indispo():
-    if request.method == "GET":
-        return jsonify(load_json("indispo.json"))
-    payload = request.get_json(force=True)
-    ok, msg = _validate_indispo(payload)
-    if not ok:
-        return bad_request(msg, code="VALIDATION_ERROR")
-    save_json_atomic("indispo.json", payload)
-    return jsonify({"ok": True})
-
-
-@app.route("/api/admin/constraints", methods=["GET", "PUT"])
-@require_roles("admin")
-def admin_constraints():
-    if request.method == "GET":
-        return jsonify(load_json("constraints.json"))
-    payload = request.get_json(force=True)
-    ok, msg = _validate_constraints(payload)
-    if not ok:
-        return bad_request(msg, code="VALIDATION_ERROR")
-    save_json_atomic("constraints.json", payload)
-    return jsonify({"ok": True})
 
 
 # ----------------------------
@@ -741,7 +566,7 @@ def generate_run():
 
         return jsonify({
             "ok": True,
-            "message": "G\u00e9n\u00e9ration termin\u00e9e et appliqu\u00e9e (timetable.json mis \u00e0 jour).",
+            "message": "Génération terminée et appliquée (timetable.json mis à jour).",
             "warnings": warnings,
             "version": data_or_current["version"],
             "sessions": data_or_current["sessions"],
@@ -749,11 +574,19 @@ def generate_run():
 
     return jsonify({
         "ok": True,
-        "message": "G\u00e9n\u00e9ration termin\u00e9e (non appliqu\u00e9e).",
+        "message": "Génération terminée (non appliquée).",
         "warnings": warnings,
         "sessions": sessions,
     })
 
+
+# ----------------------------
+# Enregistrement blueprints
+# ----------------------------
+
+from routes.auth_routes import create_auth_blueprint
+auth_bp = create_auth_blueprint(DATA_DIR)
+app.register_blueprint(auth_bp)
 
 from routes.reports_routes import reports_bp
 app.register_blueprint(reports_bp)

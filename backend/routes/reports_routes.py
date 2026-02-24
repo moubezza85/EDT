@@ -9,7 +9,7 @@ from flask import Blueprint, send_file, abort
 
 from services.rbac import require_roles, current_user
 
-from services.timetable_service import (
+from services.print_service import (
     build_print_model,
     list_all_trainers,
     list_all_groupes,
