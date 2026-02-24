@@ -286,20 +286,32 @@ export default function AddSessionModal({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, defaults, trainerOptions, fixedTrainerId]);
 
-  // Trainer -> auto first group
+  // Trainer -> auto first group (SEULEMENT si la valeur actuelle n'est plus valide)
   useEffect(() => {
     if (!open) return;
+    
+    // Si groupId est déjà valide dans groupOptions, ne rien faire
+    const currentIsValid = groupId && groupOptions.some((g) => g.value === groupId);
+    if (currentIsValid) return;
+    
+    // Sinon, sélectionner le premier groupe disponible
     const firstGroup = groupOptions[0]?.value ?? "";
     setGroupId(firstGroup);
     setModuleId("");
-  }, [trainerId, groupOptions, open]);
+  }, [trainerId, groupOptions, open, groupId]);
 
-  // Group -> auto first module
+  // Group -> auto first module (SEULEMENT si la valeur actuelle n'est plus valide)
   useEffect(() => {
     if (!open) return;
+    
+    // Si moduleId est déjà valide dans moduleOptions, ne rien faire
+    const currentIsValid = moduleId && moduleOptions.some((m) => m.value === moduleId);
+    if (currentIsValid) return;
+    
+    // Sinon, sélectionner le premier module disponible
     const firstModule = moduleOptions[0]?.value ?? "";
     setModuleId(firstModule);
-  }, [groupId, moduleOptions, open]);
+  }, [groupId, moduleOptions, open, moduleId]);
 
   if (!open) return null;
 
