@@ -189,3 +189,61 @@ def apply_insert(
     ns["jour"] = _norm(ns.get("jour", ""))   # normalise à l'écriture
     ns["creneau"] = int(ns.get("creneau"))
     return [*sessions, ns]
+
+
+def validate_reassign(
+    sessions: List[Dict[str, Any]],
+    session_id: str,
+    new_groupe: str,
+    new_module: str,
+) -> Optional[Dict[str, Any]]:
+    """Vérifie qu'un changement groupe/module ne crée pas de conflit.
+
+    Formateur, jour, créneau et salle restent inchangés.
+    On vérifie uniquement que le nouveau groupe n'est pas déjà
+    occupé sur le même créneau par une autre séance.
+    """
+    target = next((s for s in sessions if _sid(s) == session_id), None)
+    if not target:
+        return {"code": "NOT_FOUND", "message": "Session introuvable"}
+    if not new_groupe or not new_module:
+        return {"code": "BAD_REQUEST", "message": "groupe et module requis"}
+
+    jour_n = _norm(target.get("jour"))
+    creneau_n = int(target.get("creneau", 0) or 0)
+    groupe_n = _norm(new_groupe)
+
+    for s in sessions:
+        if _sid(s) == session_id:
+            continue
+        if _norm(s.get("jour")) != jour_n:
+            continue
+        if int(s.get("creneau", 0) or 0) != creneau_n:
+            continue
+        if groupe_n and _norm(s.get("groupe")) == groupe_n:
+            return {
+                "code": "CONSTRAINT_CONFLICT",
+                "message": "Conflit\u00a0: groupe d\u00e9j\u00e0 occup\u00e9 sur ce cr\u00e9neau",
+                "details": {"conflictingSessionId": _sid(s), "kind": "group"},
+            }
+    return None
+
+
+def apply_reassign(
+    sessions: List[Dict[str, Any]],
+    session_id: str,
+    new_groupe: str,
+    new_module: str,
+) -> List[Dict[str, Any]]:
+    out = []
+    for s in sessions:
+        if _sid(s) == session_id:
+            ns = dict(s)
+            ns["groupe"] = str(new_groupe or "").strip()
+            ns["module"] = str(new_module or "").strip()
+            if "id" not in ns and ns.get("sessionId"):
+                ns["id"] = ns["sessionId"]
+            out.append(ns)
+        else:
+            out.append(s)
+    return out

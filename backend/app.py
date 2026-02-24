@@ -8,7 +8,11 @@ import tempfile
 from typing import Any, Dict, List, Tuple
 
 from services.timetable_repo import TimetableRepo
-from services.timetable_rules import validate_move, apply_move, validate_delete, apply_delete
+from services.timetable_rules import (
+    validate_move, apply_move,
+    validate_delete, apply_delete,
+    validate_reassign, apply_reassign,
+)
 from services.auth import find_user, ensure_password_hashes
 from services.jwt_auth import decode_jwt
 from services.rbac import require_roles, require_authenticated
@@ -300,6 +304,28 @@ def timetable_commands():
                 return (False, current, err)
 
             new_sessions = apply_delete(sessions, session_id)
+            new_data = {"version": int(current["version"]) + 1, "sessions": new_sessions}
+            target_repo.write(new_data)
+            return (True, new_data, {})
+
+        if cmd_type == "CHANGE_MODULE_GROUP":
+            session_id = payload.get("sessionId")
+            new_groupe = payload.get("newGroupe")
+            new_module = payload.get("newModule")
+
+            if not session_id or not new_groupe or not new_module:
+                return (False, current, {
+                    "ok": False, "code": "BAD_REQUEST",
+                    "message": "Payload incomplet"
+                })
+
+            err = validate_reassign(sessions, session_id, new_groupe, new_module)
+            if err:
+                err["ok"] = False
+                err["version"] = current["version"]
+                return (False, current, err)
+
+            new_sessions = apply_reassign(sessions, session_id, new_groupe, new_module)
             new_data = {"version": int(current["version"]) + 1, "sessions": new_sessions}
             target_repo.write(new_data)
             return (True, new_data, {})
