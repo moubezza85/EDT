@@ -5,11 +5,14 @@ import { useDrop } from "react-dnd";
 import { useToast } from "@/components/ui/use-toast";
 import SessionCard from "./SessionCard";
 import RoomSelector from "./RoomSelector";
+import ChangeModuleModal from "./ChangeModuleModal";
 import { Session, Cell } from "@/types";
 import { cn } from "@/lib/utils";
 import { getAvailableRooms } from "@/api/roomsApi";
 import type { RoomsScope } from "@/api/roomsApi";
 import { isOnlineSession } from "@/api/timetableApi";
+import type { Catalog } from "@/api/catalogApi";
+import type { TimetableScope } from "@/api/commandsApi";
 
 type GhostSession = {
   id: string; // ghost id
@@ -26,22 +29,31 @@ type GhostSession = {
 };
 
 type DeleteResult = { ok: true; error?: undefined } | { ok: false; error: any };
+type ReassignResult = { ok: true } | { ok: false; error: string };
 
 interface VirtualScheduleGridProps {
-  sessions: Session[]; // sessions réelles (draggables)
-  ghostSessions: GhostSession[]; // propositions (non-draggables)
-  movedSessionIds: Set<string>; // sessions ayant une proposition => affichées en "source moved-away"
+  sessions: Session[];
+  ghostSessions: GhostSession[];
+  movedSessionIds: Set<string>;
   hasConflict: (session: Session, targetCell: Cell) => Session | null;
   updateSession: (sessionId: string, updates: Partial<Session>) => Promise<boolean>;
   rooms: string[];
   roomsScope?: RoomsScope;
   isLoading?: boolean;
   slotHours?: number;
-
-  // IMPORTANT: deleteSession de useSchedule retourne {ok:boolean,...}
   onDeleteSession?: (sessionId: string) => Promise<DeleteResult>;
-
   formatGroupLabel?: (groupeId: string) => string;
+
+  // Nouvelles props pour changer module/groupe
+  catalog?: Catalog;
+  lockTrainer?: boolean;
+  reassignSession?: (args: {
+    sessionId: string;
+    newGroupe: string;
+    newModule: string;
+    scope?: TimetableScope;
+  }) => Promise<ReassignResult>;
+  timetableScope?: TimetableScope;
 }
 
 export default function VirtualScheduleGrid({
@@ -56,15 +68,23 @@ export default function VirtualScheduleGrid({
   onDeleteSession,
   slotHours = 2.5,
   formatGroupLabel,
+  catalog,
+  lockTrainer = false,
+  reassignSession,
+  timetableScope = "official",
 }: VirtualScheduleGridProps) {
   const { toast } = useToast();
 
+  // Room selector state
   const [roomSelectorOpen, setRoomSelectorOpen] = useState(false);
   const [availableRooms, setAvailableRooms] = useState<string[]>(rooms);
-
   const [draggedSession, setDraggedSession] = useState<Session | null>(null);
   const [targetCell, setTargetCell] = useState<Cell | null>(null);
   const [conflictSession, setConflictSession] = useState<Session | null>(null);
+
+  // Change module modal state
+  const [changeModuleModalOpen, setChangeModuleModalOpen] = useState(false);
+  const [changeModuleSession, setChangeModuleSession] = useState<Session | null>(null);
 
   const days = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
   const timeSlots = [
@@ -101,8 +121,12 @@ export default function VirtualScheduleGrid({
     return map;
   }, [ghostSessions]);
 
-  // Cell = { day, slot } (selon votre useSchedule/hasConflict)
-  const openRoomSelector = (opts: { session: Session; dest: Cell; freeRooms: string[]; conflict?: Session | null }) => {
+  const openRoomSelector = (opts: {
+    session: Session;
+    dest: Cell;
+    freeRooms: string[];
+    conflict?: Session | null;
+  }) => {
     setDraggedSession(opts.session);
     setTargetCell(opts.dest);
     setConflictSession(opts.conflict ?? null);
@@ -111,72 +135,65 @@ export default function VirtualScheduleGrid({
   };
 
   const handleDrop = async (session: Session, toDay: string, toSlot: number) => {
-  if (isLoading) return;
+    if (isLoading) return;
+    if (isOnlineSession(session)) return;
 
-  // Séance en ligne => pas de déplacement
-  if (isOnlineSession(session)) return;
+    const conflict = hasConflict(session, { day: toDay, slot: toSlot });
+    if (conflict) {
+      const sameTeacher = conflict.formateur === session.formateur;
+      const sameGroup = conflict.groupe === session.groupe;
 
-  // Pré-check: conflit formateur/groupe AVANT de proposer une salle.
-  const conflict = hasConflict(session, { day: toDay, slot: toSlot });
-  if (conflict) {
-    const sameTeacher = conflict.formateur === session.formateur;
-    const sameGroup = conflict.groupe === session.groupe;
-
-    if (sameTeacher || sameGroup) {
-      toast({
-        title: "Conflit de déplacement",
-        description: sameTeacher
-          ? "Le formateur est déjà occupé sur ce créneau."
-          : "Le groupe est déjà occupé sur ce créneau.",
-        variant: "destructive",
-      });
-      return;
-    }
-    // Sinon: conflit de salle possible uniquement => on continue.
-  }
-
-  try {
-    // On ne consulte les salles libres qu'après avoir éliminé les conflits formateur/groupe.
-    const api = await getAvailableRooms(toDay, toSlot, roomsScope);
-    const freeRooms = api.availableRooms ?? [];
-
-    if (freeRooms.length === 0) {
-      toast({
-        title: "Aucune salle disponible",
-        description: "Aucune salle n’est disponible sur ce créneau.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Si la salle actuelle est libre ET pas de conflit => move direct
-    if (freeRooms.includes(session.salle) && !conflict) {
-      const ok = await updateSession(session.id, { jour: toDay, creneau: toSlot, salle: session.salle });
-      if (!ok) {
+      if (sameTeacher || sameGroup) {
         toast({
-          title: "Déplacement refusé",
-          description: "Le backend a refusé ce déplacement.",
+          title: "Conflit de déplacement",
+          description: sameTeacher
+            ? "Le formateur est déjà occupé sur ce créneau."
+            : "Le groupe est déjà occupé sur ce créneau.",
           variant: "destructive",
         });
+        return;
       }
-      return;
     }
 
-    // Sinon, on propose un choix de salle (conflit salle)
-    openRoomSelector({ session, dest: { day: toDay, slot: toSlot }, freeRooms, conflict });
-  } catch (e: any) {
-    toast({
-      title: "Erreur",
-      description: e?.message ?? "Erreur lors de la récupération des salles",
-      variant: "destructive",
-    });
-  }
-};
+    try {
+      const api = await getAvailableRooms(toDay, toSlot, roomsScope);
+      const freeRooms = api.availableRooms ?? [];
 
+      if (freeRooms.length === 0) {
+        toast({
+          title: "Aucune salle disponible",
+          description: "Aucune salle n'est disponible sur ce créneau.",
+          variant: "destructive",
+        });
+        return;
+      }
 
-  // IMPORTANT:
-  // Ne pas utiliser useDrop() directement dans un map/loop (hooks rules).
-  // On encapsule la logique de drop dans un composant dédié.
+      if (freeRooms.includes(session.salle) && !conflict) {
+        const ok = await updateSession(session.id, {
+          jour: toDay,
+          creneau: toSlot,
+          salle: session.salle,
+        });
+        if (!ok) {
+          toast({
+            title: "Déplacement refusé",
+            description: "Le backend a refusé ce déplacement.",
+            variant: "destructive",
+          });
+        }
+        return;
+      }
+
+      openRoomSelector({ session, dest: { day: toDay, slot: toSlot }, freeRooms, conflict });
+    } catch (e: any) {
+      toast({
+        title: "Erreur",
+        description: e?.message ?? "Erreur lors de la récupération des salles",
+        variant: "destructive",
+      });
+    }
+  };
+
   const DropCell = ({
     day,
     slotId,
@@ -215,14 +232,11 @@ export default function VirtualScheduleGrid({
 
   const handleRoomSelect = async (roomId: string) => {
     if (!draggedSession || !targetCell) return;
-
-    // FIX: mapper Cell(day/slot) -> Session(jour/creneau)
     const ok = await updateSession(draggedSession.id, {
       jour: targetCell.day,
       creneau: targetCell.slot,
       salle: roomId,
     });
-
     if (!ok) {
       toast({
         title: "Déplacement refusé",
@@ -235,7 +249,6 @@ export default function VirtualScheduleGrid({
 
   const handleDelete = async (sessionId: string) => {
     if (!onDeleteSession) return;
-
     const res = await onDeleteSession(sessionId);
     if (!res.ok) {
       toast({
@@ -249,22 +262,22 @@ export default function VirtualScheduleGrid({
   const handleChangeRoomClick = async (session: Session) => {
     if (isLoading) return;
     if (isOnlineSession(session)) return;
-
     try {
       const api = await getAvailableRooms(session.jour, session.creneau, roomsScope);
       const freeRooms = api.availableRooms ?? [];
-
       if (freeRooms.length === 0) {
         toast({
           title: "Aucune salle disponible",
-          description: "Aucune salle n’est disponible sur ce créneau.",
+          description: "Aucune salle n'est disponible sur ce créneau.",
           variant: "destructive",
         });
         return;
       }
-
-      // FIX: dest = {day, slot}
-      openRoomSelector({ session, dest: { day: session.jour, slot: session.creneau }, freeRooms });
+      openRoomSelector({
+        session,
+        dest: { day: session.jour, slot: session.creneau },
+        freeRooms,
+      });
     } catch (e: any) {
       toast({
         title: "Erreur",
@@ -272,6 +285,29 @@ export default function VirtualScheduleGrid({
         variant: "destructive",
       });
     }
+  };
+
+  const handleChangeModuleClick = (session: Session) => {
+    if (isLoading) return;
+    setChangeModuleSession(session);
+    setChangeModuleModalOpen(true);
+  };
+
+  const handleChangeModuleSubmit = async (newGroupe: string, newModule: string) => {
+    if (!changeModuleSession || !reassignSession) return;
+    const res = await reassignSession({
+      sessionId: changeModuleSession.id,
+      newGroupe,
+      newModule,
+      scope: timetableScope,
+    });
+    if (!res.ok) {
+      throw new Error((res as any).error ?? "Erreur lors du changement");
+    }
+    toast({
+      title: "Séance modifiée",
+      description: "Module / groupe mis à jour avec succès.",
+    });
   };
 
   return (
@@ -321,6 +357,11 @@ export default function VirtualScheduleGrid({
                               groupLabel={formatGroupLabel ? formatGroupLabel(s.groupe) : undefined}
                               isCompact={cellSessions.length > 1}
                               onChangeRoom={!online ? handleChangeRoomClick : undefined}
+                              onChangeModule={
+                                catalog && reassignSession
+                                  ? handleChangeModuleClick
+                                  : undefined
+                              }
                               onDelete={onDeleteSession ? handleDelete : undefined}
                             />
                           </div>
@@ -376,6 +417,17 @@ export default function VirtualScheduleGrid({
         rooms={availableRooms}
         onRoomSelect={handleRoomSelect}
       />
+
+      {catalog && (
+        <ChangeModuleModal
+          open={changeModuleModalOpen}
+          onClose={() => setChangeModuleModalOpen(false)}
+          session={changeModuleSession}
+          catalog={catalog}
+          lockTrainer={lockTrainer}
+          onSubmit={handleChangeModuleSubmit}
+        />
+      )}
     </div>
   );
 }

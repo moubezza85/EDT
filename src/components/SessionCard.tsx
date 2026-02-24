@@ -2,7 +2,7 @@ import { useDrag } from "react-dnd";
 import { Session } from "../types";
 import { cn } from "@/lib/utils";
 
-import { Shuffle, Trash2, Video, X } from "lucide-react";
+import { BookOpen, Shuffle, Trash2, Video, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -24,10 +24,19 @@ interface SessionCardProps {
   isCompact?: boolean;
   onDelete?: (sessionId: string) => void;
   onChangeRoom?: (session: Session) => void; // (présentiel uniquement)
+  onChangeModule?: (session: Session) => void; // changer groupe/module
   draggable?: boolean;
 }
 
-const SessionCard = ({ session, groupLabel, isCompact = false, onDelete, onChangeRoom, draggable = true }: SessionCardProps) => {
+const SessionCard = ({
+  session,
+  groupLabel,
+  isCompact = false,
+  onDelete,
+  onChangeRoom,
+  onChangeModule,
+  draggable = true,
+}: SessionCardProps) => {
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: "SESSION",
@@ -63,7 +72,7 @@ const SessionCard = ({ session, groupLabel, isCompact = false, onDelete, onChang
     return colors[Math.abs(hash) % colors.length];
   };
 
-  // style “en ligne” distinct
+  // style "en ligne" distinct
   const onlineClass = "bg-sky-50 border-sky-300 ring-1 ring-sky-200";
   const colorClass = online ? onlineClass : generateColor(session.module);
 
@@ -97,7 +106,7 @@ const SessionCard = ({ session, groupLabel, isCompact = false, onDelete, onChang
           )}
         </div>
 
-        {(onChangeRoom || onDelete || online) && (
+        {(onChangeRoom || onChangeModule || onDelete || online) && (
           <div className="flex flex-col items-center gap-1 shrink-0">
             {/* Si en ligne: icône informative (sans action) */}
             {online ? (
@@ -106,7 +115,7 @@ const SessionCard = ({ session, groupLabel, isCompact = false, onDelete, onChang
                 size="icon"
                 className="shrink-0 cursor-default"
                 title="Séance en ligne"
-                onMouseDown={(e) => e.stopPropagation()} // évite de “démarrer” un drag depuis le bouton
+                onMouseDown={(e) => e.stopPropagation()}
                 onClick={(e) => e.stopPropagation()}
                 disabled
               >
@@ -120,9 +129,7 @@ const SessionCard = ({ session, groupLabel, isCompact = false, onDelete, onChang
                   size="icon"
                   className="shrink-0"
                   title="Changer salle"
-                  onMouseDown={(e) => {
-                    e.stopPropagation();
-                  }}
+                  onMouseDown={(e) => e.stopPropagation()}
                   onClick={(e) => {
                     e.stopPropagation();
                     onChangeRoom(session);
@@ -133,6 +140,23 @@ const SessionCard = ({ session, groupLabel, isCompact = false, onDelete, onChang
               )
             )}
 
+            {/* Bouton changer module/groupe */}
+            {onChangeModule && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="shrink-0"
+                title="Changer module / groupe"
+                onMouseDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChangeModule(session);
+                }}
+              >
+                <BookOpen className="h-4 w-4" />
+              </Button>
+            )}
+
             {onDelete && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
@@ -141,9 +165,7 @@ const SessionCard = ({ session, groupLabel, isCompact = false, onDelete, onChang
                     size="icon"
                     className="shrink-0"
                     title="Supprimer"
-                    onMouseDown={(e) => {
-                      e.stopPropagation();
-                    }}
+                    onMouseDown={(e) => e.stopPropagation()}
                     onClick={(e) => e.stopPropagation()}
                   >
                     <Trash2 className="h-4 w-4" />

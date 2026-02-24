@@ -285,16 +285,13 @@ export const useSchedule = (opts: UseScheduleOptions = {}) => {
           },
           args.scope ?? "official"
         );
-
         setSessions(res.sessions);
         setVersion(res.version);
         return { ok: true as const };
       } catch (e: any) {
         setSessions(prevSessions);
         const body = e?.body as any;
-        if (body?.code === "VERSION_MISMATCH") {
-          await fetchData();
-        }
+        if (body?.code === "VERSION_MISMATCH") await fetchData();
         return {
           ok: false as const,
           error: body?.message ?? e?.message ?? "Erreur",
