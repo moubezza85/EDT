@@ -39,7 +39,18 @@ export type DeleteCommand = {
   };
 };
 
-export type TimetableCommand = MoveCommand | DeleteCommand;
+export type ReassignCommand = {
+  commandId: string;
+  expectedVersion: number;
+  type: "CHANGE_MODULE_GROUP";
+  payload: {
+    sessionId: string;
+    newGroupe: string;
+    newModule: string;
+  };
+};
+
+export type TimetableCommand = MoveCommand | DeleteCommand | ReassignCommand;
 
 export type TimetableScope = "official" | "draft";
 
