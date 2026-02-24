@@ -1,6 +1,8 @@
 import json
 import os
+import tempfile
 from typing import Dict, Any, List, Tuple
+
 
 class TimetableService:
     def __init__(self, data_dir: str):
@@ -15,17 +17,50 @@ class TimetableService:
         return data
 
     def _save_sessions(self, sessions: List[Dict[str, Any]]) -> None:
-        # Sauvegarde sous forme {"sessions": [...]}, stable pour l'API
-        with open(self.timetable_path, "w", encoding="utf-8") as f:
-            json.dump({"sessions": sessions}, f, ensure_ascii=False, indent=2)
+        """Sauvegarde atomique des sessions en préservant la version et les métadonnées.
+
+        Correctif : l'ancienne implémentation écrasait le champ 'version' en sauvegardant
+        uniquement {"sessions": [...]}, ce qui cassait le versionnage optimiste de l'API.
+        Maintenant on lit l'état courant, on met à jour uniquement les sessions, et on
+        écrit de manière atomique (tmp + os.replace) pour éviter la corruption.
+        """
+        # Lire la structure courante pour préserver version et métadonnées
+        try:
+            with open(self.timetable_path, "r", encoding="utf-8") as f:
+                current = json.load(f)
+            if not isinstance(current, dict):
+                current = {"version": 1}
+        except Exception:
+            current = {"version": 1}
+
+        current["sessions"] = sessions
+
+        # Écriture atomique (tmp file + os.replace)
+        fd, tmp_path = tempfile.mkstemp(
+            dir=os.path.dirname(self.timetable_path), suffix=".tmp"
+        )
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                json.dump(current, f, ensure_ascii=False, indent=2)
+            os.replace(tmp_path, self.timetable_path)
+        finally:
+            try:
+                os.remove(tmp_path)
+            except FileNotFoundError:
+                pass
 
     def _normalize_id(self, s: Dict[str, Any]) -> str:
         return s.get("id") or s.get("sessionId")
 
     def move(self, session_id: str, to_jour: str, to_creneau: int, to_salle: str) -> Tuple[bool, str, List[Dict[str, Any]]]:
+        """Déplace une séance après validation des conflits.
+
+        Note\u00a0: En production, privilégier le chemin repo.atomic_update + validate_move
+        (cf. /api/timetable/commands) qui garantit le versionnage optimiste.
+        Cette méthode est conservée pour compatibilité interne.
+        """
         sessions = self._load_sessions()
 
-        # trouver la session
         target = None
         for s in sessions:
             if self._normalize_id(s) == session_id:
@@ -34,31 +69,29 @@ class TimetableService:
         if not target:
             return False, "Session introuvable", sessions
 
-        # préparer la session déplacée (sans modifier encore)
         moved = dict(target)
-        moved["jour"] = to_jour
-        moved["creneau"] = to_creneau
-        moved["salle"] = to_salle
+        moved["jour"] = str(to_jour or "").strip().lower()  # normalise à l'écriture
+        moved["creneau"] = int(to_creneau)
+        moved["salle"] = str(to_salle or "").strip()
 
-        # validation minimale (conflits basiques) :
-        # - une salle ne peut avoir qu'une session au même (jour, créneau)
-        # - un formateur ne peut être en 2 endroits au même (jour, créneau)
-        # - un groupe ne peut être en 2 endroits au même (jour, créneau)
+        to_jour_n = str(to_jour or "").strip().lower()
+        to_salle_n = str(to_salle or "").strip().lower()
+
         for s in sessions:
             if self._normalize_id(s) == session_id:
                 continue
-            same_slot = (s.get("jour") == to_jour and int(s.get("creneau")) == int(to_creneau))
+            s_jour_n = str(s.get("jour", "") or "").strip().lower()
+            same_slot = (s_jour_n == to_jour_n and int(s.get("creneau", 0) or 0) == int(to_creneau))
             if not same_slot:
                 continue
 
-            if s.get("salle") == to_salle:
-                return False, "Conflit: la salle est déjà occupée sur ce créneau", sessions
-            if s.get("formateur") == target.get("formateur"):
-                return False, "Conflit: le formateur est déjà occupé sur ce créneau", sessions
-            if s.get("groupe") == target.get("groupe"):
-                return False, "Conflit: le groupe est déjà occupé sur ce créneau", sessions
+            if str(s.get("salle", "") or "").strip().lower() == to_salle_n:
+                return False, "Conflit\u00a0: la salle est d\u00e9j\u00e0 occup\u00e9e sur ce cr\u00e9neau", sessions
+            if str(s.get("formateur", "") or "").strip().lower() == str(target.get("formateur", "") or "").strip().lower():
+                return False, "Conflit\u00a0: le formateur est d\u00e9j\u00e0 occup\u00e9 sur ce cr\u00e9neau", sessions
+            if str(s.get("groupe", "") or "").strip().lower() == str(target.get("groupe", "") or "").strip().lower():
+                return False, "Conflit\u00a0: le groupe est d\u00e9j\u00e0 occup\u00e9 sur ce cr\u00e9neau", sessions
 
-        # appliquer le move
         for i, s in enumerate(sessions):
             if self._normalize_id(s) == session_id:
                 sessions[i] = moved
@@ -66,6 +99,7 @@ class TimetableService:
 
         self._save_sessions(sessions)
         return True, "OK", sessions
+
 
 import json
 from pathlib import Path
@@ -88,8 +122,8 @@ def get_timetable_for_formateur(formateur: str):
     return {
         "header": {
             "annee": "2025-2026",
-            "efp": "CF Meknes – ISTAG BAB TIZIMI",
-            "periode": "À partir du 19/01/2026",
+            "efp": "CF Meknes \u2013 ISTAG BAB TIZIMI",
+            "periode": "\u00c0 partir du 19/01/2026",
             "formateur": formateur,
             "matricule": sessions[0]["formateur"] if sessions else "",
             "statut": "Permanent",
@@ -201,12 +235,10 @@ def _normalize_day_key(day: str) -> str:
     return (day or "").strip().lower()
 
 def get_days_from_config(cfg: Dict[str, Any]) -> List[str]:
-    # ton config.json contient cfg.jours: ["lundi", ...]
     jours = cfg.get("jours", []) or []
     return [_normalize_day_key(j) for j in jours if str(j).strip()]
 
 def get_slots_from_config(cfg: Dict[str, Any]) -> List[int]:
-    # ton config.json contient cfg.creneaux: [1,2,3,4]
     slots = cfg.get("creneaux", []) or []
     out: List[int] = []
     for s in slots:
@@ -217,10 +249,6 @@ def get_slots_from_config(cfg: Dict[str, Any]) -> List[int]:
     return out
 
 def default_slot_labels(slots: List[int]) -> Dict[int, str]:
-    """
-    Labels utilisés dans l’UI actuelle.
-    Si tu as déjà ces labels dans config, on pourra les lire plus tard.
-    """
     mapping = {
         1: "08h30 - 11h00",
         2: "11h00 - 13h30",
@@ -232,7 +260,6 @@ def default_slot_labels(slots: List[int]) -> Dict[int, str]:
 
 # ----------------------------
 # Construction de grille (jours × créneaux)
-# Pas de conflits (1 séance max par cellule) : garanti backend
 # ----------------------------
 
 def _index_sessions_by_cell(sessions: List[Dict[str, Any]]) -> Dict[Tuple[str, int], Dict[str, Any]]:
@@ -245,7 +272,6 @@ def _index_sessions_by_cell(sessions: List[Dict[str, Any]]) -> Dict[Tuple[str, i
             continue
         if not day:
             continue
-        # S'il y avait collision, on écraserait ; mais tu as confirmé que ça n'arrive pas.
         idx[(day, slot)] = s
     return idx
 
@@ -263,10 +289,6 @@ def _count_occupied_slots(grid: Dict[str, Dict[int, Optional[Dict[str, Any]]]]) 
 # ----------------------------
 
 def filter_sessions_for_formateur(all_sessions: List[Dict[str, Any]], trainer_key: str, catalog: Dict[str, Any]) -> List[Dict[str, Any]]:
-    """
-    trainer_key peut être id ou name.
-    On accepte les deux, et on compare également des deux façons.
-    """
     ident = resolve_trainer_identity(trainer_key, catalog)
     key_norm = (trainer_key or "").strip().lower()
 
@@ -312,16 +334,10 @@ def filter_sessions_for_salle(all_sessions: List[Dict[str, Any]], salle: str) ->
 
 
 # ----------------------------
-# Format cellule selon vue (confirmé par toi)
+# Format cellule selon vue
 # ----------------------------
 
 def format_cell_text(view: str, session: Dict[str, Any], catalog: Dict[str, Any]) -> List[str]:
-    """
-    Retourne une liste de lignes (max 3) pour la cellule.
-    - Formateur: Module / Groupe / Salle
-    - Groupe: Module / Formateur / Salle
-    - Salle: Module / Groupe / Formateur
-    """
     module = str(session.get("module", "")).strip()
     groupe = str(session.get("groupe", "")).strip()
     salle = str(session.get("salle", "")).strip()
@@ -339,23 +355,14 @@ def format_cell_text(view: str, session: Dict[str, Any], catalog: Dict[str, Any]
     if view == "salle":
         return [module, groupe, formateur]
 
-    # fallback
     return [module, groupe, salle]
 
 
 # ----------------------------
-# Modèle d’impression principal
+# Modèle d'impression principal
 # ----------------------------
 
 def build_print_model(view: str, entity_key: str) -> Dict[str, Any]:
-    """
-    Construit un modèle unique (header + grid + totals) pour le renderer PDF.
-    view ∈ {"formateur", "groupe", "salle"}
-    entity_key:
-      - formateur: id ou name (on résout depuis catalog.json)
-      - groupe: string
-      - salle: string
-    """
     cfg = load_config()
     catalog = load_catalog()
     timetable = load_timetable()
@@ -395,10 +402,8 @@ def build_print_model(view: str, entity_key: str) -> Dict[str, Any]:
     else:
         raise ValueError("view must be one of: formateur, groupe, salle")
 
-    # Indexation par cellule
     idx = _index_sessions_by_cell(sessions)
 
-    # Construction grille structurée: grid[day][slot] = {lines, raw}
     grid: Dict[str, Dict[int, Optional[Dict[str, Any]]]] = {}
     for d in days:
         grid[d] = {}
@@ -415,12 +420,11 @@ def build_print_model(view: str, entity_key: str) -> Dict[str, Any]:
     occupied_slots = _count_occupied_slots(grid)
     total_hours = occupied_slots * HOURS_PER_SLOT
 
-    # Header : tu pourras enrichir avec config (EFP, année, ville, etc.)
     header = {
         "title": "EMPLOI DU TEMPS",
         "view": view_norm,
         "identity": header_identity,
-        "week_label": "Semaine courante",  # tu peux remplacer par une vraie date si tu veux
+        "week_label": "Semaine courante",
         "total_slots": occupied_slots,
         "hours_per_slot": HOURS_PER_SLOT,
         "total_hours": total_hours,
@@ -452,17 +456,11 @@ def list_all_trainers(catalog: Optional[Dict[str, Any]] = None) -> List[TrainerI
     return out
 
 def list_all_groupes(catalog: Optional[Dict[str, Any]] = None) -> List[str]:
-    """
-    Liste des groupes "réels" pour les exports globaux.
-    IMPORTANT: on ne doit pas inclure les IDs de fusion (ex: DEV101_DEV102).
-    """
     if catalog is None:
         catalog = load_catalog()
 
     groups = catalog.get("groups", []) or []
     vals = [str(g).strip() for g in groups if str(g).strip()]
-
-    # uniq + tri (vous pouvez garder l'ordre si vous préférez)
     return sorted(set(vals))
 
 
@@ -473,18 +471,15 @@ def list_all_salles(cfg: Optional[Dict[str, Any]] = None) -> List[str]:
 
     vals: List[str] = []
     for s in salles:
-        # nouveau format: {"id": "...", "type": "..."}
         if isinstance(s, dict):
             rid = str(s.get("id", "")).strip()
             if rid:
                 vals.append(rid)
         else:
-            # rétro-compat: ancien format "S20"
             rid = str(s).strip()
             if rid:
                 vals.append(rid)
 
-    # dédoublonnage stable
     seen = set()
     out = []
     for x in vals:
@@ -492,4 +487,3 @@ def list_all_salles(cfg: Optional[Dict[str, Any]] = None) -> List[str]:
             seen.add(x)
             out.append(x)
     return out
-

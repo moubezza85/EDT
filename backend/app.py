@@ -7,7 +7,6 @@ import os
 import tempfile
 from typing import Any, Dict, List, Tuple
 
-from services.timetable_service import TimetableService
 from services.timetable_repo import TimetableRepo
 from services.timetable_rules import validate_move, apply_move, validate_delete, apply_delete
 from services.auth import find_user, ensure_password_hashes, verify_login, update_last_login, change_password, update_phone, update_email
@@ -19,7 +18,6 @@ CORS(app)  # OK pour dev React (Vite)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "data")
-service = TimetableService(DATA_DIR)
 repo = TimetableRepo(DATA_DIR)
 
 # Ensure all users have a hashed password (defaults to 123456 when empty).
@@ -34,12 +32,7 @@ draft_repo = TimetableRepo(DATA_DIR, filename="nextTimetable.json")
 try:
     draft_repo.ensure_exists(seed_from=repo.read())
 except Exception:
-    pass
-
-# Ensure users.json contains hashed passwords (fills empty password with default hash).
-try:
-    ensure_password_hashes(DATA_DIR)
-except Exception:
+    # Do not crash startup if a JSON is temporarily invalid; routes will surface errors.
     pass
 
 
@@ -143,38 +136,32 @@ def auth_change_password():
 @app.post("/api/auth/update-phone")
 @require_authenticated
 def auth_update_phone():
-    """Update the phone number for the current authenticated user."""
     body = request.get_json(silent=True) or {}
     phone = str(body.get("phone") or "").strip()
-
     uid = str((g.user or {}).get("id") or "").strip()
     ok, msg = update_phone(DATA_DIR, uid, phone)
     if not ok:
         return jsonify({"ok": False, "code": "BAD_REQUEST", "message": msg}), 400
-
     return jsonify({"ok": True})
 
 
 @app.post("/api/auth/update-email")
 @require_authenticated
 def auth_update_email():
-    """Update the email address for the current authenticated user."""
     body = request.get_json(silent=True) or {}
     email = str(body.get("email") or "").strip()
-
     uid = str((g.user or {}).get("id") or "").strip()
     ok, msg = update_email(DATA_DIR, uid, email)
     if not ok:
         return jsonify({"ok": False, "code": "BAD_REQUEST", "message": msg}), 400
-
     return jsonify({"ok": True})
 
 
-# Optionnel: idempotence basique en m\u00e9moire
+# Idempotence basique en mémoire
 _seen_commands = set()
 
 # ----------------------------
-# Helpers JSON (lecture/\u00e9criture)
+# Helpers JSON (lecture/écriture)
 # ----------------------------
 def _path(filename: str) -> str:
     return os.path.join(DATA_DIR, filename)
@@ -187,7 +174,7 @@ def load_json(filename: str):
 
 
 def save_json_atomic(filename: str, data: Any):
-    """\u00c9criture atomique (\u00e9vite les fichiers corrompus)."""
+    """Écriture atomique (évite les fichiers corrompus)."""
     os.makedirs(DATA_DIR, exist_ok=True)
     final_path = _path(filename)
 
@@ -235,7 +222,7 @@ def normalize_sessions(sessions: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 
 
 # ----------------------------
-# API existantes
+# API Timetable
 # ----------------------------
 @app.route("/api/timetable", methods=["GET"])
 @require_roles("admin", "surveillant", "formateur")
@@ -258,19 +245,26 @@ def get_next_timetable():
     """Draft timetable (next official). Read-only for formateurs."""
     data = draft_repo.read()
     sessions = data.get("sessions", []) or []
-    return jsonify(
-        {
-            "week_start": data.get("week_start"),
-            "revision": int(data.get("revision", 1) or 1),
-            "version": int(data.get("version", 1) or 1),
-            "sessions": normalize_sessions(sessions),
-        }
-    )
+    return jsonify({
+        "week_start": data.get("week_start"),
+        "revision": int(data.get("revision", 1) or 1),
+        "version": int(data.get("version", 1) or 1),
+        "sessions": normalize_sessions(sessions),
+    })
 
 
 @app.route("/api/timetable/move", methods=["POST"])
 @require_roles("admin")
 def move_session():
+    """Déplace une séance.
+
+    Correctif : utilise désormais repo.atomic_update + validate_move + apply_move
+    (même chemin que /api/timetable/commands) pour garantir :
+      - la persistance de la version (pas de perte du champ 'version')
+      - l'écriture atomique
+      - la normalisation de la casse (jour, salle)
+      - le verrou threading (pas de race condition)
+    """
     payload = request.get_json(force=True) or {}
 
     session_id = payload.get("sessionId")
@@ -281,11 +275,27 @@ def move_session():
     if not session_id or not to_jour or to_creneau is None or not to_salle:
         return bad_request("Param\u00e8tres manquants")
 
-    ok, msg, sessions = service.move(session_id, to_jour, int(to_creneau), to_salle)
-    if not ok:
-        return jsonify({"ok": False, "error": msg}), 409
+    def do_update(current):
+        sessions = current.get("sessions", [])
+        err = validate_move(sessions, session_id, to_jour, int(to_creneau), to_salle)
+        if err:
+            err["ok"] = False
+            err["version"] = current.get("version", 1)
+            return (False, current, err)
+        new_sessions = apply_move(sessions, session_id, to_jour, int(to_creneau), to_salle)
+        new_data = {"version": int(current.get("version", 1)) + 1, "sessions": new_sessions}
+        repo.write(new_data)
+        return (True, new_data, {})
 
-    return jsonify({"ok": True, "sessions": normalize_sessions(sessions)})
+    ok, data_or_current, err_payload = repo.atomic_update(do_update)
+    if not ok:
+        return jsonify(err_payload), 409
+
+    return jsonify({
+        "ok": True,
+        "version": data_or_current.get("version"),
+        "sessions": normalize_sessions(data_or_current.get("sessions", [])),
+    })
 
 
 @app.route("/api/config", methods=["GET"])
@@ -419,11 +429,12 @@ def rooms_available():
     sessions = data.get("sessions", []) if isinstance(data, dict) else data
 
     occupied = set()
+    jour_n = str(jour or "").strip().lower()
     for s in sessions:
         if str(s.get("_virtualState", "")).strip() == "MOVED_AWAY":
             continue
         if (
-            str(s.get("jour", "")).strip().lower() == str(jour).strip().lower()
+            str(s.get("jour", "")).strip().lower() == jour_n
             and int(s.get("creneau", 0) or 0) == int(creneau)
         ):
             salle = str(s.get("salle", "")).strip()
@@ -447,7 +458,6 @@ def rooms_available():
 
     seen = set()
     salle_ids = [x for x in salle_ids if not (x in seen or seen.add(x))]
-
     available = [rid for rid in salle_ids if rid not in occupied]
 
     return jsonify({
@@ -531,7 +541,7 @@ def add_session():
 
 
 # ----------------------------
-# Validation helpers
+# Validation helpers (pour les routes legacy GET/PUT JSON brut)
 # ----------------------------
 def _validate_config(cfg: Dict[str, Any]) -> Tuple[bool, str]:
     if not isinstance(cfg, dict):
@@ -567,9 +577,10 @@ def _validate_constraints(cst: Any) -> Tuple[bool, str]:
 
 
 # ----------------------------
-# ADMIN JSON CRUD (RBAC)
+# ADMIN JSON CRUD legacy (GET/PUT fichier entier)
+# Note : admin_bp (admin_routes.py) fournit les routes granulaires CRUD.
+# Ces routes-ci sont conservées pour compatibilité avec l'ancien front.
 # ----------------------------
-
 @app.route("/api/admin/config", methods=["GET", "PUT"])
 @require_roles("admin")
 def admin_config():
@@ -623,7 +634,7 @@ def admin_constraints():
 
 
 # ----------------------------
-# NOUVEAU : G\u00e9n\u00e9ration (MVP)
+# Générateur MVP
 # ----------------------------
 def _conflict_in_slot(slot_sessions: List[Dict[str, Any]], s: Dict[str, Any]) -> bool:
     for x in slot_sessions:
@@ -720,7 +731,7 @@ def generate_run():
 
     if apply:
         def do_update(current):
-            new_data = {"version": int(current["version"]) + 1, "sessions": sessions}
+            new_data = {"version": int(current.get("version", 1)) + 1, "sessions": sessions}
             repo.write(new_data)
             return (True, new_data, {})
 
