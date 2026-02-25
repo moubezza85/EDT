@@ -102,7 +102,7 @@ function OrderedTagEditor({
   );
 }
 
-// ── Config Tab (Paramètres) ──────────────────────────────────────────────────
+// ── Config Tab (Paramètres) ─────────────────────────────────────────────────
 type ConfigMeta = {
   nomEtablissement: string;
   jours: string[];
@@ -262,7 +262,7 @@ function ConfigTab() {
   );
 }
 
-// ── Launch Tab ───────────────────────────────────────────────────────────────
+// ── Launch Tab ──────────────────────────────────────────────────────────────
 type Mode = "memetic" | "hc" | "cp_only";
 
 const MODES: { value: Mode; label: string; desc: string }[] = [
@@ -394,7 +394,7 @@ function LaunchTab({ onJobStarted }: { onJobStarted: (id: string) => void }) {
   );
 }
 
-// ── Logs Tab ─────────────────────────────────────────────────────────────────
+// ── Logs Tab ────────────────────────────────────────────────────────────────
 interface JobState {
   status: "idle" | "running" | "done" | "error";
   logs: string[];
@@ -534,7 +534,7 @@ function LogsTab({ jobId, onClear }: { jobId: string | null; onClear: () => void
   );
 }
 
-// ── Main Page ────────────────────────────────────────────────────────────────
+// ── Main Page ───────────────────────────────────────────────────────────────
 export default function GenerateTimetable() {
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("params");
