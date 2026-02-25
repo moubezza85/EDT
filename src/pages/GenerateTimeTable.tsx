@@ -3,8 +3,12 @@ import { useToast } from "@/components/ui/use-toast";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import HardConstraintsTab from "@/components/settings/HardConstraintsTab";
+import SoftConstraintsTab from "@/components/settings/SoftConstraintsTab";
 
 const API_BASE = import.meta.env.VITE_API_BASE ?? "";
 
@@ -28,68 +32,232 @@ async function httpJson<T>(url: string, init?: RequestInit): Promise<T> {
   return data as T;
 }
 
-// ── JSON Editor Tab ──────────────────────────────────────────────────────────
-function JsonEditorTab({
-  getUrl, putUrl, description,
+function uniqNumsSorted(arr: number[]) {
+  return Array.from(new Set(arr.filter((x) => Number.isFinite(x)))).sort((a, b) => a - b);
+}
+
+function addUniqueKeepOrder(list: string[], value: string) {
+  const v = value.trim();
+  if (!v) return list;
+  if (list.includes(v)) return list;
+  return [...list, v];
+}
+
+function OrderedTagEditor({
+  label,
+  values,
+  placeholder,
+  onChange,
 }: {
-  getUrl: string;
-  putUrl: string;
-  description: string;
+  label: string;
+  values: string[];
+  placeholder?: string;
+  onChange: (next: string[]) => void;
 }) {
+  const [draft, setDraft] = useState("");
+
+  const add = () => {
+    const v = draft.trim();
+    if (!v) return;
+    onChange(addUniqueKeepOrder(values, v));
+    setDraft("");
+  };
+
+  return (
+    <div className="space-y-2">
+      <Label>{label}</Label>
+      <div className="flex gap-2">
+        <Input
+          value={draft}
+          placeholder={placeholder ?? "Ajouter..."}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              add();
+            }
+          }}
+        />
+        <Button type="button" onClick={add}>
+          Ajouter
+        </Button>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        {values.map((v) => (
+          <span key={v} className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-sm">
+            {v}
+            <button
+              className="text-muted-foreground hover:text-foreground"
+              onClick={() => onChange(values.filter((x) => x !== v))}
+              title="X"
+            >
+              ×
+            </button>
+          </span>
+        ))}
+        {values.length === 0 && <span className="text-sm text-muted-foreground">Aucune valeur</span>}
+      </div>
+    </div>
+  );
+}
+
+// ── Config Tab (Paramètres) ──────────────────────────────────────────────────
+type ConfigMeta = {
+  nomEtablissement: string;
+  jours: string[];
+  creneaux: number[];
+  maxSessionsPerDayTeacher: number;
+  maxSessionsPerDayGroup: number;
+};
+
+function ConfigTab() {
   const { toast } = useToast();
-  const [text, setText] = useState("");
+  const [meta, setMeta] = useState<ConfigMeta>({
+    nomEtablissement: "",
+    jours: ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
+    creneaux: [1, 2, 3, 4],
+    maxSessionsPerDayTeacher: 3,
+    maxSessionsPerDayGroup: 3,
+  });
   const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await httpJson<unknown>(getUrl);
-      setText(JSON.stringify(data, null, 2));
+      const cm = await httpJson<ConfigMeta>("/api/admin/config/meta");
+      setMeta({
+        nomEtablissement: cm?.nomEtablissement ?? "",
+        jours: Array.isArray(cm?.jours) ? cm.jours : [],
+        creneaux: Array.isArray(cm?.creneaux) ? cm.creneaux : [],
+        maxSessionsPerDayTeacher: Number(cm?.maxSessionsPerDayTeacher ?? 3),
+        maxSessionsPerDayGroup: Number(cm?.maxSessionsPerDayGroup ?? 3),
+      });
     } catch (e: any) {
       toast({ variant: "destructive", title: "Erreur chargement", description: e.message });
     } finally {
       setLoading(false);
     }
-  }, [getUrl]);
+  }, [toast]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const save = async () => {
+    setLoading(true);
     try {
-      JSON.parse(text);
-    } catch {
-      toast({ variant: "destructive", title: "JSON invalide", description: "Corrigez la syntaxe avant de sauvegarder." });
-      return;
-    }
-    setSaving(true);
-    try {
-      await httpJson(putUrl, { method: "PUT", body: text });
-      toast({ title: "Sauvegardé ✓", description: "Fichier mis à jour." });
+      const cleaned: ConfigMeta = {
+        nomEtablissement: meta.nomEtablissement ?? "",
+        jours: (meta.jours || []).map((x) => x.trim()).filter(Boolean),
+        creneaux: uniqNumsSorted((meta.creneaux || []).map((x) => Number(x))),
+        maxSessionsPerDayTeacher: Number(meta.maxSessionsPerDayTeacher ?? 3),
+        maxSessionsPerDayGroup: Number(meta.maxSessionsPerDayGroup ?? 3),
+      };
+      await httpJson("/api/admin/config/meta", { method: "PUT", body: JSON.stringify(cleaned) });
+      toast({ title: "Configuration enregistrée ✓" });
+      setMeta(cleaned);
     } catch (e: any) {
       toast({ variant: "destructive", title: "Erreur sauvegarde", description: e.message });
     } finally {
-      setSaving(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="space-y-3">
-      <p className="text-sm text-gray-500">{description}</p>
+    <div className="space-y-5">
+      <div className="grid gap-4 md:grid-cols-2">
+        <div className="space-y-2">
+          <Label>Nom de l'établissement</Label>
+          <Input
+            value={meta.nomEtablissement}
+            onChange={(e) => setMeta((p) => ({ ...p, nomEtablissement: e.target.value }))}
+            placeholder="Ex: OFPPT EST Meknès"
+            disabled={loading}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Max séances/jour/formateur</Label>
+            <Input
+              type="number"
+              value={meta.maxSessionsPerDayTeacher}
+              onChange={(e) => setMeta((p) => ({ ...p, maxSessionsPerDayTeacher: Number(e.target.value) }))}
+              disabled={loading}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Max séances/jour/groupe</Label>
+            <Input
+              type="number"
+              value={meta.maxSessionsPerDayGroup}
+              onChange={(e) => setMeta((p) => ({ ...p, maxSessionsPerDayGroup: Number(e.target.value) }))}
+              disabled={loading}
+            />
+          </div>
+        </div>
+      </div>
+
+      <Separator />
+
+      <OrderedTagEditor
+        label="Jours (ordre conservé)"
+        values={meta.jours}
+        placeholder="Ex: lundi"
+        onChange={(next) => setMeta((p) => ({ ...p, jours: next }))}
+      />
+
+      <Separator />
+
+      <div className="space-y-2">
+        <Label>Créneaux</Label>
+        <p className="text-xs text-muted-foreground">
+          Les créneaux sont triés numériquement lors de l'enregistrement (cohérence solveur).
+        </p>
+      </div>
+      <div className="space-y-2">
+        <div className="flex flex-wrap gap-2">
+          {meta.creneaux.map((c) => (
+            <span key={c} className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-sm">
+              {c}
+              <button
+                className="text-muted-foreground hover:text-foreground"
+                onClick={() => setMeta((p) => ({ ...p, creneaux: p.creneaux.filter((x) => x !== c) }))}
+                title="Supprimer"
+                disabled={loading}
+              >
+                ×
+              </button>
+            </span>
+          ))}
+          {meta.creneaux.length === 0 && <span className="text-sm text-muted-foreground">Aucun créneau</span>}
+        </div>
+        <div className="flex gap-2">
+          <Input
+            placeholder="Ajouter un créneau (ex: 5)"
+            disabled={loading}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                const v = (e.currentTarget.value || "").trim();
+                const n = Number(v);
+                if (!Number.isFinite(n)) return;
+                setMeta((p) => ({ ...p, creneaux: uniqNumsSorted([...p.creneaux, n]) }));
+                e.currentTarget.value = "";
+              }
+            }}
+          />
+        </div>
+      </div>
+
       <div className="flex gap-2">
-        <Button size="sm" variant="outline" onClick={load} disabled={loading}>
-          {loading ? "Chargement…" : "↺ Recharger"}
+        <Button onClick={save} disabled={loading}>
+          {loading ? "Sauvegarde…" : "💾 Enregistrer"}
         </Button>
-        <Button size="sm" onClick={save} disabled={saving || loading}>
-          {saving ? "Sauvegarde…" : "💾 Sauvegarder"}
+        <Button variant="outline" onClick={load} disabled={loading}>
+          ↻ Recharger
         </Button>
       </div>
-      <textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        spellCheck={false}
-        className="w-full min-h-[420px] font-mono text-sm p-3 border border-gray-200 rounded-lg resize-y focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
-      />
     </div>
   );
 }
@@ -98,20 +266,26 @@ function JsonEditorTab({
 type Mode = "memetic" | "hc" | "cp_only";
 
 const MODES: { value: Mode; label: string; desc: string }[] = [
-  { value: "memetic", label: "🧬 Mémétique",    desc: "GA + HC intégré — qualité optimale (recommandé)" },
-  { value: "hc",      label: "🔄 Hill Climbing", desc: "Plus rapide, bon compromis qualité/temps" },
-  { value: "cp_only", label: "⚙️ CP seulement",  desc: "Contraintes dures uniquement, pas d'optimisation douce" },
+  { value: "memetic", label: "🧬 Mémétique", desc: "GA + HC intégré — qualité optimale (recommandé)" },
+  { value: "hc", label: "🔄 Hill Climbing", desc: "Plus rapide, bon compromis qualité/temps" },
+  { value: "cp_only", label: "⚙️ CP seulement", desc: "Contraintes dures uniquement, pas d'optimisation douce" },
 ];
 
 function LaunchTab({ onJobStarted }: { onJobStarted: (id: string) => void }) {
   const { toast } = useToast();
   const [mode, setMode] = useState<Mode>("memetic");
   const [params, setParams] = useState({
-    cp_time: 120,   cp_workers: 8,
-    max_iterations: 10000,  max_no_improvement: 500,
-    population: 100,  generations: 150,
-    hc_freq: 10,    hc_top: 5,   hc_iter: 500,
-    patience: 50,   perturb_threshold: 30,
+    cp_time: 120,
+    cp_workers: 8,
+    max_iterations: 10000,
+    max_no_improvement: 500,
+    population: 100,
+    generations: 150,
+    hc_freq: 10,
+    hc_top: 5,
+    hc_iter: 500,
+    patience: 50,
+    perturb_threshold: 30,
   });
   const [loading, setLoading] = useState(false);
 
@@ -133,15 +307,13 @@ function LaunchTab({ onJobStarted }: { onJobStarted: (id: string) => void }) {
     }
   };
 
-  const Row = ({
-    label, k, min = 1,
-  }: {
-    label: string; k: keyof typeof params; min?: number;
-  }) => (
+  const Row = ({ label, k, min = 1 }: { label: string; k: keyof typeof params; min?: number }) => (
     <div className="flex items-center gap-3">
       <label className="text-sm text-gray-700 w-60">{label}</label>
       <Input
-        type="number" min={min} value={params[k]}
+        type="number"
+        min={min}
+        value={params[k]}
         onChange={(e) => set(k, Number(e.target.value))}
         className="w-28"
       />
@@ -152,7 +324,7 @@ function LaunchTab({ onJobStarted }: { onJobStarted: (id: string) => void }) {
     <div className="space-y-5">
       {/* Mode */}
       <div className="space-y-2">
-        <p className="text-sm font-medium text-gray-700">Mode d’optimisation</p>
+        <p className="text-sm font-medium text-gray-700">Mode d'optimisation</p>
         <div className="flex flex-wrap gap-3">
           {MODES.map(({ value, label, desc }) => (
             <label
@@ -162,7 +334,9 @@ function LaunchTab({ onJobStarted }: { onJobStarted: (id: string) => void }) {
               }`}
             >
               <input
-                type="radio" name="mode" value={value}
+                type="radio"
+                name="mode"
+                value={value}
                 checked={mode === value}
                 onChange={() => setMode(value)}
                 className="mt-0.5"
@@ -236,9 +410,9 @@ function LogsTab({ jobId, onClear }: { jobId: string | null; onClear: () => void
   const poll = useCallback(
     async (id: string) => {
       try {
-        const data = await httpJson<{
-          ok: boolean; status: string; logs: string[]; result: any;
-        }>(`/api/generate/status/${id}`);
+        const data = await httpJson<{ ok: boolean; status: string; logs: string[]; result: any }>(
+          `/api/generate/status/${id}`
+        );
         setJob({ status: data.status as JobState["status"], logs: data.logs ?? [], result: data.result });
         if (data.status !== "running") {
           if (timerRef.current) clearInterval(timerRef.current);
@@ -247,7 +421,9 @@ function LogsTab({ jobId, onClear }: { jobId: string | null; onClear: () => void
           if (data.status === "error")
             toast({ variant: "destructive", title: "❌ Échec", description: data.result?.message });
         }
-      } catch { /* réseau: ignorer */ }
+      } catch {
+        /* réseau: ignorer */
+      }
     },
     [toast]
   );
@@ -257,7 +433,9 @@ function LogsTab({ jobId, onClear }: { jobId: string | null; onClear: () => void
     setJob({ status: "running", logs: [], result: null });
     poll(jobId);
     timerRef.current = setInterval(() => poll(jobId), 1500);
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
   }, [jobId, poll]);
 
   useEffect(() => {
@@ -277,29 +455,39 @@ function LogsTab({ jobId, onClear }: { jobId: string | null; onClear: () => void
       } else {
         toast({ title: "Aucun job actif", description: "Le backend est inactif." });
       }
-    } catch { /* ignorer */ }
+    } catch {
+      /* ignorer */
+    }
   };
 
   const badgeVariant: Record<JobState["status"], "default" | "secondary" | "destructive" | "outline"> = {
-    idle: "secondary", running: "default", done: "default", error: "destructive",
+    idle: "secondary",
+    running: "default",
+    done: "default",
+    error: "destructive",
   };
   const badgeLabel: Record<JobState["status"], string> = {
-    idle: "Inactif", running: "En cours…", done: "Terminé ✓", error: "Erreur",
+    idle: "Inactif",
+    running: "En cours…",
+    done: "Terminé ✓",
+    error: "Erreur",
   };
 
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-3">
         <Badge variant={badgeVariant[job.status]}>{badgeLabel[job.status]}</Badge>
-        {jobId && (
-          <span className="text-xs text-gray-400 font-mono truncate max-w-[260px]">{jobId}</span>
-        )}
+        {jobId && <span className="text-xs text-gray-400 font-mono truncate max-w-[260px]">{jobId}</span>}
         <Button size="sm" variant="outline" onClick={checkActive}>
           🔍 Vérifier job actif
         </Button>
         <Button
-          size="sm" variant="ghost"
-          onClick={() => { setJob({ status: "idle", logs: [], result: null }); onClear(); }}
+          size="sm"
+          variant="ghost"
+          onClick={() => {
+            setJob({ status: "idle", logs: [], result: null });
+            onClear();
+          }}
         >
           ✕ Effacer
         </Button>
@@ -309,7 +497,7 @@ function LogsTab({ jobId, onClear }: { jobId: string | null; onClear: () => void
       <div className="bg-gray-950 rounded-lg p-4 h-[420px] overflow-y-auto font-mono text-xs leading-relaxed">
         {job.logs.length === 0 ? (
           <span className="text-gray-500">
-            Aucun log pour le moment. Lancez une génération depuis l’onglet « Lancer ».
+            Aucun log pour le moment. Lancez une génération depuis l'onglet « Lancer ».
           </span>
         ) : (
           job.logs.map((line, i) => (
@@ -346,10 +534,10 @@ function LogsTab({ jobId, onClear }: { jobId: string | null; onClear: () => void
   );
 }
 
-// ── Page principale ──────────────────────────────────────────────────────────
+// ── Main Page ────────────────────────────────────────────────────────────────
 export default function GenerateTimetable() {
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState("launch");
+  const [activeTab, setActiveTab] = useState("params");
 
   const handleJobStarted = (id: string) => {
     setCurrentJobId(id);
@@ -361,7 +549,7 @@ export default function GenerateTimetable() {
       <div>
         <h1 className="text-2xl font-bold">🗓️ Génération Emploi du Temps</h1>
         <p className="text-gray-500 text-sm mt-1">
-          Configurez les paramètres, lancez l’algorithme mémétique et suivez les logs en temps réel.
+          Configurez les paramètres, contraintes, préférences, puis lancez l'algorithme mémétique.
         </p>
       </div>
 
@@ -373,24 +561,18 @@ export default function GenerateTimetable() {
           <TabsTrigger value="launch">🚀 Lancer</TabsTrigger>
           <TabsTrigger value="logs" className="relative">
             📋 Logs
-            {currentJobId && (
-              <span className="ml-1.5 h-2 w-2 rounded-full bg-blue-500 inline-block animate-pulse" />
-            )}
+            {currentJobId && <span className="ml-1.5 h-2 w-2 rounded-full bg-blue-500 inline-block animate-pulse" />}
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="params">
           <Card>
             <CardHeader>
-              <CardTitle>⚙️ Configuration générale</CardTitle>
-              <CardDescription>Jours, créneaux, salles, groupes — config.json</CardDescription>
+              <CardTitle>⚙️ Paramètres généraux</CardTitle>
+              <CardDescription>Jours, créneaux, limites — config.json</CardDescription>
             </CardHeader>
             <CardContent>
-              <JsonEditorTab
-                getUrl="/api/config"
-                putUrl="/api/config"
-                description="Modifiez jours, créneaux, salles et groupes. Cliquez Sauvegarder pour persister dans config.json."
-              />
+              <ConfigTab />
             </CardContent>
           </Card>
         </TabsContent>
@@ -402,11 +584,7 @@ export default function GenerateTimetable() {
               <CardDescription>Indisponibilités, règles absolues — hard.json</CardDescription>
             </CardHeader>
             <CardContent>
-              <JsonEditorTab
-                getUrl="/api/settings/hard"
-                putUrl="/api/settings/hard"
-                description="Indisponibilités formateurs/groupes/salles et exigences de salle obligatoire."
-              />
+              <HardConstraintsTab />
             </CardContent>
           </Card>
         </TabsContent>
@@ -415,14 +593,10 @@ export default function GenerateTimetable() {
           <Card>
             <CardHeader>
               <CardTitle>🎯 Préférences douces</CardTitle>
-              <CardDescription>Poids et coûts pour l’optimisation — soft.json</CardDescription>
+              <CardDescription>Poids et coûts pour l'optimisation — soft.json</CardDescription>
             </CardHeader>
             <CardContent>
-              <JsonEditorTab
-                getUrl="/api/settings/soft"
-                putUrl="/api/settings/soft"
-                description="Préférences de créneaux, poids des pénalités pour l’algorithme mémétique."
-              />
+              <SoftConstraintsTab />
             </CardContent>
           </Card>
         </TabsContent>
@@ -431,7 +605,7 @@ export default function GenerateTimetable() {
           <Card>
             <CardHeader>
               <CardTitle>🚀 Lancer la génération</CardTitle>
-              <CardDescription>Choisissez le mode et les paramètres, puis lancez l’algorithme.</CardDescription>
+              <CardDescription>Choisissez le mode et les paramètres, puis lancez l'algorithme.</CardDescription>
             </CardHeader>
             <CardContent>
               <LaunchTab onJobStarted={handleJobStarted} />
