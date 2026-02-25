@@ -178,15 +178,7 @@ def get_next_timetable():
 @app.route("/api/timetable/move", methods=["POST"])
 @require_roles("admin")
 def move_session():
-    """Déplace une séance.
-
-    Correctif : utilise désormais repo.atomic_update + validate_move + apply_move
-    (même chemin que /api/timetable/commands) pour garantir :
-      - la persistance de la version (pas de perte du champ 'version')
-      - l'écriture atomique
-      - la normalisation de la casse (jour, salle)
-      - le verrou threading (pas de race condition)
-    """
+    """Déplace une séance."""
     payload = request.get_json(force=True) or {}
 
     session_id = payload.get("sessionId")
@@ -627,6 +619,9 @@ app.register_blueprint(requests_bp)
 from routes.publish_routes import create_publish_blueprint
 publish_bp = create_publish_blueprint(DATA_DIR)
 app.register_blueprint(publish_bp)
+
+from routes.generate_routes import generate_bp
+app.register_blueprint(generate_bp)
 
 
 print(app.url_map)
