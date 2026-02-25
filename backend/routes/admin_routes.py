@@ -10,7 +10,6 @@ admin_bp = Blueprint("admin_bp", __name__, url_prefix="/api/admin")
 
 @admin_bp.before_request
 def _rbac_admin_only():
-    # Allow CORS preflight requests through (browser sends OPTIONS before GET/PUT)
     if request.method == "OPTIONS":
         return None
     u = current_user()
@@ -21,10 +20,12 @@ def _rbac_admin_only():
     return None
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
-CATALOG_PATH = os.path.join(DATA_DIR, "catalog.json")
-CONFIG_PATH = os.path.join(DATA_DIR, "config.json")
+CATALOG_PATH    = os.path.join(DATA_DIR, "catalog.json")
+CONFIG_PATH     = os.path.join(DATA_DIR, "config.json")
 CONSTRAINTS_PATH = os.path.join(DATA_DIR, "constraints.json")
-INDISPO_PATH = os.path.join(DATA_DIR, "indispo.json")
+INDISPO_PATH    = os.path.join(DATA_DIR, "indispo.json")
+SOFT_LIST_PATH  = os.path.join(DATA_DIR, "soft.json")   # liste de contraintes soft
+HARD_PATH       = os.path.join(DATA_DIR, "hard.json")   # indispos + exigences (nouveau format)
 
 # -------------------- UTILS --------------------
 def _ensure_defaults():
@@ -45,6 +46,10 @@ def _ensure_defaults():
         _atomic_write_json(CONSTRAINTS_PATH, {"soft": {}})
     if not os.path.exists(INDISPO_PATH):
         _atomic_write_json(INDISPO_PATH, {"teachers": {}, "groups": {}, "rooms": {}})
+    if not os.path.exists(SOFT_LIST_PATH):
+        _atomic_write_json(SOFT_LIST_PATH, [])
+    if not os.path.exists(HARD_PATH):
+        _atomic_write_json(HARD_PATH, {"indisponibilites": [], "exigences_specifiques": []})
 
 def _read_json(path):
     _ensure_defaults()
@@ -75,7 +80,6 @@ def _save_catalog(cat): _atomic_write_json(CATALOG_PATH, cat)
 def _get_config(): return _read_json(CONFIG_PATH)
 def _save_config(cfg): _atomic_write_json(CONFIG_PATH, cfg)
 
-
 def _norm_mode(x):
     m = (str(x or "").strip().upper())
     return "ONLINE" if m == "ONLINE" else "PRESENTIEL"
@@ -103,13 +107,12 @@ def _is_valid_group_or_fusion(cat: dict, group_id: str) -> bool:
     return False
 
 
-
 # -------------------- CATALOG: TEACHERS --------------------
 @admin_bp.get("/catalog/teachers")
 def get_teachers():
     cat = _get_catalog()
     teachers = cat.get("teachers", [])
-    out = [{"id": _norm_id(t.get("id")), "name": _norm_id(t.get("name"))} 
+    out = [{"id": _norm_id(t.get("id")), "name": _norm_id(t.get("name"))}
            for t in teachers if isinstance(t, dict) and t.get("id")]
     return jsonify({"teachers": sorted(out, key=lambda x: x["id"])})
 
@@ -119,7 +122,6 @@ def upsert_teacher():
     tid, name = _norm_id(payload.get("id")), _norm_id(payload.get("name"))
     if not tid or not name:
         return jsonify({"error": "id et name requis"}), 400
-
     cat = _get_catalog()
     teachers = [t for t in cat.get("teachers", []) if isinstance(t, dict) and _norm_id(t.get("id")) != tid]
     teachers.append({"id": tid, "name": name})
@@ -188,12 +190,9 @@ def delete_module(mid):
     return jsonify({"ok": True})
 
 # -------------------- CATALOG: ASSIGNMENTS --------------------
-# -------------------- CATALOG: ASSIGNMENTS --------------------
 @admin_bp.get("/catalog/assignments")
 def get_assignments():
-    # On renvoie tel quel; le front considérera mode absent => PRESENTIEL
     return jsonify({"assignments": _get_catalog().get("assignments", [])})
-
 
 @admin_bp.post("/catalog/assignments")
 def add_assignment():
@@ -202,25 +201,16 @@ def add_assignment():
     m = _norm_id(payload.get("module"))
     t = _norm_id(payload.get("teacher"))
     mode = _norm_mode(payload.get("mode"))
-
     if not all([g, m, t]):
         return jsonify({"error": "group, module, teacher requis"}), 400
-
     cat = _get_catalog()
-
-    # Validation groupe/fusion
-    # - PRESENTIEL: on peut accepter uniquement groupes normaux (recommandé)
-    # - ONLINE: on accepte groupe normal OU fusion
     if mode == "PRESENTIEL":
         if g not in _get_group_ids(cat):
             return jsonify({"error": "Groupe présentiel invalide (doit être un groupe existant)"}), 400
     else:
         if not _is_valid_group_or_fusion(cat, g):
             return jsonify({"error": "Groupe en ligne invalide (groupe ou fusion requis)"}), 400
-
     assigns = cat.get("assignments", []) or []
-
-    # clé unique: (mode, group, module)
     assigns = [
         a for a in assigns
         if not (
@@ -229,12 +219,10 @@ def add_assignment():
             and _norm_id(a.get("module")) == m
         )
     ]
-
     assigns.append({"group": g, "module": m, "teacher": t, "mode": mode})
     cat["assignments"] = assigns
     _save_catalog(cat)
     return jsonify({"ok": True})
-
 
 @admin_bp.delete("/catalog/assignments")
 def delete_assignment():
@@ -242,13 +230,10 @@ def delete_assignment():
     g = _norm_id(payload.get("group"))
     m = _norm_id(payload.get("module"))
     mode = _norm_mode(payload.get("mode"))
-
     if not all([g, m]):
         return jsonify({"error": "group, module requis"}), 400
-
     cat = _get_catalog()
     assigns = cat.get("assignments", []) or []
-
     cat["assignments"] = [
         a for a in assigns
         if not (
@@ -260,133 +245,37 @@ def delete_assignment():
     _save_catalog(cat)
     return jsonify({"ok": True})
 
-# # -------------------- CATALOG: ONLINE FUSIONS --------------------
-# @admin_bp.get("/catalog/online-fusions")
-# def get_online_fusions():
-#     cat = _get_catalog()
-#     return jsonify({"onlineFusions": cat.get("onlineFusions", [])})
-
-# @admin_bp.put("/catalog/online-fusions")
-# def put_online_fusions():
-#     payload = request.get_json(silent=True) or {}
-#     fusions = payload.get("onlineFusions", [])
-#     if not isinstance(fusions, list):
-#         return jsonify({"error": "onlineFusions doit être une liste"}), 400
-
-#     # Validation minimale
-#     cleaned = []
-#     for f in fusions:
-#         if not isinstance(f, dict):
-#             continue
-#         fid = _norm_id(f.get("id"))
-#         groups = f.get("groupes", [])
-#         if not fid or not isinstance(groups, list):
-#             continue
-#         groups_clean = [_norm_id(x) for x in groups if _norm_id(x)]
-#         if len(groups_clean) < 1:
-#             continue
-#         cleaned.append({"id": fid, "groupes": groups_clean})
-
-#     cat = _get_catalog()
-#     cat["onlineFusions"] = cleaned
-#     _save_catalog(cat)
-#     return jsonify({"ok": True, "onlineFusions": cleaned})
-
-
-# # -------------------- CATALOG: ONLINE FUSIONS --------------------
-# @admin_bp.get("/catalog/online-fusions")
-# def get_online_fusions():
-#     cat = _get_catalog()
-#     return jsonify({"onlineFusions": cat.get("onlineFusions", [])})
-
-
-# @admin_bp.post("/catalog/online-fusions")
-# def create_online_fusion():
-#     payload = request.get_json(silent=True) or {}
-#     fid = _norm_id(payload.get("id"))
-#     groupes = payload.get("groupes", [])
-
-#     if not fid:
-#         return jsonify({"error": "id requis"}), 400
-#     if not isinstance(groupes, list):
-#         return jsonify({"error": "groupes doit être une liste"}), 400
-
-#     cat = _get_catalog()
-#     group_set = set(_norm_id(g) for g in (cat.get("groups", []) or []) if _norm_id(g))
-
-#     groupes_clean = []
-#     for g in groupes:
-#         ng = _norm_id(g)
-#         if ng and ng in group_set and ng not in groupes_clean:
-#             groupes_clean.append(ng)
-
-#     if len(groupes_clean) < 2:
-#         return jsonify({"error": "Une fusion doit contenir au moins 2 groupes physiques valides"}), 400
-
-#     fusions = cat.get("onlineFusions", []) or []
-
-#     # éviter doublon id
-#     if any(_norm_id(f.get("id")) == fid for f in fusions if isinstance(f, dict)):
-#         return jsonify({"error": "Cette fusion existe déjà"}), 400
-
-#     fusions.append({"id": fid, "groupes": groupes_clean})
-#     cat["onlineFusions"] = fusions
-#     _save_catalog(cat)
-
-#     return jsonify({"ok": True})
-
-
-# @admin_bp.delete("/catalog/online-fusions/<fid>")
-# def delete_online_fusion(fid):
-#     fid = _norm_id(fid)
-#     cat = _get_catalog()
-#     fusions = cat.get("onlineFusions", []) or []
-#     cat["onlineFusions"] = [f for f in fusions if _norm_id((f or {}).get("id")) != fid]
-#     _save_catalog(cat)
-#     return jsonify({"ok": True})
-
 # -------------------- CATALOG: ONLINE FUSIONS --------------------
 @admin_bp.get("/catalog/online-fusions")
 def get_online_fusions():
     cat = _get_catalog()
     return jsonify({"onlineFusions": cat.get("onlineFusions", [])})
 
-
 @admin_bp.post("/catalog/online-fusions")
 def create_online_fusion():
     payload = request.get_json(silent=True) or {}
     fid = _norm_id(payload.get("id"))
     groupes = payload.get("groupes", [])
-
     if not fid:
         return jsonify({"error": "id requis"}), 400
     if not isinstance(groupes, list):
         return jsonify({"error": "groupes doit être une liste"}), 400
-
     cat = _get_catalog()
     group_set = set(_norm_id(g) for g in (cat.get("groups", []) or []) if _norm_id(g))
-
     groupes_clean = []
     for g in groupes:
         ng = _norm_id(g)
         if ng and ng in group_set and ng not in groupes_clean:
             groupes_clean.append(ng)
-
     if len(groupes_clean) < 2:
         return jsonify({"error": "Une fusion doit contenir au moins 2 groupes physiques valides"}), 400
-
     fusions = cat.get("onlineFusions", []) or []
-
-    # éviter doublon id
     if any(_norm_id(f.get("id")) == fid for f in fusions if isinstance(f, dict)):
         return jsonify({"error": "Cette fusion existe déjà"}), 400
-
     fusions.append({"id": fid, "groupes": groupes_clean})
     cat["onlineFusions"] = fusions
     _save_catalog(cat)
-
     return jsonify({"ok": True})
-
 
 @admin_bp.delete("/catalog/online-fusions/<fid>")
 def delete_online_fusion(fid):
@@ -415,7 +304,7 @@ def put_config_meta():
 @admin_bp.get("/config/rooms")
 def get_rooms_and_types():
     cfg = _get_config()
-    salles = [{"id": _norm_id(r.get("id")), "type": _norm_id(r.get("type"))} 
+    salles = [{"id": _norm_id(r.get("id")), "type": _norm_id(r.get("type"))}
               for r in cfg.get("salles", []) if isinstance(r, dict) and r.get("id")]
     return jsonify({
         "typeSalle": [_norm_id(x) for x in cfg.get("typeSalle", []) if _norm_id(x)],
@@ -464,7 +353,7 @@ def delete_room(rid):
     _save_config(cfg)
     return jsonify({"ok": True})
 
-# -------------------- CONSTRAINTS & INDISPO --------------------
+# -------------------- CONSTRAINTS (ancien format) --------------------
 @admin_bp.get("/constraints/soft")
 def get_soft_constraints():
     return jsonify({"soft": _read_json(CONSTRAINTS_PATH).get("soft", {})})
@@ -476,6 +365,24 @@ def put_soft_constraints():
     _atomic_write_json(CONSTRAINTS_PATH, {"soft": soft})
     return jsonify({"ok": True})
 
+# -------------------- CONTRAINTES SOFT (nouveau format: liste) --------------------
+@admin_bp.get("/constraints/soft-list")
+def get_soft_constraints_list():
+    """Retourne soft.json (tableau de contraintes avec id/type/active/poids/params)."""
+    if not os.path.exists(SOFT_LIST_PATH):
+        return jsonify([])
+    return jsonify(_read_json(SOFT_LIST_PATH))
+
+@admin_bp.put("/constraints/soft-list")
+def put_soft_constraints_list():
+    """Remplace soft.json en entier."""
+    data = request.get_json(silent=True)
+    if not isinstance(data, list):
+        return jsonify({"error": "liste JSON attendue"}), 400
+    _atomic_write_json(SOFT_LIST_PATH, data)
+    return jsonify({"ok": True})
+
+# -------------------- INDISPO (ancien format: indispo.json) --------------------
 @admin_bp.get("/indispo/<scope>")
 def get_indispo_scope(scope):
     key = _scope_key(scope)
@@ -496,4 +403,22 @@ def put_indispo_entity(scope, entity_id):
     d = _read_json(INDISPO_PATH)
     d.setdefault(key, {})[entity_id] = payload
     _atomic_write_json(INDISPO_PATH, d)
+    return jsonify({"ok": True})
+
+# -------------------- CONTRAINTES HARD (nouveau format: hard.json) --------------------
+@admin_bp.get("/indispo/hard")
+def get_hard_constraints():
+    """Retourne hard.json : {indisponibilites: [...], exigences_specifiques: [...]}."""
+    if not os.path.exists(HARD_PATH):
+        return jsonify({"indisponibilites": [], "exigences_specifiques": []})
+    return jsonify(_read_json(HARD_PATH))
+
+@admin_bp.put("/indispo/hard")
+def put_hard_constraints():
+    """Remplace hard.json en entier."""
+    payload = request.get_json(silent=True) or {}
+    _atomic_write_json(HARD_PATH, {
+        "indisponibilites": payload.get("indisponibilites", []),
+        "exigences_specifiques": payload.get("exigences_specifiques", []),
+    })
     return jsonify({"ok": True})

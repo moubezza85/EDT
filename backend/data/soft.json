@@ -1,0 +1,72 @@
+[
+  {
+    "id": "SC1",
+    "type": "preference_salle",
+    "active": true,
+    "poids": 15,
+    "description": "P\u00e9nalise si un formateur n'est pas dans sa salle pr\u00e9f\u00e9ree (si d\u00e9finie)",
+    "params": {
+      "preferences": {
+        "14017": "S21",
+        "UC3690": "S19",
+        "14039": "S4"
+      }
+    }
+  },
+  {
+    "id": "SC2",
+    "type": "trous_groupe",
+    "active": true,
+    "poids": 50,
+    "description": "Eviter les trous dans l'emploi du temps des groupes"
+  },
+  {
+    "id": "SC3",
+    "type": "trous_formateur",
+    "active": true,
+    "poids": 50,
+    "description": "Eviter les trous dans l'emploi du temps des formateur"
+  },
+  {
+    "id": "SC4",
+    "type": "charge_journaliere",
+    "active": true,
+    "poids": 10,
+    "params": { "max": 2 },
+    "description": "Eviter plus de 3 s\u00e9ances par jour par groupe"
+  },
+  {
+    "id": "SC5",
+    "type": "charge_journaliere_for",
+    "active": true,
+    "poids": 10,
+    "params": { "max": 2 },
+    "description": "Eviter plus de 3 s\u00e9ances par jour par formateur"
+  },
+  {
+    "id": "SC6",
+    "nom": "Limiter les jours \u00e0 une seule s\u00e9ance",
+    "type": "minChar",
+    "description": "Eviter que les groupes aient des jours avec 1 seule s\u00e9ance",
+    "poids": 1,
+    "active": true
+  },
+  {
+    "id": "SC7",
+    "type": "preference_creneaux",
+    "active": true,
+    "poids": 20,
+    "description": "P\u00e9nalise si un formateur enseigne hors de ses cr\u00e9neaux pr\u00e9f\u00e9r\u00e9s",
+    "params": {
+      "preferences": {
+        "14017": [
+          { "jour": "Lundi", "creneaux": [3, 4] },
+          { "jour": "Mardi", "creneaux": [1, 2] }
+        ],
+        "UC3690": [
+          { "jour": "Mercredi", "creneaux": [1, 2] }
+        ]
+      }
+    }
+  }
+]
