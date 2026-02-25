@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Script principal pour générer un emploi du temps complet.
 
@@ -16,6 +17,12 @@ Usage:
 import sys
 import argparse
 from pathlib import Path
+
+# Force UTF-8 pour stdout/stderr sur Windows
+if sys.platform == 'win32':
+    import io
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
 
 def parse_arguments():
@@ -162,15 +169,15 @@ def run_cp(args):
         cp_success = cp_solver.run()
         
         if not cp_success:
-            print("\n✗ ÉCHEC CP")
+            print("\n[ERREUR] ECHEC CP")
             return False
         
-        print("\n✓ Phase CP terminée !")
-        print("→ solution_cp.json")
+        print("\n[OK] Phase CP terminee !")
+        print("-> solution_cp.json")
         return True
         
     except Exception as e:
-        print(f"\n✗ ERREUR CP : {e}")
+        print(f"\n[ERREUR] CP : {e}")
         return False
 
 
@@ -182,7 +189,7 @@ def run_hc(args):
     print()
     
     if not Path('solution_cp.json').exists():
-        print("✗ ERREUR : solution_cp.json manquant")
+        print("[ERREUR] solution_cp.json manquant")
         return False
     
     try:
@@ -208,15 +215,15 @@ def run_hc(args):
         hc_success = optimizer.run()
         
         if not hc_success:
-            print("\n✗ ÉCHEC Hill Climbing")
+            print("\n[ERREUR] ECHEC Hill Climbing")
             return False
         
-        print("\n✓ Hill Climbing terminé !")
-        print("→ solution_finale.json")
+        print("\n[OK] Hill Climbing termine !")
+        print("-> solution_finale.json")
         return True
         
     except Exception as e:
-        print(f"\n✗ ERREUR Hill Climbing : {e}")
+        print(f"\n[ERREUR] Hill Climbing : {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -225,12 +232,12 @@ def run_hc(args):
 def run_memetic(args):
     """Exécute algorithme mémétique."""
     print("=" * 70)
-    print(" " * 10 + "PHASE 2 : MÉMÉTIQUE (GA + HC intégré)")
+    print(" " * 10 + "PHASE 2 : MEMETIQUE (GA + HC integre)")
     print("=" * 70)
     print()
     
     if not Path('solution_cp.json').exists():
-        print("✗ ERREUR : solution_cp.json manquant")
+        print("[ERREUR] solution_cp.json manquant")
         return False
     
     try:
@@ -260,30 +267,30 @@ def run_memetic(args):
         )
         
         if not args.quiet:
-            print(f"Configuration Mémétique:")
+            print(f"Configuration Memetique:")
             print(f"  Population: {args.population}")
             print(f"  Générations: {args.generations}")
-            print(f"  HC fréquence: tous les {args.hc_freq} générations")
+            print(f"  HC frequence: tous les {args.hc_freq} generations")
             print(f"  HC sur top: {args.hc_top}")
-            print(f"  HC itérations: {args.hc_iter}")
+            print(f"  HC iterations: {args.hc_iter}")
             print(f"  Patience early stop: {args.patience}")
             print(f"  Perturbation seuil: {args.perturb_threshold}")
-            print(f"  Mutation chaîne: 30%")
+            print(f"  Mutation chaine: 30%")
             print()
         
         optimizer = MemeticOptimizer(mem_config, data_dir=Path("../data"))
         mem_success = optimizer.run()
         
         if not mem_success:
-            print("\n✗ ÉCHEC Mémétique")
+            print("\n[ERREUR] ECHEC Memetique")
             return False
         
-        print("\n✓ Mémétique terminé !")
-        print("→ solution_finale.json")
+        print("\n[OK] Memetique termine !")
+        print("-> solution_finale.json")
         return True
         
     except Exception as e:
-        print(f"\n✗ ERREUR Mémétique : {e}")
+        print(f"\n[ERREUR] Memetique : {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -294,31 +301,31 @@ def print_summary(cp_success, opt_success, mode):
     print("\n" + "=" * 70)
     
     if cp_success and opt_success:
-        print("✓✓✓ GÉNÉRATION TERMINÉE AVEC SUCCÈS ! ✓✓✓")
+        print("[OK] [OK] [OK] GENERATION TERMINEE AVEC SUCCES ! [OK] [OK] [OK]")
         print("=" * 70)
-        print("\nFichiers générés :")
+        print("\nFichiers generes :")
         print("  1. solution_cp.json      - Solution initiale")
-        print("  2. solution_finale.json  - Solution optimisée")
+        print("  2. solution_finale.json  - Solution optimisee")
         print("\nLogs : logs/")
         
         if mode == 'memetic':
-            print("\n🎯 Mode utilisé : MÉMÉTIQUE (GA + HC intégré)")
-            print("   → Qualité optimale (85-95% amélioration)")
-            print("   → State-of-the-art pour timetabling")
+            print("\nMode utilise : MEMETIQUE (GA + HC integre)")
+            print("   -> Qualite optimale (85-95% amelioration)")
+            print("   -> State-of-the-art pour timetabling")
         elif mode == 'hc':
-            print("\n🎯 Mode utilisé : HILL CLIMBING")
-            print("   → Bon compromis qualité/temps")
-            print("   → 70-80% amélioration")
+            print("\nMode utilise : HILL CLIMBING")
+            print("   -> Bon compromis qualite/temps")
+            print("   -> 70-80% amelioration")
     
     elif cp_success:
-        print("✓ PHASE CP TERMINÉE")
+        print("[OK] PHASE CP TERMINEE")
         print("=" * 70)
         print("\nPour optimiser:")
-        print("  python main.py --memetic  # Meilleure qualité")
+        print("  python main.py --memetic  # Meilleure qualite")
         print("  python main.py --hc       # Plus rapide")
     
     else:
-        print("✗ ÉCHEC")
+        print("[ERREUR] ECHEC")
         print("=" * 70)
     
     print("=" * 70)
@@ -329,7 +336,7 @@ def main():
     args = parse_arguments()
     
     print("=" * 70)
-    print(" " * 15 + "GÉNÉRATEUR D'EMPLOI DU TEMPS")
+    print(" " * 15 + "GENERATEUR D'EMPLOI DU TEMPS")
     print("=" * 70)
     print()
     
