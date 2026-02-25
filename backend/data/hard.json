@@ -4,44 +4,24 @@
             "type": "formateur",
             "id": "14017",
             "jour": "Lundi",
-            "creneaux": [
-                1,
-                2
-            ]
+            "creneaux": [1, 2]
         },
         {
             "type": "groupe",
             "id": "DEV101",
             "jour": "Samedi",
-            "creneaux": [
-                4
-            ]
+            "creneaux": [4]
         },
         {
             "type": "salle",
             "id": "S21",
             "jour": "Samedi",
-            "creneaux": [
-                4
-            ]
+            "creneaux": [4]
         }
     ],
     "exigences_specifiques": [
-        {
-            "formateur": "14017",
-            "salle_obligatoire": "S21"
-        },
-        {
-            "formateur": "UC3690",
-            "salle_obligatoire": "S19"
-        },
-        {
-            "formateur": "14039",
-            "salle_obligatoire": "S4"
-        },
-        {
-            "salle_obligatoire": "S21",
-            "module": "DEV_M101"
-        }
+        { "type": "formateur", "id": "14017", "salle_obligatoire": "S21" },
+        { "type": "formateur", "id": "UC3690", "salle_obligatoire": "S19" },
+        { "type": "formateur", "id": "14039", "salle_obligatoire": "S4" }
     ]
 }

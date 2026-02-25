@@ -27,6 +27,8 @@ const apiFetch = (path: string, init?: RequestInit) => {
   });
 };
 
+// ─── Types ───────────────────────────────────────────────────────────────────
+
 interface Indispo {
   type: "formateur" | "groupe" | "salle";
   id: string;
@@ -34,10 +36,15 @@ interface Indispo {
   creneaux: number[];
 }
 
+/**
+ * Exigence spécifique : un formateur OU un groupe exige une salle précise.
+ *   { type: "formateur", id: "14017", salle_obligatoire: "S21" }
+ *   { type: "groupe",    id: "DEV101", salle_obligatoire: "S4"  }
+ */
 interface Exigence {
-  formateur?: string;
+  type: "formateur" | "groupe";
+  id: string;
   salle_obligatoire: string;
-  module?: string;
 }
 
 interface HardData {
@@ -50,6 +57,8 @@ interface Teacher {
   name: string;
 }
 
+// ─── Component ───────────────────────────────────────────────────────────────
+
 export default function HardConstraintsTab() {
   const { toast } = useToast();
   const [data, setData] = useState<HardData>({
@@ -58,7 +67,6 @@ export default function HardConstraintsTab() {
   });
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [groups, setGroups] = useState<string[]>([]);
-  const [modules, setModules] = useState<string[]>([]);
   const [jours, setJours] = useState<string[]>([]);
   const [creneaux, setCreneaux] = useState<number[]>([]);
   const [salles, setSalles] = useState<string[]>([]);
@@ -70,25 +78,40 @@ export default function HardConstraintsTab() {
       apiFetch("/api/admin/indispo/hard").then((r) => r.json()),
       apiFetch("/api/admin/catalog/teachers").then((r) => r.json()),
       apiFetch("/api/admin/catalog/groups").then((r) => r.json()),
-      apiFetch("/api/admin/catalog/modules").then((r) => r.json()),
       apiFetch("/api/admin/config/meta").then((r) => r.json()),
       apiFetch("/api/admin/config/rooms").then((r) => r.json()),
-    ]).then(([hard, cat, grp, mod, cfg, rooms]) => {
+    ]).then(([hard, cat, grp, cfg, rooms]) => {
       setData({
         indisponibilites: hard.indisponibilites ?? [],
-        exigences_specifiques: hard.exigences_specifiques ?? [],
+        exigences_specifiques: normalizeExigences(hard.exigences_specifiques ?? []),
       });
       setTeachers(cat.teachers ?? []);
       setGroups(grp.groups ?? []);
-      setModules(mod.modules ?? []);
       setJours(cfg.jours ?? []);
       setCreneaux(cfg.creneaux ?? []);
       setSalles((rooms.salles ?? []).map((s: any) => s.id ?? s));
     });
   }, []);
 
+  // ─── Migration de l'ancien format ─────────────────────────────────────────
+  // Ancien: { formateur?: string, module?: string, salle_obligatoire: string }
+  // Nouveau: { type: 'formateur'|'groupe', id: string, salle_obligatoire: string }
+  const normalizeExigences = (raw: any[]): Exigence[] =>
+    raw
+      .map((e): Exigence | null => {
+        if (e.type === "formateur" || e.type === "groupe") return e as Exigence;
+        if (e.formateur)
+          return { type: "formateur", id: e.formateur, salle_obligatoire: e.salle_obligatoire };
+        if (e.groupe)
+          return { type: "groupe", id: e.groupe, salle_obligatoire: e.salle_obligatoire };
+        // ancien champ "module" ignoré (remplacé par groupe)
+        return null;
+      })
+      .filter((x): x is Exigence => x !== null);
+
   const mark = () => setDirty(true);
 
+  // ─── Save ──────────────────────────────────────────────────────────────────
   const save = async () => {
     setLoading(true);
     try {
@@ -106,7 +129,7 @@ export default function HardConstraintsTab() {
     }
   };
 
-  // ---- Indispos ----
+  // ─── Indispos helpers ──────────────────────────────────────────────────────
   const addIndispo = (type: Indispo["type"]) => {
     const defaultId =
       type === "formateur"
@@ -150,13 +173,15 @@ export default function HardConstraintsTab() {
     updateIndispo(gi, { creneaux: next });
   };
 
-  // ---- Exigences ----
-  const addExigence = () => {
+  // ─── Exigences helpers ─────────────────────────────────────────────────────
+  const addExigence = (type: Exigence["type"]) => {
+    const defaultId =
+      type === "formateur" ? (teachers[0]?.id ?? "") : (groups[0] ?? "");
     setData((d) => ({
       ...d,
       exigences_specifiques: [
         ...d.exigences_specifiques,
-        { formateur: teachers[0]?.id, salle_obligatoire: salles[0] ?? "" },
+        { type, id: defaultId, salle_obligatoire: salles[0] ?? "" },
       ],
     }));
     mark();
@@ -180,7 +205,7 @@ export default function HardConstraintsTab() {
     mark();
   };
 
-  // ---- Rendu liste indispos ----
+  // ─── Render : liste indispos ───────────────────────────────────────────────
   const renderIndispoList = (type: Indispo["type"]) => {
     const options =
       type === "formateur"
@@ -267,11 +292,129 @@ export default function HardConstraintsTab() {
     );
   };
 
+  // ─── Render : exigences spécifiques ───────────────────────────────────────
+  const renderExigences = () => (
+    <div className="space-y-3">
+      {/* Légende */}
+      <p className="text-xs text-muted-foreground">
+        Un formateur ou un groupe peut exiger d'être toujours dans une salle spécifique.
+      </p>
+
+      {/* Liste */}
+      {data.exigences_specifiques.length === 0 && (
+        <p className="text-xs text-gray-400 italic">Aucune exigence spécifique.</p>
+      )}
+
+      {data.exigences_specifiques.map((ex, i) => {
+        const isFor = ex.type === "formateur";
+        const idOptions = isFor ? teachers.map((t) => t.id) : groups;
+
+        return (
+          <div
+            key={i}
+            className="flex items-center gap-2 flex-wrap rounded-lg border bg-white p-2.5 shadow-sm"
+          >
+            {/* Badge type */}
+            <span
+              className={`inline-flex h-6 items-center rounded-full px-2.5 text-[11px] font-semibold ${
+                isFor
+                  ? "bg-blue-100 text-blue-700"
+                  : "bg-amber-100 text-amber-700"
+              }`}
+            >
+              {isFor ? "Formateur" : "Groupe"}
+            </span>
+
+            {/* Sélecteur type */}
+            <Select
+              value={ex.type}
+              onValueChange={(v: "formateur" | "groupe") => {
+                const newId =
+                  v === "formateur" ? (teachers[0]?.id ?? "") : (groups[0] ?? "");
+                updateExigence(i, { type: v, id: newId });
+              }}
+            >
+              <SelectTrigger className="h-7 w-32 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="formateur">Formateur</SelectItem>
+                <SelectItem value="groupe">Groupe</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Sélecteur ID formateur ou groupe */}
+            <Select
+              value={ex.id}
+              onValueChange={(v) => updateExigence(i, { id: v })}
+            >
+              <SelectTrigger className="h-7 w-36 text-xs">
+                <SelectValue placeholder={isFor ? "Formateur..." : "Groupe..."} />
+              </SelectTrigger>
+              <SelectContent>
+                {idOptions.map((o) => (
+                  <SelectItem key={o} value={o}>{o}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Flèche */}
+            <span className="text-gray-400 font-bold">→</span>
+
+            {/* Salle obligatoire */}
+            <Select
+              value={ex.salle_obligatoire}
+              onValueChange={(v) => updateExigence(i, { salle_obligatoire: v })}
+            >
+              <SelectTrigger className="h-7 w-28 text-xs">
+                <SelectValue placeholder="Salle..." />
+              </SelectTrigger>
+              <SelectContent>
+                {salles.map((s) => (
+                  <SelectItem key={s} value={s}>{s}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Supprimer */}
+            <Button
+              variant="ghost" size="icon" className="h-7 w-7 ml-auto"
+              onClick={() => removeExigence(i)}
+            >
+              <Trash2 className="h-3.5 w-3.5 text-red-500" />
+            </Button>
+          </div>
+        );
+      })}
+
+      {/* Boutons d'ajout */}
+      <div className="flex gap-2">
+        <Button
+          variant="outline" size="sm" className="h-7 text-xs"
+          onClick={() => addExigence("formateur")}
+        >
+          <Plus className="h-3 w-3 mr-1" />
+          <span className="text-blue-600 font-medium">Formateur</span>
+          <span className="ml-1">→ Salle</span>
+        </Button>
+        <Button
+          variant="outline" size="sm" className="h-7 text-xs"
+          onClick={() => addExigence("groupe")}
+        >
+          <Plus className="h-3 w-3 mr-1" />
+          <span className="text-amber-600 font-medium">Groupe</span>
+          <span className="ml-1">→ Salle</span>
+        </Button>
+      </div>
+    </div>
+  );
+
+  // ─── Render principal ──────────────────────────────────────────────────────
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-gray-700">
-          Contraintes hard (indisponibilités)
+          Contraintes dures (hard)
         </h3>
         <Button size="sm" onClick={save} disabled={!dirty || loading}>
           <Save className="h-3.5 w-3.5 mr-1.5" />
@@ -293,90 +436,8 @@ export default function HardConstraintsTab() {
           </TabsContent>
         ))}
 
-        <TabsContent value="exigences" className="mt-3 space-y-2">
-          {data.exigences_specifiques.length === 0 && (
-            <p className="text-xs text-gray-400 italic">Aucune exigence spécifique.</p>
-          )}
-
-          {data.exigences_specifiques.map((ex, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-2 flex-wrap bg-gray-50 rounded p-2"
-            >
-              <div className="flex flex-col gap-0.5">
-                <span className="text-[10px] text-gray-400">Formateur</span>
-                <Select
-                  value={ex.formateur ?? "__none__"}
-                  onValueChange={(v) =>
-                    updateExigence(i, { formateur: v === "__none__" ? undefined : v })
-                  }
-                >
-                  <SelectTrigger className="h-7 w-32 text-xs">
-                    <SelectValue placeholder="— aucun —" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="__none__">— aucun —</SelectItem>
-                    {teachers.map((t) => (
-                      <SelectItem key={t.id} value={t.id}>{t.id}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <span className="text-gray-400 text-sm mt-3">→</span>
-
-              <div className="flex flex-col gap-0.5">
-                <span className="text-[10px] text-gray-400">Salle oblig.</span>
-                <Select
-                  value={ex.salle_obligatoire}
-                  onValueChange={(v) => updateExigence(i, { salle_obligatoire: v })}
-                >
-                  <SelectTrigger className="h-7 w-24 text-xs">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {salles.map((s) => (
-                      <SelectItem key={s} value={s}>{s}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex flex-col gap-0.5">
-                <span className="text-[10px] text-gray-400">Module</span>
-                <Select
-                  value={ex.module ?? "__none__"}
-                  onValueChange={(v) =>
-                    updateExigence(i, { module: v === "__none__" ? undefined : v })
-                  }
-                >
-                  <SelectTrigger className="h-7 w-32 text-xs">
-                    <SelectValue placeholder="— aucun —" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="__none__">— aucun —</SelectItem>
-                    {modules.map((m) => (
-                      <SelectItem key={m} value={m}>{m}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <Button
-                variant="ghost" size="icon" className="h-7 w-7 mt-3 ml-auto"
-                onClick={() => removeExigence(i)}
-              >
-                <Trash2 className="h-3.5 w-3.5 text-red-500" />
-              </Button>
-            </div>
-          ))}
-
-          <Button
-            variant="outline" size="sm" className="h-7 text-xs"
-            onClick={addExigence}
-          >
-            <Plus className="h-3 w-3 mr-1" /> Ajouter
-          </Button>
+        <TabsContent value="exigences" className="mt-3">
+          {renderExigences()}
         </TabsContent>
       </Tabs>
     </div>
