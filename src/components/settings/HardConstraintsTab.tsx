@@ -12,6 +12,21 @@ import { useToast } from "@/components/ui/use-toast";
 import { Save, Plus, Trash2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+const API_BASE = (import.meta.env.VITE_API_BASE as string | undefined) ?? "";
+const API = API_BASE.replace(/\/+$/, "");
+
+const apiFetch = (path: string, init?: RequestInit) => {
+  const token = localStorage.getItem("token");
+  return fetch(`${API}${path}`, {
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(init?.headers ?? {}),
+    },
+  });
+};
+
 interface Indispo {
   type: "formateur" | "groupe" | "salle";
   id: string;
@@ -30,9 +45,10 @@ interface HardData {
   exigences_specifiques: Exigence[];
 }
 
-interface Teacher { id: string; name: string; }
-
-const API = "/api/admin";
+interface Teacher {
+  id: string;
+  name: string;
+}
 
 export default function HardConstraintsTab() {
   const { toast } = useToast();
@@ -51,12 +67,12 @@ export default function HardConstraintsTab() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`${API}/indispo/hard`).then((r) => r.json()),
-      fetch(`${API}/catalog/teachers`).then((r) => r.json()),
-      fetch(`${API}/catalog/groups`).then((r) => r.json()),
-      fetch(`${API}/catalog/modules`).then((r) => r.json()),
-      fetch(`${API}/config/meta`).then((r) => r.json()),
-      fetch(`${API}/config/rooms`).then((r) => r.json()),
+      apiFetch("/api/admin/indispo/hard").then((r) => r.json()),
+      apiFetch("/api/admin/catalog/teachers").then((r) => r.json()),
+      apiFetch("/api/admin/catalog/groups").then((r) => r.json()),
+      apiFetch("/api/admin/catalog/modules").then((r) => r.json()),
+      apiFetch("/api/admin/config/meta").then((r) => r.json()),
+      apiFetch("/api/admin/config/rooms").then((r) => r.json()),
     ]).then(([hard, cat, grp, mod, cfg, rooms]) => {
       setData({
         indisponibilites: hard.indisponibilites ?? [],
@@ -76,26 +92,21 @@ export default function HardConstraintsTab() {
   const save = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API}/indispo/hard`, {
+      const res = await apiFetch("/api/admin/indispo/hard", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
       if (!res.ok) throw new Error("Erreur serveur");
       toast({ title: "Contraintes hard sauvegardées" });
       setDirty(false);
     } catch (e: any) {
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: e?.message,
-      });
+      toast({ variant: "destructive", title: "Erreur", description: e?.message });
     } finally {
       setLoading(false);
     }
   };
 
-  // ---- Helpers indispos ----
+  // ---- Indispos ----
   const addIndispo = (type: Indispo["type"]) => {
     const defaultId =
       type === "formateur"
@@ -113,33 +124,33 @@ export default function HardConstraintsTab() {
     mark();
   };
 
-  const updateIndispo = (globalIdx: number, patch: Partial<Indispo>) => {
+  const updateIndispo = (gi: number, patch: Partial<Indispo>) => {
     setData((d) => ({
       ...d,
       indisponibilites: d.indisponibilites.map((x, i) =>
-        i === globalIdx ? { ...x, ...patch } : x
+        i === gi ? { ...x, ...patch } : x
       ),
     }));
     mark();
   };
 
-  const removeIndispo = (globalIdx: number) => {
+  const removeIndispo = (gi: number) => {
     setData((d) => ({
       ...d,
-      indisponibilites: d.indisponibilites.filter((_, i) => i !== globalIdx),
+      indisponibilites: d.indisponibilites.filter((_, i) => i !== gi),
     }));
     mark();
   };
 
-  const toggleCreneau = (globalIdx: number, cr: number) => {
-    const curr = data.indisponibilites[globalIdx].creneaux;
+  const toggleCreneau = (gi: number, cr: number) => {
+    const curr = data.indisponibilites[gi].creneaux;
     const next = curr.includes(cr)
       ? curr.filter((x) => x !== cr)
       : [...curr, cr].sort((a, b) => a - b);
-    updateIndispo(globalIdx, { creneaux: next });
+    updateIndispo(gi, { creneaux: next });
   };
 
-  // ---- Helpers exigences ----
+  // ---- Exigences ----
   const addExigence = () => {
     setData((d) => ({
       ...d,
@@ -169,7 +180,7 @@ export default function HardConstraintsTab() {
     mark();
   };
 
-  // ---- Rendu liste indispos par type ----
+  // ---- Rendu liste indispos ----
   const renderIndispoList = (type: Indispo["type"]) => {
     const options =
       type === "formateur"
@@ -187,13 +198,11 @@ export default function HardConstraintsTab() {
         {items.length === 0 && (
           <p className="text-xs text-gray-400 italic">Aucune indisponibilité.</p>
         )}
-
         {items.map(({ _gi, ...indispo }) => (
           <div
             key={_gi}
             className="flex items-center gap-2 flex-wrap bg-gray-50 rounded p-2"
           >
-            {/* ID (formateur / groupe / salle) */}
             <Select
               value={indispo.id}
               onValueChange={(v) => updateIndispo(_gi, { id: v })}
@@ -208,7 +217,6 @@ export default function HardConstraintsTab() {
               </SelectContent>
             </Select>
 
-            {/* Jour */}
             <Select
               value={indispo.jour}
               onValueChange={(v) => updateIndispo(_gi, { jour: v })}
@@ -223,7 +231,6 @@ export default function HardConstraintsTab() {
               </SelectContent>
             </Select>
 
-            {/* Créneaux (toggle buttons) */}
             <div className="flex gap-1">
               {creneaux.map((cr) => (
                 <button
@@ -242,9 +249,7 @@ export default function HardConstraintsTab() {
             </div>
 
             <Button
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7 ml-auto"
+              variant="ghost" size="icon" className="h-7 w-7 ml-auto"
               onClick={() => removeIndispo(_gi)}
             >
               <Trash2 className="h-3.5 w-3.5 text-red-500" />
@@ -253,9 +258,7 @@ export default function HardConstraintsTab() {
         ))}
 
         <Button
-          variant="outline"
-          size="sm"
-          className="h-7 text-xs"
+          variant="outline" size="sm" className="h-7 text-xs"
           onClick={() => addIndispo(type)}
         >
           <Plus className="h-3 w-3 mr-1" /> Ajouter
@@ -266,7 +269,6 @@ export default function HardConstraintsTab() {
 
   return (
     <div className="space-y-4">
-      {/* En-tête */}
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-gray-700">
           Contraintes hard (indisponibilités)
@@ -279,28 +281,18 @@ export default function HardConstraintsTab() {
 
       <Tabs defaultValue="formateur">
         <TabsList className="h-8">
-          <TabsTrigger value="formateur" className="text-xs px-3">
-            Formateurs
-          </TabsTrigger>
-          <TabsTrigger value="groupe" className="text-xs px-3">
-            Groupes
-          </TabsTrigger>
-          <TabsTrigger value="salle" className="text-xs px-3">
-            Salles
-          </TabsTrigger>
-          <TabsTrigger value="exigences" className="text-xs px-3">
-            Exigences spéc.
-          </TabsTrigger>
+          <TabsTrigger value="formateur" className="text-xs px-3">Formateurs</TabsTrigger>
+          <TabsTrigger value="groupe" className="text-xs px-3">Groupes</TabsTrigger>
+          <TabsTrigger value="salle" className="text-xs px-3">Salles</TabsTrigger>
+          <TabsTrigger value="exigences" className="text-xs px-3">Exigences spéc.</TabsTrigger>
         </TabsList>
 
-        {/* Indisponibilités par type */}
         {(["formateur", "groupe", "salle"] as const).map((type) => (
           <TabsContent key={type} value={type} className="mt-3">
             {renderIndispoList(type)}
           </TabsContent>
         ))}
 
-        {/* Exigences spécifiques */}
         <TabsContent value="exigences" className="mt-3 space-y-2">
           {data.exigences_specifiques.length === 0 && (
             <p className="text-xs text-gray-400 italic">Aucune exigence spécifique.</p>
@@ -311,15 +303,12 @@ export default function HardConstraintsTab() {
               key={i}
               className="flex items-center gap-2 flex-wrap bg-gray-50 rounded p-2"
             >
-              {/* Formateur (optionnel) */}
               <div className="flex flex-col gap-0.5">
                 <span className="text-[10px] text-gray-400">Formateur</span>
                 <Select
                   value={ex.formateur ?? "__none__"}
                   onValueChange={(v) =>
-                    updateExigence(i, {
-                      formateur: v === "__none__" ? undefined : v,
-                    })
+                    updateExigence(i, { formateur: v === "__none__" ? undefined : v })
                   }
                 >
                   <SelectTrigger className="h-7 w-32 text-xs">
@@ -336,7 +325,6 @@ export default function HardConstraintsTab() {
 
               <span className="text-gray-400 text-sm mt-3">→</span>
 
-              {/* Salle obligatoire */}
               <div className="flex flex-col gap-0.5">
                 <span className="text-[10px] text-gray-400">Salle oblig.</span>
                 <Select
@@ -354,15 +342,12 @@ export default function HardConstraintsTab() {
                 </Select>
               </div>
 
-              {/* Module (optionnel) */}
               <div className="flex flex-col gap-0.5">
                 <span className="text-[10px] text-gray-400">Module</span>
                 <Select
                   value={ex.module ?? "__none__"}
                   onValueChange={(v) =>
-                    updateExigence(i, {
-                      module: v === "__none__" ? undefined : v,
-                    })
+                    updateExigence(i, { module: v === "__none__" ? undefined : v })
                   }
                 >
                   <SelectTrigger className="h-7 w-32 text-xs">
@@ -378,9 +363,7 @@ export default function HardConstraintsTab() {
               </div>
 
               <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7 mt-3 ml-auto"
+                variant="ghost" size="icon" className="h-7 w-7 mt-3 ml-auto"
                 onClick={() => removeExigence(i)}
               >
                 <Trash2 className="h-3.5 w-3.5 text-red-500" />
@@ -389,9 +372,7 @@ export default function HardConstraintsTab() {
           ))}
 
           <Button
-            variant="outline"
-            size="sm"
-            className="h-7 text-xs"
+            variant="outline" size="sm" className="h-7 text-xs"
             onClick={addExigence}
           >
             <Plus className="h-3 w-3 mr-1" /> Ajouter

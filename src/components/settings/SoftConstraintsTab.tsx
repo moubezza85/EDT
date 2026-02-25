@@ -14,6 +14,21 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { Save, Plus, Trash2 } from "lucide-react";
 
+const API_BASE = (import.meta.env.VITE_API_BASE as string | undefined) ?? "";
+const API = API_BASE.replace(/\/+$/, "");
+
+const apiFetch = (path: string, init?: RequestInit) => {
+  const token = localStorage.getItem("token");
+  return fetch(`${API}${path}`, {
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(init?.headers ?? {}),
+    },
+  });
+};
+
 interface SoftConstraint {
   id: string;
   type: string;
@@ -24,9 +39,10 @@ interface SoftConstraint {
   params?: Record<string, any>;
 }
 
-interface Teacher { id: string; name: string; }
-
-const API = "/api/admin";
+interface Teacher {
+  id: string;
+  name: string;
+}
 
 export default function SoftConstraintsTab() {
   const { toast } = useToast();
@@ -40,10 +56,10 @@ export default function SoftConstraintsTab() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`${API}/constraints/soft-list`).then((r) => r.json()),
-      fetch(`${API}/catalog/teachers`).then((r) => r.json()),
-      fetch(`${API}/config/meta`).then((r) => r.json()),
-      fetch(`${API}/config/rooms`).then((r) => r.json()),
+      apiFetch("/api/admin/constraints/soft-list").then((r) => r.json()),
+      apiFetch("/api/admin/catalog/teachers").then((r) => r.json()),
+      apiFetch("/api/admin/config/meta").then((r) => r.json()),
+      apiFetch("/api/admin/config/rooms").then((r) => r.json()),
     ]).then(([sc, cat, cfg, rooms]) => {
       setConstraints(Array.isArray(sc) ? sc : []);
       setTeacherIds((cat.teachers ?? []).map((t: Teacher) => t.id));
@@ -63,7 +79,9 @@ export default function SoftConstraintsTab() {
   const setPreferences = (idx: number, prefs: any) => {
     setConstraints((cs) =>
       cs.map((c, i) =>
-        i === idx ? { ...c, params: { ...(c.params ?? {}), preferences: prefs } } : c
+        i === idx
+          ? { ...c, params: { ...(c.params ?? {}), preferences: prefs } }
+          : c
       )
     );
     mark();
@@ -72,7 +90,9 @@ export default function SoftConstraintsTab() {
   const setParamKey = (idx: number, key: string, val: any) => {
     setConstraints((cs) =>
       cs.map((c, i) =>
-        i === idx ? { ...c, params: { ...(c.params ?? {}), [key]: val } } : c
+        i === idx
+          ? { ...c, params: { ...(c.params ?? {}), [key]: val } }
+          : c
       )
     );
     mark();
@@ -81,9 +101,8 @@ export default function SoftConstraintsTab() {
   const save = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API}/constraints/soft-list`, {
+      const res = await apiFetch("/api/admin/constraints/soft-list", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(constraints),
       });
       if (!res.ok) throw new Error("Erreur serveur");
@@ -97,9 +116,7 @@ export default function SoftConstraintsTab() {
   };
 
   // ---- Sous-formulaires paramètres ----
-
   const renderParams = (c: SoftConstraint, idx: number) => {
-    // Charge journalière : juste un max
     if (c.type === "charge_journaliere" || c.type === "charge_journaliere_for") {
       return (
         <div className="ml-4 mt-2 flex items-center gap-2">
@@ -116,7 +133,6 @@ export default function SoftConstraintsTab() {
       );
     }
 
-    // Préférence salle : formateur → salle
     if (c.type === "preference_salle") {
       const prefs: Record<string, string> = c.params?.preferences ?? {};
       return (
@@ -182,11 +198,9 @@ export default function SoftConstraintsTab() {
       );
     }
 
-    // Préférence créneaux : formateur → [{jour, creneaux[]}]
     if (c.type === "preference_creneaux") {
       const prefs: Record<string, { jour: string; creneaux: number[] }[]> =
         c.params?.preferences ?? {};
-
       return (
         <div className="ml-4 mt-2 space-y-3">
           <p className="text-xs text-gray-500 font-medium">Créneaux préférés par formateur :</p>
@@ -290,7 +304,6 @@ export default function SoftConstraintsTab() {
               </Button>
             </div>
           ))}
-
           <Button
             variant="outline" size="sm" className="h-7 text-xs"
             onClick={() => {
@@ -324,7 +337,6 @@ export default function SoftConstraintsTab() {
       <div className="space-y-3">
         {constraints.map((c, idx) => (
           <div key={c.id} className="rounded-lg border bg-white p-3 shadow-sm">
-            {/* En-tête : id + label + poids + switch */}
             <div className="flex items-start gap-3">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
@@ -339,7 +351,6 @@ export default function SoftConstraintsTab() {
                   <p className="text-xs text-gray-500 mt-0.5">{c.description}</p>
                 )}
               </div>
-
               <div className="flex items-center gap-3 shrink-0">
                 <div className="flex items-center gap-1.5">
                   <Label className="text-xs text-gray-500">Poids</Label>
@@ -360,11 +371,12 @@ export default function SoftConstraintsTab() {
                 />
               </div>
             </div>
-
-            {/* Sous-formulaire paramètres */}
             {c.params !== undefined && renderParams(c, idx)}
           </div>
         ))}
+        {constraints.length === 0 && (
+          <p className="text-sm text-muted-foreground italic">Aucune contrainte soft chargée.</p>
+        )}
       </div>
     </div>
   );

@@ -9,6 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import SoftConstraintsTab from "@/components/settings/SoftConstraintsTab";
+import HardConstraintsTab from "@/components/settings/HardConstraintsTab";
 
 const API_BASE = (import.meta.env.VITE_API_BASE as string | undefined) ?? "";
 
@@ -42,7 +44,6 @@ async function api<T>(path: string, init?: RequestInit): Promise<T> {
   const p = path.startsWith("/") ? path : `/${path}`;
   const url = `${base}${p}`;
 
-  // JWT: inclure le Bearer token pour éviter les 401 après activation de l'auth
   const token = localStorage.getItem("token");
   const authHeader: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
 
@@ -72,7 +73,7 @@ function uniqNumsSorted(arr: number[]) {
   return Array.from(new Set(arr.filter((x) => Number.isFinite(x)))).sort((a, b) => a - b);
 }
 
-// IMPORTANT: conserve l’ordre, n’applique pas de tri
+// IMPORTANT: conserve l'ordre, n'applique pas de tri
 function addUniqueKeepOrder(list: string[], value: string) {
   const v = value.trim();
   if (!v) return list;
@@ -548,133 +549,6 @@ function RoomsManager({
   );
 }
 
-function IndispoEditor({
-  scope,
-  entities,
-  jours,
-  creneaux,
-  labelById,
-}: {
-  scope: "teachers" | "groups" | "rooms";
-  entities: string[];
-  jours: string[];
-  creneaux: number[];
-  labelById?: Record<string, string>; // optionnel
-}) {
-  const { toast } = useToast();
-  const [selected, setSelected] = useState<string>("");
-  const [data, setData] = useState<IndispoMap>({});
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!selected) {
-      setData({});
-      return;
-    }
-    const load = async () => {
-      setLoading(true);
-      try {
-        const d = await api<IndispoMap>(`/api/admin/indispo/${scope}/${encodeURIComponent(selected)}`);
-        setData(d || {});
-      } catch (e: any) {
-        toast({ title: "Erreur", description: e.message, variant: "destructive" });
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected, scope]);
-
-  const isChecked = (jour: string, c: number) => {
-    const arr = Array.isArray(data?.[jour]) ? data[jour] : [];
-    return arr.includes(c);
-  };
-
-  const toggle = (jour: string, c: number) => {
-    setData((prev) => {
-      const arr = Array.isArray(prev[jour]) ? prev[jour] : [];
-      const next = arr.includes(c) ? arr.filter((x) => x !== c) : [...arr, c];
-      return { ...prev, [jour]: uniqNumsSorted(next) };
-    });
-  };
-
-  const save = async () => {
-    if (!selected) return;
-    try {
-      await api(`/api/admin/indispo/${scope}/${encodeURIComponent(selected)}`, {
-        method: "PUT",
-        body: JSON.stringify(data),
-      });
-      toast({ title: "OK", description: "Indisponibilités enregistrées." });
-    } catch (e: any) {
-      toast({ title: "Erreur", description: e.message, variant: "destructive" });
-    }
-  };
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>
-          Indisponibilités – {scope === "teachers" ? "Formateurs" : scope === "groups" ? "Groupes" : "Salles"}
-        </CardTitle>
-        <CardDescription>Sélectionnez une entité puis cochez les créneaux indisponibles.</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex items-center gap-2">
-          <Label className="min-w-32">Entité</Label>
-          <select
-            className="h-10 w-full rounded-md border bg-background px-3"
-            value={selected}
-            onChange={(e) => setSelected(e.target.value)}
-          >
-            <option value="">— sélectionner —</option>
-            {entities.map((id) => (
-              <option key={id} value={id}>
-                {labelById?.[id] ?? id}
-              </option>
-            ))}
-          </select>
-          <Button variant="secondary" onClick={save} disabled={!selected || loading}>
-            Enregistrer
-          </Button>
-        </div>
-
-        {!selected ? (
-          <div className="text-sm text-muted-foreground">Sélectionnez une entité pour éditer ses indisponibilités.</div>
-        ) : (
-          <div className="overflow-auto rounded-md border">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b">
-                  <th className="p-2 text-left">Jour</th>
-                  {creneaux.map((c) => (
-                    <th key={c} className="p-2 text-center">
-                      {c}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {jours.map((j) => (
-                  <tr key={j} className="border-b">
-                    <td className="p-2 font-medium">{j}</td>
-                    {creneaux.map((c) => (
-                      <td key={c} className="p-2 text-center">
-                        <input type="checkbox" checked={isChecked(j, c)} onChange={() => toggle(j, c)} />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-
 function normalizeMode(a: Assignment): Mode {
   return String(a?.mode ?? "PRESENTIEL").toUpperCase() === "ONLINE" ? "ONLINE" : "PRESENTIEL";
 }
@@ -709,7 +583,6 @@ function OnlineFusionsManager({ groups }: { groups: string[] }) {
     setSelected((prev) => (prev.includes(g) ? prev.filter((x) => x !== g) : [...prev, g]));
   };
 
-  // ID auto: tri stable + join "_"
   const fusionId = useMemo(() => {
     const parts = selected.map((x) => x.trim()).filter(Boolean).sort((a, b) => a.localeCompare(b));
     return parts.length >= 2 ? parts.join("_") : "";
@@ -731,7 +604,7 @@ function OnlineFusionsManager({ groups }: { groups: string[] }) {
         method: "POST",
         body: JSON.stringify({ id: fusionId, groupes: selected }),
       });
-      toast({ title: "OK", description: `Fusion créée : ${fusionId}` });
+      toast({ title: "OK", description: `Fusion créée : ${fusionId}` });
       setSelected([]);
       await load();
     } catch (e: any) {
@@ -761,12 +634,11 @@ function OnlineFusionsManager({ groups }: { groups: string[] }) {
       <CardHeader>
         <CardTitle>Fusions en ligne</CardTitle>
         <CardDescription>
-          Sélectionnez au moins 2 groupes physiques puis créez la fusion. L’ID est généré automatiquement.
+          Sélectionnez au moins 2 groupes physiques puis créez la fusion. L'ID est généré automatiquement.
         </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {/* Création */}
         <div className="rounded-md border p-3 space-y-3">
           <div className="grid gap-3 md:grid-cols-2">
             <div className="space-y-2">
@@ -834,7 +706,6 @@ function OnlineFusionsManager({ groups }: { groups: string[] }) {
           </div>
         </div>
 
-        {/* Liste */}
         <div className="rounded-md border">
           <div className="grid grid-cols-12 gap-2 border-b px-3 py-2 text-sm font-medium">
             <div className="col-span-4">ID</div>
@@ -876,29 +747,23 @@ function OnlineFusionsManager({ groups }: { groups: string[] }) {
 export default function Settings() {
   const { toast } = useToast();
 
-  // référentiels
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [groups, setGroups] = useState<string[]>([]);
   const [modules, setModules] = useState<string[]>([]);
   const [onlineFusions, setOnlineFusions] = useState<OnlineFusion[]>([]);
-
-  // affectations
   const [assignments, setAssignments] = useState<Assignment[]>([]);
 
-  // Présentiel form
   const [pGroup, setPGroup] = useState("");
   const [pModule, setPModule] = useState("");
   const [pTeacher, setPTeacher] = useState("");
 
-  // Online form
   const [oGroup, setOGroup] = useState("");
   const [oModule, setOModule] = useState("");
   const [oTeacher, setOTeacher] = useState("");
 
-  // config meta + salles
   const [meta, setMeta] = useState<ConfigMeta>({
     nomEtablissement: "",
-    jours: ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"], // ordre conservé
+    jours: ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
     creneaux: [1, 2, 3, 4],
     maxSessionsPerDayTeacher: 3,
     maxSessionsPerDayGroup: 3,
@@ -907,19 +772,17 @@ export default function Settings() {
   const [roomTypes, setRoomTypes] = useState<RoomType[]>([]);
   const [rooms, setRooms] = useState<Room[]>([]);
 
-  // soft constraints
+  // kept for backward compat (constraints/soft legacy endpoint)
   const [soft, setSoft] = useState<SoftConstraints>({});
 
   const loadOnlineFusions = async () => {
-    // Stratégie défensive: on tente un endpoint dédié, sinon fallback.
     try {
       const d = await api<{ onlineFusions: OnlineFusion[] }>("/api/admin/catalog/online-fusions");
       setOnlineFusions(Array.isArray(d?.onlineFusions) ? d.onlineFusions : []);
       return;
     } catch {
-      // fallback: certains backends mettent onlineFusions dans /api/admin/catalog
+      // fallback
     }
-
     try {
       const d = await api<any>("/api/admin/catalog");
       const f = d?.onlineFusions;
@@ -956,7 +819,6 @@ export default function Settings() {
 
       setRoomTypes(Array.isArray(rs?.typeSalle) ? rs.typeSalle : []);
       setRooms(Array.isArray(rs?.salles) ? rs.salles : []);
-
       setSoft(sc?.soft ?? {});
       await loadOnlineFusions();
     } catch (e: any) {
@@ -997,9 +859,7 @@ export default function Settings() {
     try {
       await saveAssignment("PRESENTIEL", pGroup, pModule, pTeacher);
       toast({ title: "OK", description: "Affectation présentiel enregistrée." });
-      setPGroup("");
-      setPModule("");
-      setPTeacher("");
+      setPGroup(""); setPModule(""); setPTeacher("");
       await refreshAssignments();
     } catch (e: any) {
       toast({ title: "Erreur", description: e.message, variant: "destructive" });
@@ -1011,9 +871,7 @@ export default function Settings() {
     try {
       await saveAssignment("ONLINE", oGroup, oModule, oTeacher);
       toast({ title: "OK", description: "Affectation en ligne enregistrée." });
-      setOGroup("");
-      setOModule("");
-      setOTeacher("");
+      setOGroup(""); setOModule(""); setOTeacher("");
       await refreshAssignments();
     } catch (e: any) {
       toast({ title: "Erreur", description: e.message, variant: "destructive" });
@@ -1035,7 +893,6 @@ export default function Settings() {
 
   const saveMeta = async () => {
     try {
-      // IMPORTANT: jours conservés dans l’ordre (pas de tri).
       const cleaned: ConfigMeta = {
         nomEtablissement: meta.nomEtablissement ?? "",
         jours: (meta.jours || []).map((x) => x.trim()).filter(Boolean),
@@ -1043,7 +900,6 @@ export default function Settings() {
         maxSessionsPerDayTeacher: Number(meta.maxSessionsPerDayTeacher ?? 3),
         maxSessionsPerDayGroup: Number(meta.maxSessionsPerDayGroup ?? 3),
       };
-
       await api("/api/admin/config/meta", { method: "PUT", body: JSON.stringify(cleaned) });
       toast({ title: "OK", description: "Configuration enregistrée." });
       setMeta(cleaned);
@@ -1052,6 +908,7 @@ export default function Settings() {
     }
   };
 
+  // kept for legacy (unused in new UI but preserved for API compatibility)
   const saveSoft = async () => {
     try {
       await api("/api/admin/constraints/soft", { method: "PUT", body: JSON.stringify({ soft }) });
@@ -1060,12 +917,8 @@ export default function Settings() {
       toast({ title: "Erreur", description: e.message, variant: "destructive" });
     }
   };
+  void saveSoft; // silence unused warning
 
-  const softKeys = useMemo(() => Object.keys(soft).sort((a, b) => a.localeCompare(b)), [soft]);
-
-  const teacherIds = useMemo(() => teachers.map((t) => t.id), [teachers]);
-
-  // Mapping id -> "Nom (id)" pour les indisponibilités (Formateurs)
   const teacherLabelById = useMemo(() => {
     const rec: Record<string, string> = {};
     for (const t of teachers) {
@@ -1077,24 +930,19 @@ export default function Settings() {
     return rec;
   }, [teachers]);
 
-  // Options groupe ONLINE = groupes + fusions
   const onlineGroupOptions = useMemo(() => {
     const opts: { value: string; label: string }[] = [];
-
     for (const g of groups) {
       const id = String(g).trim();
       if (!id) continue;
       opts.push({ value: id, label: id });
     }
-
     for (const f of onlineFusions) {
       const id = String(f?.id ?? "").trim();
       const arr = Array.isArray(f?.groupes) ? f.groupes.map((x) => String(x).trim()).filter(Boolean) : [];
       if (!id) continue;
       opts.push({ value: id, label: arr.length ? `${arr.join(" + ")} (online)` : `${id} (online)` });
     }
-
-    // uniq by value
     const seen = new Set<string>();
     return opts.filter((x) => {
       if (seen.has(x.value)) return false;
@@ -1137,6 +985,7 @@ export default function Settings() {
           <TabsTrigger value="indispo">Indisponibilités</TabsTrigger>
         </TabsList>
 
+        {/* ---- RÉFÉRENTIEL ---- */}
         <TabsContent value="referentiel" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-3">
             <TeacherManager />
@@ -1158,11 +1007,10 @@ export default function Settings() {
               keyName="modules"
               placeholder="ex: DEV_M103"
             />
-      
-
           </div>
         </TabsContent>
 
+        {/* ---- AFFECTATIONS ---- */}
         <TabsContent value="affectations" className="space-y-4">
           <Tabs defaultValue="presentiel" className="space-y-4">
             <TabsList>
@@ -1170,13 +1018,12 @@ export default function Settings() {
               <TabsTrigger value="online">En ligne</TabsTrigger>
             </TabsList>
 
-            {/* PRESENTIEL */}
             <TabsContent value="presentiel" className="space-y-4">
               <Card>
                 <CardHeader>
                   <CardTitle>Affectations Présentiel</CardTitle>
                   <CardDescription>
-                    Clé unique : (mode, groupe, module). Une nouvelle affectation remplace l’ancienne.
+                    Clé unique : (mode, groupe, module). Une nouvelle affectation remplace l'ancienne.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -1190,13 +1037,10 @@ export default function Settings() {
                       >
                         <option value="">— sélectionner —</option>
                         {groups.map((x) => (
-                          <option key={x} value={x}>
-                            {x}
-                          </option>
+                          <option key={x} value={x}>{x}</option>
                         ))}
                       </select>
                     </div>
-
                     <div className="space-y-2">
                       <Label>Module</Label>
                       <select
@@ -1206,13 +1050,10 @@ export default function Settings() {
                       >
                         <option value="">— sélectionner —</option>
                         {modules.map((x) => (
-                          <option key={x} value={x}>
-                            {x}
-                          </option>
+                          <option key={x} value={x}>{x}</option>
                         ))}
                       </select>
                     </div>
-
                     <div className="space-y-2">
                       <Label>Formateur</Label>
                       <select
@@ -1231,7 +1072,6 @@ export default function Settings() {
                           ))}
                       </select>
                     </div>
-
                     <div className="flex items-end">
                       <Button className="w-full" onClick={addOrUpdatePresentiel} disabled={!canAddPresentiel}>
                         Enregistrer
@@ -1248,7 +1088,6 @@ export default function Settings() {
                       <div className="col-span-3">Formateur</div>
                       <div className="col-span-1 text-right">Action</div>
                     </div>
-
                     {presentielAssignments.length === 0 ? (
                       <div className="px-3 py-3 text-sm text-muted-foreground">Aucune affectation présentiel.</div>
                     ) : (
@@ -1277,7 +1116,6 @@ export default function Settings() {
               </Card>
             </TabsContent>
 
-            {/* ONLINE */}
             <TabsContent value="online" className="space-y-4">
               <Card>
                 <CardHeader>
@@ -1297,13 +1135,10 @@ export default function Settings() {
                       >
                         <option value="">— sélectionner —</option>
                         {onlineGroupOptions.map((x) => (
-                          <option key={x.value} value={x.value}>
-                            {x.label}
-                          </option>
+                          <option key={x.value} value={x.value}>{x.label}</option>
                         ))}
                       </select>
                     </div>
-
                     <div className="space-y-2">
                       <Label>Module</Label>
                       <select
@@ -1313,13 +1148,10 @@ export default function Settings() {
                       >
                         <option value="">— sélectionner —</option>
                         {modules.map((x) => (
-                          <option key={x} value={x}>
-                            {x}
-                          </option>
+                          <option key={x} value={x}>{x}</option>
                         ))}
                       </select>
                     </div>
-
                     <div className="space-y-2">
                       <Label>Formateur</Label>
                       <select
@@ -1338,7 +1170,6 @@ export default function Settings() {
                           ))}
                       </select>
                     </div>
-
                     <div className="flex items-end">
                       <Button className="w-full" onClick={addOrUpdateOnline} disabled={!canAddOnline}>
                         Enregistrer
@@ -1355,7 +1186,6 @@ export default function Settings() {
                       <div className="col-span-3">Formateur</div>
                       <div className="col-span-1 text-right">Action</div>
                     </div>
-
                     {onlineAssignments.length === 0 ? (
                       <div className="px-3 py-3 text-sm text-muted-foreground">Aucune affectation en ligne.</div>
                     ) : (
@@ -1387,8 +1217,8 @@ export default function Settings() {
           </Tabs>
         </TabsContent>
 
+        {/* ---- CONFIG ---- */}
         <TabsContent value="config" className="space-y-4">
-          {/* inchangé */}
           <Card>
             <CardHeader>
               <CardTitle>Configuration</CardTitle>
@@ -1397,14 +1227,13 @@ export default function Settings() {
             <CardContent className="space-y-5">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label>Nom de l’établissement</Label>
+                  <Label>Nom de l'établissement</Label>
                   <Input
                     value={meta.nomEtablissement}
                     onChange={(e) => setMeta((p) => ({ ...p, nomEtablissement: e.target.value }))}
                     placeholder="Ex: OFPPT ... "
                   />
                 </div>
-
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Max séances/jour/formateur</Label>
@@ -1439,13 +1268,9 @@ export default function Settings() {
               <div className="space-y-2">
                 <Label>Créneaux</Label>
                 <p className="text-xs text-muted-foreground">
-                  Les créneaux sont triés numériquement lors de l’enregistrement (cohérence solveur).
+                  Les créneaux sont triés numériquement lors de l'enregistrement (cohérence solveur).
                 </p>
-                <div className="flex gap-2">
-                  <Input value="" placeholder="(édition via ajout ci-dessous)" disabled />
-                </div>
               </div>
-
               <div className="space-y-2">
                 <div className="flex flex-wrap gap-2">
                   {meta.creneaux.map((c) => (
@@ -1460,7 +1285,9 @@ export default function Settings() {
                       </button>
                     </span>
                   ))}
-                  {meta.creneaux.length === 0 && <span className="text-sm text-muted-foreground">Aucun créneau</span>}
+                  {meta.creneaux.length === 0 && (
+                    <span className="text-sm text-muted-foreground">Aucun créneau</span>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <Input
@@ -1476,14 +1303,7 @@ export default function Settings() {
                       }
                     }}
                   />
-                  <Button
-                    type="button"
-                    onClick={() => {
-                      const el = document.activeElement as HTMLInputElement | null;
-                      if (el) el.blur();
-                    }}
-                    variant="secondary"
-                  >
+                  <Button type="button" variant="secondary">
                     OK
                   </Button>
                 </div>
@@ -1496,107 +1316,19 @@ export default function Settings() {
           </Card>
         </TabsContent>
 
+        {/* ---- SALLES ---- */}
         <TabsContent value="salles" className="space-y-4">
           <RoomsManager roomTypes={roomTypes} rooms={rooms} onReload={reloadRooms} />
         </TabsContent>
 
+        {/* ---- CONTRAINTES SOFT (nouveau: soft.json) ---- */}
         <TabsContent value="constraints" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Contraintes soft</CardTitle>
-              <CardDescription>Activer/désactiver et régler la pondération uniquement.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {softKeys.length === 0 ? (
-                <div className="text-sm text-muted-foreground">Aucune contrainte soft définie côté backend.</div>
-              ) : (
-                <div className="space-y-3">
-                  {softKeys.map((k) => {
-                    const row = soft[k];
-                    return (
-                      <div key={k} className="rounded-md border p-3">
-                        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                          <div className="space-y-1">
-                            <div className="font-medium">{row?.label || k}</div>
-                            <div className="text-xs text-muted-foreground">Clé: {k}</div>
-                          </div>
-
-                          <div className="flex flex-col gap-3 md:flex-row md:items-center">
-                            <div className="flex items-center gap-2">
-                              <Label>Actif</Label>
-                              <Switch
-                                checked={Boolean(row?.enabled)}
-                                onCheckedChange={(v) =>
-                                  setSoft((p) => ({
-                                    ...p,
-                                    [k]: { ...(p[k] || { enabled: false, weight: 1 }), enabled: v },
-                                  }))
-                                }
-                              />
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                              <Label>Pondération</Label>
-                              <Input
-                                className="w-24"
-                                type="number"
-                                value={Number(row?.weight ?? 1)}
-                                onChange={(e) =>
-                                  setSoft((p) => ({
-                                    ...p,
-                                    [k]: { ...(p[k] || { enabled: false, weight: 1 }), weight: Number(e.target.value) },
-                                  }))
-                                }
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              <div className="flex justify-end">
-                <Button onClick={saveSoft} disabled={softKeys.length === 0}>
-                  Enregistrer
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <SoftConstraintsTab />
         </TabsContent>
 
+        {/* ---- INDISPONIBILITÉS (nouveau: hard.json) ---- */}
         <TabsContent value="indispo" className="space-y-4">
-          <Tabs defaultValue="teachers" className="space-y-4">
-            <TabsList>
-              <TabsTrigger value="teachers">Formateurs</TabsTrigger>
-              <TabsTrigger value="groups">Groupes</TabsTrigger>
-              <TabsTrigger value="rooms">Salles</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="teachers">
-              <IndispoEditor
-                scope="teachers"
-                entities={teacherIds}
-                jours={meta.jours}
-                creneaux={meta.creneaux}
-                labelById={teacherLabelById}
-              />
-            </TabsContent>
-
-            <TabsContent value="groups">
-              <IndispoEditor scope="groups" entities={groups} jours={meta.jours} creneaux={meta.creneaux} />
-            </TabsContent>
-
-            <TabsContent value="rooms">
-              <IndispoEditor
-                scope="rooms"
-                entities={rooms.map((r) => r.id)}
-                jours={meta.jours}
-                creneaux={meta.creneaux}
-              />
-            </TabsContent>
-          </Tabs>
+          <HardConstraintsTab />
         </TabsContent>
       </Tabs>
     </div>
