@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import HardConstraintsTab from "@/components/settings/HardConstraintsTab";
 import SoftConstraintsTab from "@/components/settings/SoftConstraintsTab";
 
@@ -102,13 +103,14 @@ function OrderedTagEditor({
   );
 }
 
-// ── Config Tab (Paramètres) ─────────────────────────────────────────────────
+// ── Config Tab ─────────────────────────────────────────────────────────────
 type ConfigMeta = {
   nomEtablissement: string;
   jours: string[];
   creneaux: number[];
   maxSessionsPerDayTeacher: number;
   maxSessionsPerDayGroup: number;
+  massHoraireMinimale: number;
 };
 
 function ConfigTab() {
@@ -119,6 +121,7 @@ function ConfigTab() {
     creneaux: [1, 2, 3, 4],
     maxSessionsPerDayTeacher: 3,
     maxSessionsPerDayGroup: 3,
+    massHoraireMinimale: 26,
   });
   const [loading, setLoading] = useState(false);
 
@@ -132,6 +135,7 @@ function ConfigTab() {
         creneaux: Array.isArray(cm?.creneaux) ? cm.creneaux : [],
         maxSessionsPerDayTeacher: Number(cm?.maxSessionsPerDayTeacher ?? 3),
         maxSessionsPerDayGroup: Number(cm?.maxSessionsPerDayGroup ?? 3),
+        massHoraireMinimale: Number(cm?.massHoraireMinimale ?? 26),
       });
     } catch (e: any) {
       toast({ variant: "destructive", title: "Erreur chargement", description: e.message });
@@ -140,9 +144,7 @@ function ConfigTab() {
     }
   }, [toast]);
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  useEffect(() => { load(); }, [load]);
 
   const save = async () => {
     setLoading(true);
@@ -153,6 +155,7 @@ function ConfigTab() {
         creneaux: uniqNumsSorted((meta.creneaux || []).map((x) => Number(x))),
         maxSessionsPerDayTeacher: Number(meta.maxSessionsPerDayTeacher ?? 3),
         maxSessionsPerDayGroup: Number(meta.maxSessionsPerDayGroup ?? 3),
+        massHoraireMinimale: Number(meta.massHoraireMinimale ?? 26),
       };
       await httpJson("/api/admin/config/meta", { method: "PUT", body: JSON.stringify(cleaned) });
       toast({ title: "Configuration enregistrée ✓" });
@@ -176,7 +179,7 @@ function ConfigTab() {
             disabled={loading}
           />
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-3">
           <div className="space-y-2">
             <Label>Max séances/jour/formateur</Label>
             <Input
@@ -193,6 +196,16 @@ function ConfigTab() {
               value={meta.maxSessionsPerDayGroup}
               onChange={(e) => setMeta((p) => ({ ...p, maxSessionsPerDayGroup: Number(e.target.value) }))}
               disabled={loading}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Masse horaire minimale (h)</Label>
+            <Input
+              type="number"
+              value={meta.massHoraireMinimale}
+              onChange={(e) => setMeta((p) => ({ ...p, massHoraireMinimale: Number(e.target.value) }))}
+              disabled={loading}
+              placeholder="26"
             />
           </div>
         </div>
@@ -212,7 +225,7 @@ function ConfigTab() {
       <div className="space-y-2">
         <Label>Créneaux</Label>
         <p className="text-xs text-muted-foreground">
-          Les créneaux sont triés numériquement lors de l'enregistrement (cohérence solveur).
+          Les créneaux sont triés numériquement lors de l'enregistrement.
         </p>
       </div>
       <div className="space-y-2">
@@ -223,11 +236,8 @@ function ConfigTab() {
               <button
                 className="text-muted-foreground hover:text-foreground"
                 onClick={() => setMeta((p) => ({ ...p, creneaux: p.creneaux.filter((x) => x !== c) }))}
-                title="Supprimer"
                 disabled={loading}
-              >
-                ×
-              </button>
+              >×</button>
             </span>
           ))}
           {meta.creneaux.length === 0 && <span className="text-sm text-muted-foreground">Aucun créneau</span>}
@@ -254,10 +264,437 @@ function ConfigTab() {
         <Button onClick={save} disabled={loading}>
           {loading ? "Sauvegarde…" : "💾 Enregistrer"}
         </Button>
-        <Button variant="outline" onClick={load} disabled={loading}>
-          ↻ Recharger
-        </Button>
+        <Button variant="outline" onClick={load} disabled={loading}>↻ Recharger</Button>
       </div>
+    </div>
+  );
+}
+
+// ── Types Séances ───────────────────────────────────────────────────────────
+type SeanceMode = "PRESENTIEL" | "DISTANCIEL";
+
+interface Seance {
+  id: string;
+  teacher: string;      // matricule
+  group: string;
+  module: string;
+  volume: number;       // nombre de séances
+  mode: SeanceMode;
+}
+
+interface TeacherInfo {
+  id: string;
+  name: string;
+}
+
+interface Assignment {
+  teacher: string;
+  group: string;
+  module: string;
+  mode: string;
+}
+
+// ── Séances Tab ─────────────────────────────────────────────────────────────
+function SeancesTab() {
+  const { toast } = useToast();
+  const [seances, setSeances] = useState<Seance[]>([]);
+  const [teachers, setTeachers] = useState<TeacherInfo[]>([]);
+  const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [massMin, setMassMin] = useState<number>(26);
+  const [loading, setLoading] = useState(false);
+
+  // Modale ajout
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedTeacher, setSelectedTeacher] = useState<string>("");
+  const [newSeance, setNewSeance] = useState<Partial<Seance>>({
+    mode: "PRESENTIEL",
+    volume: 1,
+  });
+
+  // volumes locaux en cours d'édition
+  const [localVolumes, setLocalVolumes] = useState<Record<string, number>>({});
+
+  const HEURES_PAR_SEANCE = 2.5;
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [seancesData, catalogData, configData] = await Promise.all([
+        httpJson<{ seances: Seance[] }>("/api/admin/seances"),
+        httpJson<{ teachers: TeacherInfo[]; assignments: Assignment[] }>("/api/admin/catalog/teachers").then(
+          async (t) => {
+            const asgn = await httpJson<{ assignments: Assignment[] }>("/api/admin/catalog/assignments");
+            return { teachers: t.teachers, assignments: asgn.assignments };
+          }
+        ),
+        httpJson<{ massHoraireMinimale?: number }>("/api/admin/config/meta"),
+      ]);
+      setSeances(seancesData.seances || []);
+      setTeachers(catalogData.teachers || []);
+      setAssignments(catalogData.assignments || []);
+      setMassMin(Number(configData.massHoraireMinimale ?? 26));
+    } catch (e: any) {
+      toast({ variant: "destructive", title: "Erreur chargement", description: e.message });
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
+
+  useEffect(() => { load(); }, [load]);
+
+  // Calcul heures par formateur
+  const heuresByTeacher = (teacherId: string) => {
+    const total = seances
+      .filter((s) => s.teacher === teacherId)
+      .reduce((sum, s) => sum + (s.volume || 0), 0);
+    return total * HEURES_PAR_SEANCE;
+  };
+
+  // Formateurs sous le seuil
+  const teachersUnderThreshold = teachers.filter(
+    (t) => heuresByTeacher(t.id) < massMin
+  );
+
+  // Modules affectés à un formateur
+  const modulesForTeacher = (teacherId: string) => {
+    return [...new Set(
+      assignments
+        .filter((a) => a.teacher === teacherId)
+        .map((a) => a.module)
+    )];
+  };
+
+  // Groupes disponibles pour un formateur+module
+  const groupsForTeacherModule = (teacherId: string, module: string) => {
+    return assignments
+      .filter((a) => a.teacher === teacherId && a.module === module)
+      .map((a) => a.group);
+  };
+
+  const getTeacherName = (id: string) =>
+    teachers.find((t) => t.id === id)?.name ?? id;
+
+  // Ouvre modal pour un formateur
+  const openModal = (teacherId: string) => {
+    setSelectedTeacher(teacherId);
+    const mods = modulesForTeacher(teacherId);
+    setNewSeance({
+      mode: "PRESENTIEL",
+      volume: 1,
+      module: mods[0] ?? "",
+      group: mods[0] ? groupsForTeacherModule(teacherId, mods[0])[0] ?? "" : "",
+    });
+    setModalOpen(true);
+  };
+
+  const handleAddSeance = async () => {
+    if (!selectedTeacher || !newSeance.group || !newSeance.module) {
+      toast({ variant: "destructive", title: "Champs requis", description: "Groupe, module requis." });
+      return;
+    }
+    try {
+      await httpJson("/api/admin/seances", {
+        method: "POST",
+        body: JSON.stringify({
+          teacher: selectedTeacher,
+          group: newSeance.group,
+          module: newSeance.module,
+          volume: newSeance.volume ?? 1,
+          mode: newSeance.mode ?? "PRESENTIEL",
+        }),
+      });
+      toast({ title: "Séance ajoutée ✓" });
+      setModalOpen(false);
+      load();
+    } catch (e: any) {
+      toast({ variant: "destructive", title: "Erreur", description: e.message });
+    }
+  };
+
+  const handleSaveVolume = async (seance: Seance) => {
+    const vol = localVolumes[seance.id] ?? seance.volume;
+    try {
+      await httpJson(`/api/admin/seances/${seance.id}`, {
+        method: "PUT",
+        body: JSON.stringify({ volume: vol }),
+      });
+      toast({ title: "Volume mis à jour ✓" });
+      load();
+    } catch (e: any) {
+      toast({ variant: "destructive", title: "Erreur", description: e.message });
+    }
+  };
+
+  const handleDeleteSeance = async (id: string) => {
+    if (!confirm("Supprimer cette séance ?")) return;
+    try {
+      await httpJson(`/api/admin/seances/${id}`, { method: "DELETE" });
+      toast({ title: "Séance supprimée" });
+      load();
+    } catch (e: any) {
+      toast({ variant: "destructive", title: "Erreur", description: e.message });
+    }
+  };
+
+  // Séances par formateur
+  const seancesByTeacher = (teacherId: string) =>
+    seances.filter((s) => s.teacher === teacherId);
+
+  return (
+    <div className="space-y-5">
+      {/* Bannière formateurs sous seuil */}
+      {teachersUnderThreshold.length > 0 && (
+        <Card className="border-orange-300 bg-orange-50">
+          <CardHeader className="py-3 px-4">
+            <CardTitle className="text-sm text-orange-700">
+              ⚠️ Formateurs avec masse horaire &lt; {massMin}h
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="px-4 pb-3">
+            <div className="flex flex-wrap gap-2">
+              {teachersUnderThreshold.map((t) => (
+                <span
+                  key={t.id}
+                  className="inline-flex items-center gap-1 rounded-full bg-orange-100 border border-orange-300 px-3 py-1 text-xs font-medium text-orange-800"
+                >
+                  <span className="font-mono text-orange-600">{t.id}</span>
+                  <span>{t.name}</span>
+                  <span className="text-orange-500">— {heuresByTeacher(t.id).toFixed(1)}h</span>
+                </span>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {loading && (
+        <p className="text-sm text-muted-foreground text-center py-8">Chargement…</p>
+      )}
+
+      {/* Cartes par formateur */}
+      {!loading && teachers.map((teacher) => {
+        const tSeances = seancesByTeacher(teacher.id);
+        const heures = heuresByTeacher(teacher.id);
+        const underThreshold = heures < massMin;
+        return (
+          <Card
+            key={teacher.id}
+            className={underThreshold ? "border-orange-300" : ""}
+          >
+            <CardHeader className="py-3 px-4">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-xs text-muted-foreground bg-gray-100 rounded px-2 py-0.5">
+                    {teacher.id}
+                  </span>
+                  <span className="font-semibold text-sm">{teacher.name}</span>
+                  <Badge variant={underThreshold ? "destructive" : "secondary"}>
+                    {heures.toFixed(1)}h ({tSeances.reduce((s, x) => s + (x.volume || 0), 0)} séances)
+                  </Badge>
+                </div>
+                <Button size="sm" onClick={() => openModal(teacher.id)}>
+                  + Ajouter séance
+                </Button>
+              </div>
+            </CardHeader>
+
+            {tSeances.length > 0 && (
+              <CardContent className="px-4 pb-4">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-xs text-muted-foreground border-b">
+                        <th className="pb-2 pr-4">Mode</th>
+                        <th className="pb-2 pr-4">Groupe</th>
+                        <th className="pb-2 pr-4">Module</th>
+                        <th className="pb-2 pr-4 w-28">Volume (séances)</th>
+                        <th className="pb-2">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tSeances.map((s) => {
+                        const localVol =
+                          localVolumes[s.id] !== undefined
+                            ? localVolumes[s.id]
+                            : s.volume;
+                        const isDirty = localVol !== s.volume;
+                        return (
+                          <tr key={s.id} className="border-b last:border-0">
+                            <td className="py-2 pr-4">
+                              <span
+                                className={`text-xs rounded-full px-2 py-0.5 font-medium ${
+                                  s.mode === "DISTANCIEL"
+                                    ? "bg-blue-100 text-blue-700"
+                                    : "bg-green-100 text-green-700"
+                                }`}
+                              >
+                                {s.mode === "DISTANCIEL" ? "🌐 Distanciel" : "🏫 Présentiel"}
+                              </span>
+                            </td>
+                            <td className="py-2 pr-4 font-mono text-xs">{s.group}</td>
+                            <td className="py-2 pr-4 font-mono text-xs">{s.module}</td>
+                            <td className="py-2 pr-4">
+                              <Input
+                                type="number"
+                                min={1}
+                                value={localVol}
+                                onChange={(e) =>
+                                  setLocalVolumes((prev) => ({
+                                    ...prev,
+                                    [s.id]: Number(e.target.value),
+                                  }))
+                                }
+                                className="w-24 h-7 text-xs"
+                              />
+                            </td>
+                            <td className="py-2">
+                              <div className="flex gap-2">
+                                {isDirty && (
+                                  <Button
+                                    size="sm"
+                                    className="h-7 text-xs"
+                                    onClick={() => handleSaveVolume(s)}
+                                  >
+                                    💾 Sauvegarder
+                                  </Button>
+                                )}
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  className="h-7 text-xs"
+                                  onClick={() => handleDeleteSeance(s.id)}
+                                >
+                                  ✕
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            )}
+
+            {tSeances.length === 0 && (
+              <CardContent className="px-4 pb-3">
+                <p className="text-xs text-muted-foreground">Aucune séance définie.</p>
+              </CardContent>
+            )}
+          </Card>
+        );
+      })}
+
+      {/* Modal ajout séance */}
+      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              ➕ Ajouter une séance —{" "}
+              <span className="font-mono text-sm">{selectedTeacher}</span>{" "}
+              {getTeacherName(selectedTeacher) !== selectedTeacher && (
+                <span className="text-base font-normal">{getTeacherName(selectedTeacher)}</span>
+              )}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            {/* Mode */}
+            <div className="space-y-2">
+              <Label>Type de séance</Label>
+              <div className="flex gap-4">
+                {(["PRESENTIEL", "DISTANCIEL"] as SeanceMode[]).map((m) => (
+                  <label
+                    key={m}
+                    className={`flex items-center gap-2 cursor-pointer px-3 py-2 border rounded-lg hover:bg-gray-50 ${
+                      newSeance.mode === m ? "border-blue-500 bg-blue-50" : ""
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="mode"
+                      value={m}
+                      checked={newSeance.mode === m}
+                      onChange={() =>
+                        setNewSeance((p) => ({ ...p, mode: m, group: "", module: "" }))
+                      }
+                    />
+                    <span className="text-sm">
+                      {m === "PRESENTIEL" ? "🏫 Présentiel" : "🌐 Distanciel"}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Module (filtré par formateur) */}
+            <div className="space-y-2">
+              <Label>Module</Label>
+              <select
+                className="w-full border rounded-md px-3 py-2 text-sm bg-background"
+                value={newSeance.module ?? ""}
+                onChange={(e) => {
+                  const mod = e.target.value;
+                  const groups = groupsForTeacherModule(selectedTeacher, mod);
+                  setNewSeance((p) => ({
+                    ...p,
+                    module: mod,
+                    group: groups[0] ?? "",
+                  }));
+                }}
+              >
+                <option value="">-- Choisir un module --</option>
+                {modulesForTeacher(selectedTeacher).map((m) => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Groupe */}
+            <div className="space-y-2">
+              <Label>Groupe</Label>
+              <select
+                className="w-full border rounded-md px-3 py-2 text-sm bg-background"
+                value={newSeance.group ?? ""}
+                onChange={(e) =>
+                  setNewSeance((p) => ({ ...p, group: e.target.value }))
+                }
+              >
+                <option value="">-- Choisir un groupe --</option>
+                {newSeance.module
+                  ? groupsForTeacherModule(selectedTeacher, newSeance.module).map((g) => (
+                      <option key={g} value={g}>{g}</option>
+                    ))
+                  : null}
+              </select>
+            </div>
+
+            {/* Volume */}
+            <div className="space-y-2">
+              <Label>Volume (nombre de séances)</Label>
+              <Input
+                type="number"
+                min={1}
+                value={newSeance.volume ?? 1}
+                onChange={(e) =>
+                  setNewSeance((p) => ({ ...p, volume: Number(e.target.value) }))
+                }
+              />
+              <p className="text-xs text-muted-foreground">
+                = {((newSeance.volume ?? 1) * HEURES_PAR_SEANCE).toFixed(1)}h
+              </p>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setModalOpen(false)}>
+              Annuler
+            </Button>
+            <Button onClick={handleAddSeance}>Ajouter</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -322,7 +759,6 @@ function LaunchTab({ onJobStarted }: { onJobStarted: (id: string) => void }) {
 
   return (
     <div className="space-y-5">
-      {/* Mode */}
       <div className="space-y-2">
         <p className="text-sm font-medium text-gray-700">Mode d'optimisation</p>
         <div className="flex flex-wrap gap-3">
@@ -350,7 +786,6 @@ function LaunchTab({ onJobStarted }: { onJobStarted: (id: string) => void }) {
         </div>
       </div>
 
-      {/* CP params */}
       <Card>
         <CardHeader className="py-3 px-4">
           <CardTitle className="text-sm">⚙️ Options CP</CardTitle>
@@ -361,7 +796,6 @@ function LaunchTab({ onJobStarted }: { onJobStarted: (id: string) => void }) {
         </CardContent>
       </Card>
 
-      {/* Optimization params */}
       {mode !== "cp_only" && (
         <Card>
           <CardHeader className="py-3 px-4">
@@ -433,9 +867,7 @@ function LogsTab({ jobId, onClear }: { jobId: string | null; onClear: () => void
     setJob({ status: "running", logs: [], result: null });
     poll(jobId);
     timerRef.current = setInterval(() => poll(jobId), 1500);
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [jobId, poll]);
 
   useEffect(() => {
@@ -455,22 +887,14 @@ function LogsTab({ jobId, onClear }: { jobId: string | null; onClear: () => void
       } else {
         toast({ title: "Aucun job actif", description: "Le backend est inactif." });
       }
-    } catch {
-      /* ignorer */
-    }
+    } catch { /* ignorer */ }
   };
 
   const badgeVariant: Record<JobState["status"], "default" | "secondary" | "destructive" | "outline"> = {
-    idle: "secondary",
-    running: "default",
-    done: "default",
-    error: "destructive",
+    idle: "secondary", running: "default", done: "default", error: "destructive",
   };
   const badgeLabel: Record<JobState["status"], string> = {
-    idle: "Inactif",
-    running: "En cours…",
-    done: "Terminé ✓",
-    error: "Erreur",
+    idle: "Inactif", running: "En cours…", done: "Terminé ✓", error: "Erreur",
   };
 
   return (
@@ -478,43 +902,27 @@ function LogsTab({ jobId, onClear }: { jobId: string | null; onClear: () => void
       <div className="flex flex-wrap items-center gap-3">
         <Badge variant={badgeVariant[job.status]}>{badgeLabel[job.status]}</Badge>
         {jobId && <span className="text-xs text-gray-400 font-mono truncate max-w-[260px]">{jobId}</span>}
-        <Button size="sm" variant="outline" onClick={checkActive}>
-          🔍 Vérifier job actif
-        </Button>
+        <Button size="sm" variant="outline" onClick={checkActive}>🔍 Vérifier job actif</Button>
         <Button
-          size="sm"
-          variant="ghost"
-          onClick={() => {
-            setJob({ status: "idle", logs: [], result: null });
-            onClear();
-          }}
-        >
-          ✕ Effacer
-        </Button>
+          size="sm" variant="ghost"
+          onClick={() => { setJob({ status: "idle", logs: [], result: null }); onClear(); }}
+        >✕ Effacer</Button>
       </div>
 
-      {/* Log console */}
       <div className="bg-gray-950 rounded-lg p-4 h-[420px] overflow-y-auto font-mono text-xs leading-relaxed">
         {job.logs.length === 0 ? (
-          <span className="text-gray-500">
-            Aucun log pour le moment. Lancez une génération depuis l'onglet « Lancer ».
-          </span>
+          <span className="text-gray-500">Aucun log pour le moment. Lancez une génération depuis l'onglet « Lancer ».</span>
         ) : (
           job.logs.map((line, i) => (
             <div
               key={i}
               className={
-                line.startsWith("✓") || line.startsWith("✅")
-                  ? "text-emerald-400"
-                  : line.startsWith("✗") || line.startsWith("❌") || line.toLowerCase().startsWith("error")
-                  ? "text-red-400"
-                  : line.startsWith("⚠")
-                  ? "text-yellow-400"
-                  : "text-gray-200"
+                line.startsWith("✓") || line.startsWith("✅") ? "text-emerald-400"
+                : line.startsWith("✗") || line.startsWith("❌") || line.toLowerCase().startsWith("error") ? "text-red-400"
+                : line.startsWith("⚠") ? "text-yellow-400"
+                : "text-gray-200"
               }
-            >
-              {line}
-            </div>
+            >{line}</div>
           ))
         )}
         <div ref={bottomRef} />
@@ -522,7 +930,7 @@ function LogsTab({ jobId, onClear }: { jobId: string | null; onClear: () => void
 
       {job.status === "done" && (
         <p className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-4 py-2">
-          ✅ Emploi du temps généré et sauvegardé dans timetable.json (version incrémentée).
+          ✅ Emploi du temps généré et sauvegardé dans timetable.json.
         </p>
       )}
       {job.status === "error" && (
@@ -545,23 +953,26 @@ export default function GenerateTimetable() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-6 px-4 space-y-4">
+    <div className="max-w-5xl mx-auto py-6 px-4 space-y-4">
       <div>
         <h1 className="text-2xl font-bold">🗓️ Génération Emploi du Temps</h1>
         <p className="text-gray-500 text-sm mt-1">
-          Configurez les paramètres, contraintes, préférences, puis lancez l'algorithme mémétique.
+          Configurez les paramètres, séances, contraintes, préférences, puis lancez l'algorithme.
         </p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="params">⚙️ Paramètres</TabsTrigger>
+          <TabsTrigger value="seances">📚 Séances</TabsTrigger>
           <TabsTrigger value="hard">🔒 Contraintes</TabsTrigger>
           <TabsTrigger value="soft">🎯 Préférences</TabsTrigger>
           <TabsTrigger value="launch">🚀 Lancer</TabsTrigger>
           <TabsTrigger value="logs" className="relative">
             📋 Logs
-            {currentJobId && <span className="ml-1.5 h-2 w-2 rounded-full bg-blue-500 inline-block animate-pulse" />}
+            {currentJobId && (
+              <span className="ml-1.5 h-2 w-2 rounded-full bg-blue-500 inline-block animate-pulse" />
+            )}
           </TabsTrigger>
         </TabsList>
 
@@ -571,9 +982,19 @@ export default function GenerateTimetable() {
               <CardTitle>⚙️ Paramètres généraux</CardTitle>
               <CardDescription>Jours, créneaux, limites — config.json</CardDescription>
             </CardHeader>
-            <CardContent>
-              <ConfigTab />
-            </CardContent>
+            <CardContent><ConfigTab /></CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="seances">
+          <Card>
+            <CardHeader>
+              <CardTitle>📚 Séances</CardTitle>
+              <CardDescription>
+                Séances utilisées par le script de génération — seances.json
+              </CardDescription>
+            </CardHeader>
+            <CardContent><SeancesTab /></CardContent>
           </Card>
         </TabsContent>
 
@@ -583,9 +1004,7 @@ export default function GenerateTimetable() {
               <CardTitle>🔒 Contraintes dures</CardTitle>
               <CardDescription>Indisponibilités, règles absolues — hard.json</CardDescription>
             </CardHeader>
-            <CardContent>
-              <HardConstraintsTab />
-            </CardContent>
+            <CardContent><HardConstraintsTab /></CardContent>
           </Card>
         </TabsContent>
 
@@ -595,9 +1014,7 @@ export default function GenerateTimetable() {
               <CardTitle>🎯 Préférences douces</CardTitle>
               <CardDescription>Poids et coûts pour l'optimisation — soft.json</CardDescription>
             </CardHeader>
-            <CardContent>
-              <SoftConstraintsTab />
-            </CardContent>
+            <CardContent><SoftConstraintsTab /></CardContent>
           </Card>
         </TabsContent>
 
@@ -607,9 +1024,7 @@ export default function GenerateTimetable() {
               <CardTitle>🚀 Lancer la génération</CardTitle>
               <CardDescription>Choisissez le mode et les paramètres, puis lancez l'algorithme.</CardDescription>
             </CardHeader>
-            <CardContent>
-              <LaunchTab onJobStarted={handleJobStarted} />
-            </CardContent>
+            <CardContent><LaunchTab onJobStarted={handleJobStarted} /></CardContent>
           </Card>
         </TabsContent>
 
