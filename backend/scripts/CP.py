@@ -142,10 +142,9 @@ class TimetableCPSolver:
                 for c in creneaux:
                     for salle in salles:
                         is_compatible = self._check_room_compatibility(type_requis, salle['type'])
-                        
                         if is_compatible:
-                            var_name = f"{s['id']}_{j}_{c}_{salle['name']}"
-                            self.grid[(s['id'], j, c, salle['name'])] = self.model.NewBoolVar(var_name)
+                            var_name = f"{s['id']}_{j}_{c}_{salle['id']}"
+                            self.grid[(s['id'], j, c, salle['id'])] = self.model.NewBoolVar(var_name)
         
         self.stats['variables_creees'] = len(self.grid)
         self.logger.info(f"Variables créées : {self.stats['variables_creees']}")
@@ -178,7 +177,7 @@ class TimetableCPSolver:
             for c in creneaux:
                 for salle in salles:
                     candidats = [v for (sid, jj, cc, rr), v in self.grid.items() 
-                               if jj == j and cc == c and rr == salle['name']]
+                               if jj == j and cc == c and rr == salle['id']]
                     if len(candidats) > 1:
                         self.model.AddAtMostOne(candidats)
                         count += 1
@@ -220,7 +219,7 @@ class TimetableCPSolver:
                     ids_concernes = [s['id'] for s in self.seances if s['formateur'] == target_id]
                     for sid in ids_concernes:
                         for salle in salles:
-                            key = (sid, j_ind, c_ind, salle['name'])
+                            key = (sid, j_ind, c_ind, salle['id'])
                             if key in self.grid:
                                 self.model.Add(self.grid[key] == 0)
                                 count += 1
@@ -229,7 +228,7 @@ class TimetableCPSolver:
                     ids_concernes = [s['id'] for s in self.seances if s['groupe'] == target_id]
                     for sid in ids_concernes:
                         for salle in salles:
-                            key = (sid, j_ind, c_ind, salle['name'])
+                            key = (sid, j_ind, c_ind, salle['id'])
                             if key in self.grid:
                                 self.model.Add(self.grid[key] == 0)
                                 count += 1

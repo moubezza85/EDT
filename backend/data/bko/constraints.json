@@ -1,0 +1,24 @@
+{
+  "soft": {
+    "nom_de_la_contrainte_1": {
+      "enabled": true,
+      "label": "Titre affiché dans l'UI",
+      "weight": 10
+    },
+    "nom_de_la_contrainte_2": {
+      "enabled": false,
+      "label": "Titre affiché dans l'UI",
+      "weight": 3
+    },
+    "nom_de_la_contrainte_3": {
+      "enabled": true,
+      "label": "Titre affiché dans l'UI",
+      "weight": 10
+    },
+    "nom_de_la_contrainte_4": {
+      "enabled": false,
+      "label": "Autre contrainte",
+      "weight": 5
+    }
+  }
+}

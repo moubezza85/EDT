@@ -1,0 +1,4124 @@
+[
+  {
+    "seance": "S1_0",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "S5",
+    "formateur": "10035",
+    "groupe": "ID101",
+    "module": "ID_M105"
+  },
+  {
+    "seance": "S2_0",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "S14",
+    "formateur": "10035",
+    "groupe": "ID102",
+    "module": "ID_M105"
+  },
+  {
+    "seance": "S3_0",
+    "jour": "mardi",
+    "creneau": 1,
+    "salle": "S13",
+    "formateur": "10035",
+    "groupe": "ID103",
+    "module": "ID_M105"
+  },
+  {
+    "seance": "S4_0",
+    "jour": "lundi",
+    "creneau": 1,
+    "salle": "S1",
+    "formateur": "10035",
+    "groupe": "ID104",
+    "module": "ID_M105"
+  },
+  {
+    "seance": "S5_0",
+    "jour": "lundi",
+    "creneau": 3,
+    "salle": "S8",
+    "formateur": "10035",
+    "groupe": "ID105",
+    "module": "ID_M105"
+  },
+  {
+    "seance": "S6_0",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "S1",
+    "formateur": "10035",
+    "groupe": "IDOSR201",
+    "module": "IDOSR_M202"
+  },
+  {
+    "seance": "S6_1",
+    "jour": "vendredi",
+    "creneau": 4,
+    "salle": "S13",
+    "formateur": "10035",
+    "groupe": "IDOSR201",
+    "module": "IDOSR_M202"
+  },
+  {
+    "seance": "S7_0",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "S11",
+    "formateur": "10035",
+    "groupe": "IDOSR202",
+    "module": "IDOSR_M202"
+  },
+  {
+    "seance": "S7_1",
+    "jour": "samedi",
+    "creneau": 4,
+    "salle": "S18",
+    "formateur": "10035",
+    "groupe": "IDOSR202",
+    "module": "IDOSR_M202"
+  },
+  {
+    "seance": "S8_0",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "S21",
+    "formateur": "10035",
+    "groupe": "IDOSR203",
+    "module": "IDOSR_M202"
+  },
+  {
+    "seance": "S8_1",
+    "jour": "mardi",
+    "creneau": 4,
+    "salle": "S22",
+    "formateur": "10035",
+    "groupe": "IDOSR203",
+    "module": "IDOSR_M202"
+  },
+  {
+    "seance": "S9_0",
+    "jour": "jeudi",
+    "creneau": 4,
+    "salle": "S3",
+    "formateur": "10346",
+    "groupe": "AA103",
+    "module": "AA_EGT101"
+  },
+  {
+    "seance": "S10_0",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "S18",
+    "formateur": "10346",
+    "groupe": "AA104",
+    "module": "AA_EGT101"
+  },
+  {
+    "seance": "S12_0",
+    "jour": "jeudi",
+    "creneau": 1,
+    "salle": "At THP",
+    "formateur": "10346",
+    "groupe": "DEV102",
+    "module": "DEV_EGTS101"
+  },
+  {
+    "seance": "S16_0",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "S22",
+    "formateur": "10346",
+    "groupe": "TMMC101",
+    "module": "TMMC_EGT101"
+  },
+  {
+    "seance": "S17_0",
+    "jour": "jeudi",
+    "creneau": 1,
+    "salle": "S14",
+    "formateur": "10658",
+    "groupe": "DEV101",
+    "module": "DEV_M102"
+  },
+  {
+    "seance": "S17_1",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "S3",
+    "formateur": "10658",
+    "groupe": "DEV101",
+    "module": "DEV_M102"
+  },
+  {
+    "seance": "S17_2",
+    "jour": "vendredi",
+    "creneau": 1,
+    "salle": "S21",
+    "formateur": "10658",
+    "groupe": "DEV101",
+    "module": "DEV_M102"
+  },
+  {
+    "seance": "S17_3",
+    "jour": "mercredi",
+    "creneau": 3,
+    "salle": "S15",
+    "formateur": "10658",
+    "groupe": "DEV101",
+    "module": "DEV_M102"
+  },
+  {
+    "seance": "S19_0",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "S14",
+    "formateur": "10658",
+    "groupe": "DEV102",
+    "module": "DEV_M102"
+  },
+  {
+    "seance": "S19_1",
+    "jour": "lundi",
+    "creneau": 3,
+    "salle": "S10",
+    "formateur": "10658",
+    "groupe": "DEV102",
+    "module": "DEV_M102"
+  },
+  {
+    "seance": "S19_2",
+    "jour": "jeudi",
+    "creneau": 4,
+    "salle": "S12",
+    "formateur": "10658",
+    "groupe": "DEV102",
+    "module": "DEV_M102"
+  },
+  {
+    "seance": "S19_3",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "At Rep",
+    "formateur": "10658",
+    "groupe": "DEV102",
+    "module": "DEV_M102"
+  },
+  {
+    "seance": "S21_0",
+    "jour": "lundi",
+    "creneau": 2,
+    "salle": "S7",
+    "formateur": "10658",
+    "groupe": "DEV104",
+    "module": "DEV_EGTS105"
+  },
+  {
+    "seance": "S22_0",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "S2",
+    "formateur": "10658",
+    "groupe": "DEV104",
+    "module": "DEV_M102"
+  },
+  {
+    "seance": "S22_1",
+    "jour": "mardi",
+    "creneau": 4,
+    "salle": "S6",
+    "formateur": "10658",
+    "groupe": "DEV104",
+    "module": "DEV_M102"
+  },
+  {
+    "seance": "S22_2",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "S2",
+    "formateur": "10658",
+    "groupe": "DEV104",
+    "module": "DEV_M102"
+  },
+  {
+    "seance": "S24_0",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "S14",
+    "formateur": "10662",
+    "groupe": "AAOG201",
+    "module": "AAOG_M203"
+  },
+  {
+    "seance": "S24_1",
+    "jour": "mardi",
+    "creneau": 4,
+    "salle": "S15",
+    "formateur": "10662",
+    "groupe": "AAOG201",
+    "module": "AAOG_M203"
+  },
+  {
+    "seance": "S25_0",
+    "jour": "mercredi",
+    "creneau": 3,
+    "salle": "S5",
+    "formateur": "10662",
+    "groupe": "AAOG202",
+    "module": "AAOG_M203"
+  },
+  {
+    "seance": "S26_0",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "S14",
+    "formateur": "10662",
+    "groupe": "COMPT201",
+    "module": "COMPT_M201"
+  },
+  {
+    "seance": "S26_1",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "S3",
+    "formateur": "10662",
+    "groupe": "COMPT201",
+    "module": "COMPT_M201"
+  },
+  {
+    "seance": "S27_0",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "S1",
+    "formateur": "10662",
+    "groupe": "GEOCF203",
+    "module": "GEOCF_EGTSA206"
+  },
+  {
+    "seance": "S28_0",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "S21",
+    "formateur": "10662",
+    "groupe": "GEOOM201",
+    "module": "GEOOM_M204"
+  },
+  {
+    "seance": "S28_1",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "S17",
+    "formateur": "10662",
+    "groupe": "GEOOM201",
+    "module": "GEOOM_M204"
+  },
+  {
+    "seance": "S30_0",
+    "jour": "jeudi",
+    "creneau": 4,
+    "salle": "S21",
+    "formateur": "10662",
+    "groupe": "ID105",
+    "module": "ID_EGTS104"
+  },
+  {
+    "seance": "S31_0",
+    "jour": "mercredi",
+    "creneau": 3,
+    "salle": "S4",
+    "formateur": "10760",
+    "groupe": "IDOCC201",
+    "module": "IDOCC_M205"
+  },
+  {
+    "seance": "S31_1",
+    "jour": "jeudi",
+    "creneau": 1,
+    "salle": "S16",
+    "formateur": "10760",
+    "groupe": "IDOCC201",
+    "module": "IDOCC_M205"
+  },
+  {
+    "seance": "S32_0",
+    "jour": "samedi",
+    "creneau": 4,
+    "salle": "S17",
+    "formateur": "10760",
+    "groupe": "IDOCC202",
+    "module": "IDOCC_M205"
+  },
+  {
+    "seance": "S32_1",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "At THP",
+    "formateur": "10760",
+    "groupe": "IDOCC202",
+    "module": "IDOCC_M205"
+  },
+  {
+    "seance": "S33_0",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "S20",
+    "formateur": "10760",
+    "groupe": "IDOSR201",
+    "module": "IDOSR_M201"
+  },
+  {
+    "seance": "S33_1",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "S21",
+    "formateur": "10760",
+    "groupe": "IDOSR201",
+    "module": "IDOSR_M201"
+  },
+  {
+    "seance": "S34_0",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "S18",
+    "formateur": "10760",
+    "groupe": "IDOSR202",
+    "module": "IDOSR_M201"
+  },
+  {
+    "seance": "S34_1",
+    "jour": "jeudi",
+    "creneau": 4,
+    "salle": "S17",
+    "formateur": "10760",
+    "groupe": "IDOSR202",
+    "module": "IDOSR_M201"
+  },
+  {
+    "seance": "S35_0",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "At THP",
+    "formateur": "10760",
+    "groupe": "IDOSR203",
+    "module": "IDOSR_M201"
+  },
+  {
+    "seance": "S35_1",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "S15",
+    "formateur": "10760",
+    "groupe": "IDOSR203",
+    "module": "IDOSR_M201"
+  },
+  {
+    "seance": "S36_0",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "At THP",
+    "formateur": "10760",
+    "groupe": "THP201",
+    "module": "THP_EGTI206"
+  },
+  {
+    "seance": "S36_1",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "Conference",
+    "formateur": "10760",
+    "groupe": "THP201",
+    "module": "THP_EGTI206"
+  },
+  {
+    "seance": "S37_0",
+    "jour": "mardi",
+    "creneau": 4,
+    "salle": "S8",
+    "formateur": "10974",
+    "groupe": "IDOCC201",
+    "module": "IDOCC_M203"
+  },
+  {
+    "seance": "S37_1",
+    "jour": "vendredi",
+    "creneau": 1,
+    "salle": "S22",
+    "formateur": "10974",
+    "groupe": "IDOCC201",
+    "module": "IDOCC_M203"
+  },
+  {
+    "seance": "S37_2",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "S6",
+    "formateur": "10974",
+    "groupe": "IDOCC201",
+    "module": "IDOCC_M203"
+  },
+  {
+    "seance": "S38_0",
+    "jour": "samedi",
+    "creneau": 1,
+    "salle": "At Rep",
+    "formateur": "10974",
+    "groupe": "IDOCC202",
+    "module": "IDOCC_M203"
+  },
+  {
+    "seance": "S38_1",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "S4",
+    "formateur": "10974",
+    "groupe": "IDOCC202",
+    "module": "IDOCC_M203"
+  },
+  {
+    "seance": "S38_2",
+    "jour": "mardi",
+    "creneau": 1,
+    "salle": "S14",
+    "formateur": "10974",
+    "groupe": "IDOCC202",
+    "module": "IDOCC_M203"
+  },
+  {
+    "seance": "S39_0",
+    "jour": "jeudi",
+    "creneau": 1,
+    "salle": "At Mod",
+    "formateur": "10974",
+    "groupe": "IDOSR201",
+    "module": "IDOSR_M203"
+  },
+  {
+    "seance": "S39_1",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "S1",
+    "formateur": "10974",
+    "groupe": "IDOSR201",
+    "module": "IDOSR_M203"
+  },
+  {
+    "seance": "S39_2",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "S11",
+    "formateur": "10974",
+    "groupe": "IDOSR201",
+    "module": "IDOSR_M203"
+  },
+  {
+    "seance": "S40_0",
+    "jour": "lundi",
+    "creneau": 2,
+    "salle": "S15",
+    "formateur": "10974",
+    "groupe": "IDOSR202",
+    "module": "IDOSR_M203"
+  },
+  {
+    "seance": "S41_0",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "S7",
+    "formateur": "10974",
+    "groupe": "IDOSR203",
+    "module": "IDOSR_M203"
+  },
+  {
+    "seance": "S41_1",
+    "jour": "mercredi",
+    "creneau": 3,
+    "salle": "S19",
+    "formateur": "10974",
+    "groupe": "IDOSR203",
+    "module": "IDOSR_M203"
+  },
+  {
+    "seance": "S42_0",
+    "jour": "samedi",
+    "creneau": 1,
+    "salle": "S4",
+    "formateur": "10984",
+    "groupe": "GEOCF201",
+    "module": "GEOCF_M208"
+  },
+  {
+    "seance": "S43_0",
+    "jour": "lundi",
+    "creneau": 3,
+    "salle": "S20",
+    "formateur": "10984",
+    "groupe": "GEOCF202",
+    "module": "GEOCF_M208"
+  },
+  {
+    "seance": "S44_0",
+    "jour": "lundi",
+    "creneau": 1,
+    "salle": "S8",
+    "formateur": "10984",
+    "groupe": "GEOCF203",
+    "module": "GEOCF_M208"
+  },
+  {
+    "seance": "S45_0",
+    "jour": "samedi",
+    "creneau": 1,
+    "salle": "S15",
+    "formateur": "11121",
+    "groupe": "DEVOAM201",
+    "module": "DEVOAM_EGTS204"
+  },
+  {
+    "seance": "S46_0",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "S16",
+    "formateur": "11121",
+    "groupe": "DEVOAM202",
+    "module": "DEVOAM_EGTS204"
+  },
+  {
+    "seance": "S47_0",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "S6",
+    "formateur": "11121",
+    "groupe": "DEVOWFS201",
+    "module": "DEVOWFS_EGTS204"
+  },
+  {
+    "seance": "S48_0",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "S3",
+    "formateur": "11121",
+    "groupe": "DEVOWFS202",
+    "module": "DEVOWFS_EGTS204"
+  },
+  {
+    "seance": "S49_0",
+    "jour": "jeudi",
+    "creneau": 4,
+    "salle": "S5",
+    "formateur": "11121",
+    "groupe": "DEVOWFS203",
+    "module": "DEVOWFS_EGTS204"
+  },
+  {
+    "seance": "S50_0",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "S12",
+    "formateur": "11121",
+    "groupe": "GEOCF201",
+    "module": "GEOCF_EGTS204"
+  },
+  {
+    "seance": "S51_0",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "Conference",
+    "formateur": "11121",
+    "groupe": "GEOCF202",
+    "module": "GEOCF_EGTS204"
+  },
+  {
+    "seance": "S52_0",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "S16",
+    "formateur": "11121",
+    "groupe": "GEOCF203",
+    "module": "GEOCF_EGTS204"
+  },
+  {
+    "seance": "S53_0",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "S2",
+    "formateur": "11422",
+    "groupe": "HB101",
+    "module": "HB_EGT102"
+  },
+  {
+    "seance": "S55_0",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "At TMMC",
+    "formateur": "11422",
+    "groupe": "HB102",
+    "module": "HB_EGT102"
+  },
+  {
+    "seance": "S57_0",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "S13",
+    "formateur": "11422",
+    "groupe": "HB103",
+    "module": "HB_EGT102"
+  },
+  {
+    "seance": "S59_0",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "Conference",
+    "formateur": "11422",
+    "groupe": "IDOCC201",
+    "module": "IDOCC_EGTS202"
+  },
+  {
+    "seance": "S60_0",
+    "jour": "lundi",
+    "creneau": 1,
+    "salle": "S2",
+    "formateur": "11422",
+    "groupe": "IDOCC202",
+    "module": "IDOCC_EGTS202"
+  },
+  {
+    "seance": "S62_0",
+    "jour": "samedi",
+    "creneau": 4,
+    "salle": "At THP",
+    "formateur": "11422",
+    "groupe": "THI201",
+    "module": "THI_EGTS202"
+  },
+  {
+    "seance": "S69_0",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "S13",
+    "formateur": "11712",
+    "groupe": "DEV103",
+    "module": "DEV_EGTS103"
+  },
+  {
+    "seance": "S70_0",
+    "jour": "samedi",
+    "creneau": 1,
+    "salle": "S20",
+    "formateur": "11712",
+    "groupe": "DEV104",
+    "module": "DEV_EGTS103"
+  },
+  {
+    "seance": "S73_0",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "S19",
+    "formateur": "11712",
+    "groupe": "DEVOWFS203",
+    "module": "DEVOWFS_EGTS203"
+  },
+  {
+    "seance": "S77_0",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "S1",
+    "formateur": "11712",
+    "groupe": "IDOSR201",
+    "module": "IDOSR_EGTS203"
+  },
+  {
+    "seance": "S78_0",
+    "jour": "mardi",
+    "creneau": 4,
+    "salle": "S4",
+    "formateur": "11712",
+    "groupe": "IDOSR202",
+    "module": "IDOSR_EGTS203"
+  },
+  {
+    "seance": "S79_0",
+    "jour": "vendredi",
+    "creneau": 1,
+    "salle": "Conference",
+    "formateur": "11712",
+    "groupe": "IDOSR203",
+    "module": "IDOSR_EGTS203"
+  },
+  {
+    "seance": "S80_0",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "S14",
+    "formateur": "11845",
+    "groupe": "AA101",
+    "module": "AA_M104"
+  },
+  {
+    "seance": "S80_1",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "S12",
+    "formateur": "11845",
+    "groupe": "AA101",
+    "module": "AA_M104"
+  },
+  {
+    "seance": "S82_0",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "S22",
+    "formateur": "11845",
+    "groupe": "AA102",
+    "module": "AA_M104"
+  },
+  {
+    "seance": "S82_1",
+    "jour": "lundi",
+    "creneau": 3,
+    "salle": "S9",
+    "formateur": "11845",
+    "groupe": "AA102",
+    "module": "AA_M104"
+  },
+  {
+    "seance": "S82_2",
+    "jour": "vendredi",
+    "creneau": 4,
+    "salle": "S18",
+    "formateur": "11845",
+    "groupe": "AA102",
+    "module": "AA_M104"
+  },
+  {
+    "seance": "S84_0",
+    "jour": "mardi",
+    "creneau": 1,
+    "salle": "S21",
+    "formateur": "11845",
+    "groupe": "AA103",
+    "module": "AA_M104"
+  },
+  {
+    "seance": "S84_1",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "S13",
+    "formateur": "11845",
+    "groupe": "AA103",
+    "module": "AA_M104"
+  },
+  {
+    "seance": "S84_2",
+    "jour": "mercredi",
+    "creneau": 3,
+    "salle": "At Mod",
+    "formateur": "11845",
+    "groupe": "AA103",
+    "module": "AA_M104"
+  },
+  {
+    "seance": "S86_0",
+    "jour": "jeudi",
+    "creneau": 1,
+    "salle": "S10",
+    "formateur": "11845",
+    "groupe": "AAOG201",
+    "module": "AAOG_M202"
+  },
+  {
+    "seance": "S86_1",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "At TMMC",
+    "formateur": "11845",
+    "groupe": "AAOG201",
+    "module": "AAOG_M202"
+  },
+  {
+    "seance": "S87_0",
+    "jour": "samedi",
+    "creneau": 4,
+    "salle": "S10",
+    "formateur": "11845",
+    "groupe": "AAOG202",
+    "module": "AAOG_M202"
+  },
+  {
+    "seance": "S87_1",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "S22",
+    "formateur": "11845",
+    "groupe": "AAOG202",
+    "module": "AAOG_M202"
+  },
+  {
+    "seance": "S88_0",
+    "jour": "mardi",
+    "creneau": 4,
+    "salle": "S5",
+    "formateur": "12198",
+    "groupe": "AAOC201",
+    "module": "AAOC_M202"
+  },
+  {
+    "seance": "S88_1",
+    "jour": "samedi",
+    "creneau": 4,
+    "salle": "S12",
+    "formateur": "12198",
+    "groupe": "AAOC201",
+    "module": "AAOC_M202"
+  },
+  {
+    "seance": "S89_0",
+    "jour": "vendredi",
+    "creneau": 1,
+    "salle": "S13",
+    "formateur": "12198",
+    "groupe": "AAOC202",
+    "module": "AAOC_M202"
+  },
+  {
+    "seance": "S89_1",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "S20",
+    "formateur": "12198",
+    "groupe": "AAOC202",
+    "module": "AAOC_M202"
+  },
+  {
+    "seance": "S90_0",
+    "jour": "jeudi",
+    "creneau": 1,
+    "salle": "Conference",
+    "formateur": "12198",
+    "groupe": "AAOC203",
+    "module": "AAOC_M202"
+  },
+  {
+    "seance": "S90_1",
+    "jour": "mardi",
+    "creneau": 1,
+    "salle": "S12",
+    "formateur": "12198",
+    "groupe": "AAOC203",
+    "module": "AAOC_M202"
+  },
+  {
+    "seance": "S91_0",
+    "jour": "lundi",
+    "creneau": 2,
+    "salle": "TEAMS",
+    "formateur": "12198",
+    "groupe": "GE104",
+    "module": "GE_M102"
+  },
+  {
+    "seance": "S91_1",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "At CI",
+    "formateur": "12198",
+    "groupe": "GE104",
+    "module": "GE_M102"
+  },
+  {
+    "seance": "S92_0",
+    "jour": "lundi",
+    "creneau": 1,
+    "salle": "S5",
+    "formateur": "12198",
+    "groupe": "GE105",
+    "module": "GE_M102"
+  },
+  {
+    "seance": "S92_1",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "At Mod",
+    "formateur": "12198",
+    "groupe": "GE105",
+    "module": "GE_M102"
+  },
+  {
+    "seance": "S93_0",
+    "jour": "lundi",
+    "creneau": 3,
+    "salle": "S22",
+    "formateur": "12198",
+    "groupe": "GE106",
+    "module": "GE_M102"
+  },
+  {
+    "seance": "S93_1",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "S18",
+    "formateur": "12198",
+    "groupe": "GE106",
+    "module": "GE_M102"
+  },
+  {
+    "seance": "S94_0",
+    "jour": "mardi",
+    "creneau": 4,
+    "salle": "At CI",
+    "formateur": "12321",
+    "groupe": "HB103",
+    "module": "HB_M114"
+  },
+  {
+    "seance": "S94_1",
+    "jour": "jeudi",
+    "creneau": 1,
+    "salle": "S12",
+    "formateur": "12321",
+    "groupe": "HB103",
+    "module": "HB_M114"
+  },
+  {
+    "seance": "S94_2",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "S2",
+    "formateur": "12321",
+    "groupe": "HB103",
+    "module": "HB_M114"
+  },
+  {
+    "seance": "S94_3",
+    "jour": "vendredi",
+    "creneau": 4,
+    "salle": "S10",
+    "formateur": "12321",
+    "groupe": "HB103",
+    "module": "HB_M114"
+  },
+  {
+    "seance": "S95_0",
+    "jour": "samedi",
+    "creneau": 1,
+    "salle": "At CI",
+    "formateur": "12326",
+    "groupe": "COMPT301",
+    "module": "COMPT_M311"
+  },
+  {
+    "seance": "S95_1",
+    "jour": "mardi",
+    "creneau": 1,
+    "salle": "TEAMS",
+    "formateur": "12326",
+    "groupe": "COMPT301",
+    "module": "COMPT_M311"
+  },
+  {
+    "seance": "S95_2",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "S9",
+    "formateur": "12326",
+    "groupe": "COMPT301",
+    "module": "COMPT_M311"
+  },
+  {
+    "seance": "S95_3",
+    "jour": "lundi",
+    "creneau": 1,
+    "salle": "S16",
+    "formateur": "12326",
+    "groupe": "COMPT301",
+    "module": "COMPT_M311"
+  },
+  {
+    "seance": "S96_0",
+    "jour": "jeudi",
+    "creneau": 4,
+    "salle": "At TMMC",
+    "formateur": "12326",
+    "groupe": "GEOCF201",
+    "module": "GEOCF_M201"
+  },
+  {
+    "seance": "S96_1",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "TEAMS",
+    "formateur": "12326",
+    "groupe": "GEOCF201",
+    "module": "GEOCF_M201"
+  },
+  {
+    "seance": "S98_0",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "S21",
+    "formateur": "12326",
+    "groupe": "GEOCF202",
+    "module": "GEOCF_M201"
+  },
+  {
+    "seance": "S98_1",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "S21",
+    "formateur": "12326",
+    "groupe": "GEOCF202",
+    "module": "GEOCF_M201"
+  },
+  {
+    "seance": "S100_0",
+    "jour": "samedi",
+    "creneau": 4,
+    "salle": "At TMMC",
+    "formateur": "12326",
+    "groupe": "GEOCF203",
+    "module": "GEOCF_M201"
+  },
+  {
+    "seance": "S100_1",
+    "jour": "lundi",
+    "creneau": 3,
+    "salle": "S19",
+    "formateur": "12326",
+    "groupe": "GEOCF203",
+    "module": "GEOCF_M201"
+  },
+  {
+    "seance": "S102_0",
+    "jour": "mardi",
+    "creneau": 1,
+    "salle": "At Rep",
+    "formateur": "12337",
+    "groupe": "GE101",
+    "module": "GE_EGTS102"
+  },
+  {
+    "seance": "S104_0",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "S17",
+    "formateur": "12337",
+    "groupe": "GE102",
+    "module": "GE_EGTS102"
+  },
+  {
+    "seance": "S111_0",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "At CI",
+    "formateur": "12337",
+    "groupe": "GEOCM201",
+    "module": "GEOCM_EGTS202"
+  },
+  {
+    "seance": "S113_0",
+    "jour": "mercredi",
+    "creneau": 3,
+    "salle": "S8",
+    "formateur": "12337",
+    "groupe": "GEOCM202",
+    "module": "GEOCM_EGTS202"
+  },
+  {
+    "seance": "S115_0",
+    "jour": "lundi",
+    "creneau": 2,
+    "salle": "S6",
+    "formateur": "12337",
+    "groupe": "GEOCM203",
+    "module": "GEOCM_EGTS202"
+  },
+  {
+    "seance": "S117_0",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "S14",
+    "formateur": "12337",
+    "groupe": "GEOCM204",
+    "module": "GEOCM_EGTS202"
+  },
+  {
+    "seance": "S120_0",
+    "jour": "vendredi",
+    "creneau": 4,
+    "salle": "S3",
+    "formateur": "12415",
+    "groupe": "ID101",
+    "module": "ID_M104"
+  },
+  {
+    "seance": "S120_1",
+    "jour": "jeudi",
+    "creneau": 1,
+    "salle": "At TMMC",
+    "formateur": "12415",
+    "groupe": "ID101",
+    "module": "ID_M104"
+  },
+  {
+    "seance": "S120_2",
+    "jour": "lundi",
+    "creneau": 1,
+    "salle": "At THP",
+    "formateur": "12415",
+    "groupe": "ID101",
+    "module": "ID_M104"
+  },
+  {
+    "seance": "S120_3",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "TEAMS",
+    "formateur": "12415",
+    "groupe": "ID101",
+    "module": "ID_M104"
+  },
+  {
+    "seance": "S121_0",
+    "jour": "samedi",
+    "creneau": 1,
+    "salle": "S7",
+    "formateur": "12415",
+    "groupe": "ID102",
+    "module": "ID_M104"
+  },
+  {
+    "seance": "S121_1",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "S6",
+    "formateur": "12415",
+    "groupe": "ID102",
+    "module": "ID_M104"
+  },
+  {
+    "seance": "S121_2",
+    "jour": "vendredi",
+    "creneau": 1,
+    "salle": "S9",
+    "formateur": "12415",
+    "groupe": "ID102",
+    "module": "ID_M104"
+  },
+  {
+    "seance": "S121_3",
+    "jour": "lundi",
+    "creneau": 2,
+    "salle": "At Mod",
+    "formateur": "12415",
+    "groupe": "ID102",
+    "module": "ID_M104"
+  },
+  {
+    "seance": "S122_0",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "S7",
+    "formateur": "12415",
+    "groupe": "ID103",
+    "module": "ID_M104"
+  },
+  {
+    "seance": "S122_1",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "TEAMS",
+    "formateur": "12415",
+    "groupe": "ID103",
+    "module": "ID_M104"
+  },
+  {
+    "seance": "S122_2",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "S13",
+    "formateur": "12415",
+    "groupe": "ID103",
+    "module": "ID_M104"
+  },
+  {
+    "seance": "S123_0",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "S5",
+    "formateur": "13133",
+    "groupe": "AAOC201",
+    "module": "AAOC_EGT202"
+  },
+  {
+    "seance": "S125_0",
+    "jour": "lundi",
+    "creneau": 1,
+    "salle": "S6",
+    "formateur": "13133",
+    "groupe": "AAOC202",
+    "module": "AAOC_EGT202"
+  },
+  {
+    "seance": "S128_0",
+    "jour": "vendredi",
+    "creneau": 1,
+    "salle": "At TMMC",
+    "formateur": "13133",
+    "groupe": "ID101",
+    "module": "ID_EGTS102"
+  },
+  {
+    "seance": "S130_0",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "At CI",
+    "formateur": "13133",
+    "groupe": "ID102",
+    "module": "ID_EGTS102"
+  },
+  {
+    "seance": "S132_0",
+    "jour": "mardi",
+    "creneau": 4,
+    "salle": "At Mod",
+    "formateur": "13133",
+    "groupe": "ID103",
+    "module": "ID_EGTS102"
+  },
+  {
+    "seance": "S136_0",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "S9",
+    "formateur": "13133",
+    "groupe": "IDOSR201",
+    "module": "IDOSR_EGTS202"
+  },
+  {
+    "seance": "S138_0",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "S4",
+    "formateur": "13133",
+    "groupe": "IDOSR202",
+    "module": "IDOSR_EGTS202"
+  },
+  {
+    "seance": "S140_0",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "S4",
+    "formateur": "13133",
+    "groupe": "IDOSR203",
+    "module": "IDOSR_EGTS202"
+  },
+  {
+    "seance": "S142_0",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "S16",
+    "formateur": "13155",
+    "groupe": "DEV101",
+    "module": "DEV_M104"
+  },
+  {
+    "seance": "S142_1",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "S3",
+    "formateur": "13155",
+    "groupe": "DEV101",
+    "module": "DEV_M104"
+  },
+  {
+    "seance": "S144_0",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "S5",
+    "formateur": "13155",
+    "groupe": "DEV102",
+    "module": "DEV_M104"
+  },
+  {
+    "seance": "S144_1",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "S3",
+    "formateur": "13155",
+    "groupe": "DEV102",
+    "module": "DEV_M104"
+  },
+  {
+    "seance": "S144_2",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "S5",
+    "formateur": "13155",
+    "groupe": "DEV102",
+    "module": "DEV_M104"
+  },
+  {
+    "seance": "S146_0",
+    "jour": "lundi",
+    "creneau": 1,
+    "salle": "S11",
+    "formateur": "13155",
+    "groupe": "DEV103",
+    "module": "DEV_EGTS105"
+  },
+  {
+    "seance": "S147_0",
+    "jour": "mardi",
+    "creneau": 1,
+    "salle": "S8",
+    "formateur": "13155",
+    "groupe": "DEV103",
+    "module": "DEV_M104"
+  },
+  {
+    "seance": "S147_1",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "S8",
+    "formateur": "13155",
+    "groupe": "DEV103",
+    "module": "DEV_M104"
+  },
+  {
+    "seance": "S149_0",
+    "jour": "mercredi",
+    "creneau": 3,
+    "salle": "S16",
+    "formateur": "13155",
+    "groupe": "DEV104",
+    "module": "DEV_M104"
+  },
+  {
+    "seance": "S149_1",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "S5",
+    "formateur": "13155",
+    "groupe": "DEV104",
+    "module": "DEV_M104"
+  },
+  {
+    "seance": "S151_0",
+    "jour": "mercredi",
+    "creneau": 3,
+    "salle": "S22",
+    "formateur": "13243",
+    "groupe": "GE101",
+    "module": "GE_M103"
+  },
+  {
+    "seance": "S151_1",
+    "jour": "mardi",
+    "creneau": 4,
+    "salle": "S2",
+    "formateur": "13243",
+    "groupe": "GE101",
+    "module": "GE_M103"
+  },
+  {
+    "seance": "S153_0",
+    "jour": "lundi",
+    "creneau": 3,
+    "salle": "At TMMC",
+    "formateur": "13243",
+    "groupe": "GE102",
+    "module": "GE_M103"
+  },
+  {
+    "seance": "S153_1",
+    "jour": "samedi",
+    "creneau": 4,
+    "salle": "At CI",
+    "formateur": "13243",
+    "groupe": "GE102",
+    "module": "GE_M103"
+  },
+  {
+    "seance": "S153_2",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "S21",
+    "formateur": "13243",
+    "groupe": "GE102",
+    "module": "GE_M103"
+  },
+  {
+    "seance": "S155_0",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "At Rep",
+    "formateur": "13243",
+    "groupe": "GE103",
+    "module": "GE_M103"
+  },
+  {
+    "seance": "S155_1",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "S15",
+    "formateur": "13243",
+    "groupe": "GE103",
+    "module": "GE_M103"
+  },
+  {
+    "seance": "S157_0",
+    "jour": "jeudi",
+    "creneau": 1,
+    "salle": "S2",
+    "formateur": "13243",
+    "groupe": "GE104",
+    "module": "GE_M101"
+  },
+  {
+    "seance": "S159_0",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "TEAMS",
+    "formateur": "13243",
+    "groupe": "GE105",
+    "module": "GE_M103"
+  },
+  {
+    "seance": "S161_0",
+    "jour": "lundi",
+    "creneau": 2,
+    "salle": "S5",
+    "formateur": "13243",
+    "groupe": "GE106",
+    "module": "GE_M103"
+  },
+  {
+    "seance": "S163_0",
+    "jour": "lundi",
+    "creneau": 3,
+    "salle": "S5",
+    "formateur": "13426",
+    "groupe": "GEOCM201",
+    "module": "GEOCM_M209"
+  },
+  {
+    "seance": "S163_1",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "S7",
+    "formateur": "13426",
+    "groupe": "GEOCM201",
+    "module": "GEOCM_M209"
+  },
+  {
+    "seance": "S163_2",
+    "jour": "vendredi",
+    "creneau": 4,
+    "salle": "S1",
+    "formateur": "13426",
+    "groupe": "GEOCM201",
+    "module": "GEOCM_M209"
+  },
+  {
+    "seance": "S165_0",
+    "jour": "lundi",
+    "creneau": 1,
+    "salle": "S18",
+    "formateur": "13426",
+    "groupe": "GEOCM202",
+    "module": "GEOCM_M209"
+  },
+  {
+    "seance": "S165_1",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "S3",
+    "formateur": "13426",
+    "groupe": "GEOCM202",
+    "module": "GEOCM_M209"
+  },
+  {
+    "seance": "S165_2",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "At TMMC",
+    "formateur": "13426",
+    "groupe": "GEOCM202",
+    "module": "GEOCM_M209"
+  },
+  {
+    "seance": "S167_0",
+    "jour": "mardi",
+    "creneau": 1,
+    "salle": "S17",
+    "formateur": "13426",
+    "groupe": "GEOCM203",
+    "module": "GEOCM_M209"
+  },
+  {
+    "seance": "S167_1",
+    "jour": "vendredi",
+    "creneau": 1,
+    "salle": "S14",
+    "formateur": "13426",
+    "groupe": "GEOCM203",
+    "module": "GEOCM_M209"
+  },
+  {
+    "seance": "S169_0",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "S1",
+    "formateur": "13426",
+    "groupe": "GEOCM204",
+    "module": "GEOCM_M209"
+  },
+  {
+    "seance": "S169_1",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "S8",
+    "formateur": "13426",
+    "groupe": "GEOCM204",
+    "module": "GEOCM_M209"
+  },
+  {
+    "seance": "S171_0",
+    "jour": "lundi",
+    "creneau": 3,
+    "salle": "S15",
+    "formateur": "13580",
+    "groupe": "COMPT301",
+    "module": "COMPT_M307"
+  },
+  {
+    "seance": "S171_1",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "At CI",
+    "formateur": "13580",
+    "groupe": "COMPT301",
+    "module": "COMPT_M307"
+  },
+  {
+    "seance": "S172_0",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "S4",
+    "formateur": "13580",
+    "groupe": "GE104",
+    "module": "GE_M104"
+  },
+  {
+    "seance": "S172_1",
+    "jour": "samedi",
+    "creneau": 4,
+    "salle": "S1",
+    "formateur": "13580",
+    "groupe": "GE104",
+    "module": "GE_M104"
+  },
+  {
+    "seance": "S172_2",
+    "jour": "mercredi",
+    "creneau": 3,
+    "salle": "S2",
+    "formateur": "13580",
+    "groupe": "GE104",
+    "module": "GE_M104"
+  },
+  {
+    "seance": "S174_0",
+    "jour": "lundi",
+    "creneau": 2,
+    "salle": "S13",
+    "formateur": "13580",
+    "groupe": "GEOCF201",
+    "module": "GEOCF_M202"
+  },
+  {
+    "seance": "S176_0",
+    "jour": "lundi",
+    "creneau": 1,
+    "salle": "S4",
+    "formateur": "13580",
+    "groupe": "GEOCF202",
+    "module": "GEOCF_M202"
+  },
+  {
+    "seance": "S176_1",
+    "jour": "vendredi",
+    "creneau": 4,
+    "salle": "S22",
+    "formateur": "13580",
+    "groupe": "GEOCF202",
+    "module": "GEOCF_M202"
+  },
+  {
+    "seance": "S178_0",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "S9",
+    "formateur": "13580",
+    "groupe": "GEOCF203",
+    "module": "GEOCF_M202"
+  },
+  {
+    "seance": "S180_0",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "S16",
+    "formateur": "13582",
+    "groupe": "GEOCM201",
+    "module": "GEOCM_M205"
+  },
+  {
+    "seance": "S180_1",
+    "jour": "samedi",
+    "creneau": 1,
+    "salle": "S8",
+    "formateur": "13582",
+    "groupe": "GEOCM201",
+    "module": "GEOCM_M205"
+  },
+  {
+    "seance": "S182_0",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "Conference",
+    "formateur": "13582",
+    "groupe": "GEOCM202",
+    "module": "GEOCM_M205"
+  },
+  {
+    "seance": "S182_1",
+    "jour": "vendredi",
+    "creneau": 4,
+    "salle": "At Rep",
+    "formateur": "13582",
+    "groupe": "GEOCM202",
+    "module": "GEOCM_M205"
+  },
+  {
+    "seance": "S184_0",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "S4",
+    "formateur": "13582",
+    "groupe": "GEOCM203",
+    "module": "GEOCM_M205"
+  },
+  {
+    "seance": "S184_1",
+    "jour": "mardi",
+    "creneau": 4,
+    "salle": "S13",
+    "formateur": "13582",
+    "groupe": "GEOCM203",
+    "module": "GEOCM_M205"
+  },
+  {
+    "seance": "S184_2",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "S7",
+    "formateur": "13582",
+    "groupe": "GEOCM203",
+    "module": "GEOCM_M205"
+  },
+  {
+    "seance": "S186_0",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "S12",
+    "formateur": "13582",
+    "groupe": "GEOCM204",
+    "module": "GEOCM_M205"
+  },
+  {
+    "seance": "S186_1",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "At CI",
+    "formateur": "13582",
+    "groupe": "GEOCM204",
+    "module": "GEOCM_M205"
+  },
+  {
+    "seance": "S186_2",
+    "jour": "lundi",
+    "creneau": 3,
+    "salle": "At Rep",
+    "formateur": "13582",
+    "groupe": "GEOCM204",
+    "module": "GEOCM_M205"
+  },
+  {
+    "seance": "S188_0",
+    "jour": "mardi",
+    "creneau": 4,
+    "salle": "S20",
+    "formateur": "13587",
+    "groupe": "GEOCM201",
+    "module": "GEOCM_EGTS203"
+  },
+  {
+    "seance": "S189_0",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "At TMMC",
+    "formateur": "13587",
+    "groupe": "GEOCM202",
+    "module": "GEOCM_EGTS203"
+  },
+  {
+    "seance": "S190_0",
+    "jour": "vendredi",
+    "creneau": 4,
+    "salle": "At THP",
+    "formateur": "13587",
+    "groupe": "HB102",
+    "module": "HB_EGT103"
+  },
+  {
+    "seance": "S191_0",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "S14",
+    "formateur": "13587",
+    "groupe": "HB103",
+    "module": "HB_EGT103"
+  },
+  {
+    "seance": "S194_0",
+    "jour": "lundi",
+    "creneau": 2,
+    "salle": "Conference",
+    "formateur": "13587",
+    "groupe": "TMMC101",
+    "module": "TMMC_EGTS103"
+  },
+  {
+    "seance": "S196_0",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "At CI",
+    "formateur": "13801",
+    "groupe": "AA104",
+    "module": "AA_M103"
+  },
+  {
+    "seance": "S196_1",
+    "jour": "mercredi",
+    "creneau": 3,
+    "salle": "S11",
+    "formateur": "13801",
+    "groupe": "AA104",
+    "module": "AA_M103"
+  },
+  {
+    "seance": "S197_0",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "S22",
+    "formateur": "13801",
+    "groupe": "AA104",
+    "module": "AA_M104"
+  },
+  {
+    "seance": "S197_1",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "S18",
+    "formateur": "13801",
+    "groupe": "AA104",
+    "module": "AA_M104"
+  },
+  {
+    "seance": "S197_2",
+    "jour": "jeudi",
+    "creneau": 1,
+    "salle": "S7",
+    "formateur": "13801",
+    "groupe": "AA104",
+    "module": "AA_M104"
+  },
+  {
+    "seance": "S199_0",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "S12",
+    "formateur": "13801",
+    "groupe": "AA105",
+    "module": "AA_M103"
+  },
+  {
+    "seance": "S199_1",
+    "jour": "jeudi",
+    "creneau": 4,
+    "salle": "Conference",
+    "formateur": "13801",
+    "groupe": "AA105",
+    "module": "AA_M103"
+  },
+  {
+    "seance": "S200_0",
+    "jour": "lundi",
+    "creneau": 1,
+    "salle": "S9",
+    "formateur": "13801",
+    "groupe": "AA105",
+    "module": "AA_M104"
+  },
+  {
+    "seance": "S200_1",
+    "jour": "vendredi",
+    "creneau": 1,
+    "salle": "S8",
+    "formateur": "13801",
+    "groupe": "AA105",
+    "module": "AA_M104"
+  },
+  {
+    "seance": "S200_2",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "S18",
+    "formateur": "13801",
+    "groupe": "AA105",
+    "module": "AA_M104"
+  },
+  {
+    "seance": "S202_0",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "S6",
+    "formateur": "14017",
+    "groupe": "DEV103",
+    "module": "DEV_M102"
+  },
+  {
+    "seance": "S202_1",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "S19",
+    "formateur": "14017",
+    "groupe": "DEV103",
+    "module": "DEV_M102"
+  },
+  {
+    "seance": "S202_2",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "TEAMS",
+    "formateur": "14017",
+    "groupe": "DEV103",
+    "module": "DEV_M102"
+  },
+  {
+    "seance": "S202_3",
+    "jour": "samedi",
+    "creneau": 4,
+    "salle": "S3",
+    "formateur": "14017",
+    "groupe": "DEV103",
+    "module": "DEV_M102"
+  },
+  {
+    "seance": "S204_0",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "S21",
+    "formateur": "14017",
+    "groupe": "DEVOAM201",
+    "module": "DEVOAM_M202"
+  },
+  {
+    "seance": "S204_1",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "S19",
+    "formateur": "14017",
+    "groupe": "DEVOAM201",
+    "module": "DEVOAM_M202"
+  },
+  {
+    "seance": "S205_0",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "S8",
+    "formateur": "14017",
+    "groupe": "DEVOAM202",
+    "module": "DEVOAM_M202"
+  },
+  {
+    "seance": "S205_1",
+    "jour": "lundi",
+    "creneau": 3,
+    "salle": "S16",
+    "formateur": "14017",
+    "groupe": "DEVOAM202",
+    "module": "DEVOAM_M202"
+  },
+  {
+    "seance": "S206_0",
+    "jour": "mercredi",
+    "creneau": 3,
+    "salle": "S21",
+    "formateur": "14017",
+    "groupe": "DEVOWFS201",
+    "module": "DEVOWFS_M202"
+  },
+  {
+    "seance": "S207_0",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "S17",
+    "formateur": "14017",
+    "groupe": "DEVOWFS202",
+    "module": "DEVOWFS_M202"
+  },
+  {
+    "seance": "S208_0",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "At Rep",
+    "formateur": "14017",
+    "groupe": "DEVOWFS203",
+    "module": "DEVOWFS_M202"
+  },
+  {
+    "seance": "S209_0",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "S8",
+    "formateur": "14039",
+    "groupe": "ID101",
+    "module": "ID_M103"
+  },
+  {
+    "seance": "S209_1",
+    "jour": "mardi",
+    "creneau": 1,
+    "salle": "S6",
+    "formateur": "14039",
+    "groupe": "ID101",
+    "module": "ID_M103"
+  },
+  {
+    "seance": "S209_2",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "S13",
+    "formateur": "14039",
+    "groupe": "ID101",
+    "module": "ID_M103"
+  },
+  {
+    "seance": "S211_0",
+    "jour": "jeudi",
+    "creneau": 1,
+    "salle": "S5",
+    "formateur": "14039",
+    "groupe": "ID102",
+    "module": "ID_M103"
+  },
+  {
+    "seance": "S211_1",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "At CI",
+    "formateur": "14039",
+    "groupe": "ID102",
+    "module": "ID_M103"
+  },
+  {
+    "seance": "S213_0",
+    "jour": "mercredi",
+    "creneau": 3,
+    "salle": "S17",
+    "formateur": "14039",
+    "groupe": "ID102",
+    "module": "ID_M104"
+  },
+  {
+    "seance": "S214_0",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "S7",
+    "formateur": "14039",
+    "groupe": "ID104",
+    "module": "ID_M104"
+  },
+  {
+    "seance": "S214_1",
+    "jour": "vendredi",
+    "creneau": 1,
+    "salle": "At CI",
+    "formateur": "14039",
+    "groupe": "ID104",
+    "module": "ID_M104"
+  },
+  {
+    "seance": "S214_2",
+    "jour": "mardi",
+    "creneau": 4,
+    "salle": "S21",
+    "formateur": "14039",
+    "groupe": "ID104",
+    "module": "ID_M104"
+  },
+  {
+    "seance": "S216_0",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "S1",
+    "formateur": "14039",
+    "groupe": "ID105",
+    "module": "ID_M104"
+  },
+  {
+    "seance": "S216_1",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "S15",
+    "formateur": "14039",
+    "groupe": "ID105",
+    "module": "ID_M104"
+  },
+  {
+    "seance": "S218_0",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "S9",
+    "formateur": "14039",
+    "groupe": "ID105",
+    "module": "ID_M105"
+  },
+  {
+    "seance": "S219_0",
+    "jour": "samedi",
+    "creneau": 1,
+    "salle": "S16",
+    "formateur": "14159",
+    "groupe": "DEVOWFS201",
+    "module": "DEVOWFS_EGTS205"
+  },
+  {
+    "seance": "S220_0",
+    "jour": "vendredi",
+    "creneau": 4,
+    "salle": "S4",
+    "formateur": "14159",
+    "groupe": "DEVOWFS201",
+    "module": "DEVOWFS_M204"
+  },
+  {
+    "seance": "S220_1",
+    "jour": "vendredi",
+    "creneau": 1,
+    "salle": "S15",
+    "formateur": "14159",
+    "groupe": "DEVOWFS201",
+    "module": "DEVOWFS_M204"
+  },
+  {
+    "seance": "S220_2",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "S19",
+    "formateur": "14159",
+    "groupe": "DEVOWFS201",
+    "module": "DEVOWFS_M204"
+  },
+  {
+    "seance": "S222_0",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "S21",
+    "formateur": "14159",
+    "groupe": "DEVOWFS202",
+    "module": "DEVOWFS_M204"
+  },
+  {
+    "seance": "S222_1",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "S8",
+    "formateur": "14159",
+    "groupe": "DEVOWFS202",
+    "module": "DEVOWFS_M204"
+  },
+  {
+    "seance": "S222_2",
+    "jour": "mardi",
+    "creneau": 1,
+    "salle": "S3",
+    "formateur": "14159",
+    "groupe": "DEVOWFS202",
+    "module": "DEVOWFS_M204"
+  },
+  {
+    "seance": "S222_3",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "S8",
+    "formateur": "14159",
+    "groupe": "DEVOWFS202",
+    "module": "DEVOWFS_M204"
+  },
+  {
+    "seance": "S224_0",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "S8",
+    "formateur": "14159",
+    "groupe": "DEVOWFS203",
+    "module": "DEVOWFS_M204"
+  },
+  {
+    "seance": "S224_1",
+    "jour": "lundi",
+    "creneau": 1,
+    "salle": "S19",
+    "formateur": "14159",
+    "groupe": "DEVOWFS203",
+    "module": "DEVOWFS_M204"
+  },
+  {
+    "seance": "S224_2",
+    "jour": "lundi",
+    "creneau": 2,
+    "salle": "S4",
+    "formateur": "14159",
+    "groupe": "DEVOWFS203",
+    "module": "DEVOWFS_M204"
+  },
+  {
+    "seance": "S226_0",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "S8",
+    "formateur": "1985_1",
+    "groupe": "COMPT201",
+    "module": "COMPT_M202"
+  },
+  {
+    "seance": "S226_1",
+    "jour": "samedi",
+    "creneau": 1,
+    "salle": "S22",
+    "formateur": "1985_1",
+    "groupe": "COMPT201",
+    "module": "COMPT_M202"
+  },
+  {
+    "seance": "S226_2",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "S9",
+    "formateur": "1985_1",
+    "groupe": "COMPT201",
+    "module": "COMPT_M202"
+  },
+  {
+    "seance": "S226_3",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "S22",
+    "formateur": "1985_1",
+    "groupe": "COMPT201",
+    "module": "COMPT_M202"
+  },
+  {
+    "seance": "S227_0",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "S9",
+    "formateur": "1985_1",
+    "groupe": "TCPS101",
+    "module": "TCPS_M : TCS02"
+  },
+  {
+    "seance": "S228_0",
+    "jour": "jeudi",
+    "creneau": 1,
+    "salle": "S3",
+    "formateur": "1985_10",
+    "groupe": "HB102",
+    "module": "HB_M114"
+  },
+  {
+    "seance": "S228_1",
+    "jour": "lundi",
+    "creneau": 2,
+    "salle": "S20",
+    "formateur": "1985_10",
+    "groupe": "HB102",
+    "module": "HB_M114"
+  },
+  {
+    "seance": "S232_0",
+    "jour": "mardi",
+    "creneau": 1,
+    "salle": "S20",
+    "formateur": "1985_11",
+    "groupe": "AA104",
+    "module": "AA_M102"
+  },
+  {
+    "seance": "S232_1",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "S17",
+    "formateur": "1985_11",
+    "groupe": "AA104",
+    "module": "AA_M102"
+  },
+  {
+    "seance": "S234_0",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "S13",
+    "formateur": "1985_11",
+    "groupe": "AA105",
+    "module": "AA_M102"
+  },
+  {
+    "seance": "S234_1",
+    "jour": "mercredi",
+    "creneau": 3,
+    "salle": "TEAMS",
+    "formateur": "1985_11",
+    "groupe": "AA105",
+    "module": "AA_M102"
+  },
+  {
+    "seance": "S236_0",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "S5",
+    "formateur": "1985_12",
+    "groupe": "ID101",
+    "module": "ID_M107"
+  },
+  {
+    "seance": "S236_1",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "S3",
+    "formateur": "1985_12",
+    "groupe": "ID101",
+    "module": "ID_M107"
+  },
+  {
+    "seance": "S238_0",
+    "jour": "samedi",
+    "creneau": 4,
+    "salle": "S19",
+    "formateur": "1985_12",
+    "groupe": "ID102",
+    "module": "ID_M107"
+  },
+  {
+    "seance": "S238_1",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "S4",
+    "formateur": "1985_12",
+    "groupe": "ID102",
+    "module": "ID_M107"
+  },
+  {
+    "seance": "S240_0",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "S4",
+    "formateur": "1985_12",
+    "groupe": "ID103",
+    "module": "ID_M107"
+  },
+  {
+    "seance": "S240_1",
+    "jour": "samedi",
+    "creneau": 1,
+    "salle": "S3",
+    "formateur": "1985_12",
+    "groupe": "ID103",
+    "module": "ID_M107"
+  },
+  {
+    "seance": "S242_0",
+    "jour": "mardi",
+    "creneau": 1,
+    "salle": "S4",
+    "formateur": "1985_12",
+    "groupe": "ID104",
+    "module": "ID_M107"
+  },
+  {
+    "seance": "S242_1",
+    "jour": "jeudi",
+    "creneau": 4,
+    "salle": "S15",
+    "formateur": "1985_12",
+    "groupe": "ID104",
+    "module": "ID_M107"
+  },
+  {
+    "seance": "S244_0",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "S15",
+    "formateur": "1985_12",
+    "groupe": "ID105",
+    "module": "ID_M107"
+  },
+  {
+    "seance": "S244_1",
+    "jour": "vendredi",
+    "creneau": 4,
+    "salle": "S19",
+    "formateur": "1985_12",
+    "groupe": "ID105",
+    "module": "ID_M107"
+  },
+  {
+    "seance": "S246_0",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "S19",
+    "formateur": "1985_13",
+    "groupe": "GEOCF201",
+    "module": "GEOCF_EGTSA206"
+  },
+  {
+    "seance": "S247_0",
+    "jour": "mardi",
+    "creneau": 1,
+    "salle": "At THP",
+    "formateur": "1985_13",
+    "groupe": "GEOCF201",
+    "module": "GEOCF_M205"
+  },
+  {
+    "seance": "S247_1",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "S19",
+    "formateur": "1985_13",
+    "groupe": "GEOCF201",
+    "module": "GEOCF_M205"
+  },
+  {
+    "seance": "S248_0",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "S21",
+    "formateur": "1985_13",
+    "groupe": "GEOCF202",
+    "module": "GEOCF_EGTSA206"
+  },
+  {
+    "seance": "S249_0",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "At Mod",
+    "formateur": "1985_13",
+    "groupe": "GEOCF203",
+    "module": "GEOCF_M205"
+  },
+  {
+    "seance": "S249_1",
+    "jour": "lundi",
+    "creneau": 2,
+    "salle": "At THP",
+    "formateur": "1985_13",
+    "groupe": "GEOCF203",
+    "module": "GEOCF_M205"
+  },
+  {
+    "seance": "S250_0",
+    "jour": "lundi",
+    "creneau": 2,
+    "salle": "S3",
+    "formateur": "1985_14",
+    "groupe": "AA101",
+    "module": "AA_EGT102"
+  },
+  {
+    "seance": "S251_0",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "S13",
+    "formateur": "1985_14",
+    "groupe": "AA102",
+    "module": "AA_EGT102"
+  },
+  {
+    "seance": "S252_0",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "S9",
+    "formateur": "1985_14",
+    "groupe": "GE105",
+    "module": "GE_EGTS102"
+  },
+  {
+    "seance": "S253_0",
+    "jour": "samedi",
+    "creneau": 4,
+    "salle": "S14",
+    "formateur": "1985_14",
+    "groupe": "GE106",
+    "module": "GE_EGTS102"
+  },
+  {
+    "seance": "S254_0",
+    "jour": "lundi",
+    "creneau": 3,
+    "salle": "Conference",
+    "formateur": "1985_15",
+    "groupe": "DEV101",
+    "module": "DEV_EGTS105"
+  },
+  {
+    "seance": "S255_0",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "S4",
+    "formateur": "1985_15",
+    "groupe": "DEV104",
+    "module": "DEV_EGTS102"
+  },
+  {
+    "seance": "S256_0",
+    "jour": "vendredi",
+    "creneau": 1,
+    "salle": "S3",
+    "formateur": "1985_15",
+    "groupe": "DEVOWFS202",
+    "module": "DEVOWFS_EGTS205"
+  },
+  {
+    "seance": "S257_0",
+    "jour": "mardi",
+    "creneau": 4,
+    "salle": "S3",
+    "formateur": "1985_15",
+    "groupe": "DEVOWFS203",
+    "module": "DEVOWFS_EGTS205"
+  },
+  {
+    "seance": "S258_0",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "At THP",
+    "formateur": "1985_16",
+    "groupe": "GEOCM201",
+    "module": "GEOCM_M204"
+  },
+  {
+    "seance": "S260_0",
+    "jour": "lundi",
+    "creneau": 2,
+    "salle": "S1",
+    "formateur": "1985_16",
+    "groupe": "GEOCM202",
+    "module": "GEOCM_M204"
+  },
+  {
+    "seance": "S262_0",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "TEAMS",
+    "formateur": "1985_16",
+    "groupe": "GEOCM203",
+    "module": "GEOCM_M204"
+  },
+  {
+    "seance": "S262_1",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "Conference",
+    "formateur": "1985_16",
+    "groupe": "GEOCM203",
+    "module": "GEOCM_M204"
+  },
+  {
+    "seance": "S264_0",
+    "jour": "mardi",
+    "creneau": 4,
+    "salle": "At THP",
+    "formateur": "1985_16",
+    "groupe": "GEOCM204",
+    "module": "GEOCM_M204"
+  },
+  {
+    "seance": "S264_1",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "S17",
+    "formateur": "1985_16",
+    "groupe": "GEOCM204",
+    "module": "GEOCM_M204"
+  },
+  {
+    "seance": "S266_0",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "At CI",
+    "formateur": "1985_17",
+    "groupe": "COMPT201",
+    "module": "COMPT_M205"
+  },
+  {
+    "seance": "S266_1",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "S1",
+    "formateur": "1985_17",
+    "groupe": "COMPT201",
+    "module": "COMPT_M205"
+  },
+  {
+    "seance": "S267_0",
+    "jour": "mardi",
+    "creneau": 4,
+    "salle": "S19",
+    "formateur": "1985_17",
+    "groupe": "GEOCF201",
+    "module": "GEOCF_M204"
+  },
+  {
+    "seance": "S268_0",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "S21",
+    "formateur": "1985_17",
+    "groupe": "GEOCF202",
+    "module": "GEOCF_M204"
+  },
+  {
+    "seance": "S269_0",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "S6",
+    "formateur": "1985_17",
+    "groupe": "GEOCF203",
+    "module": "GEOCF_M204"
+  },
+  {
+    "seance": "S270_0",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "S15",
+    "formateur": "1985_17",
+    "groupe": "GEOOM201",
+    "module": "GEOOM_M203"
+  },
+  {
+    "seance": "S270_1",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "TEAMS",
+    "formateur": "1985_17",
+    "groupe": "GEOOM201",
+    "module": "GEOOM_M203"
+  },
+  {
+    "seance": "S271_0",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "S21",
+    "formateur": "1985_2",
+    "groupe": "TMMC101",
+    "module": "TMMC_M107"
+  },
+  {
+    "seance": "S272_0",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "At Rep",
+    "formateur": "1985_2",
+    "groupe": "TMMC201",
+    "module": "TMMC_M202"
+  },
+  {
+    "seance": "S273_0",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "S16",
+    "formateur": "1985_3",
+    "groupe": "TCPS101",
+    "module": "TCPS_M : TCS01"
+  },
+  {
+    "seance": "S274_0",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "S16",
+    "formateur": "1985_4",
+    "groupe": "AAOC201",
+    "module": "AAOC_M203"
+  },
+  {
+    "seance": "S274_1",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "S7",
+    "formateur": "1985_4",
+    "groupe": "AAOC201",
+    "module": "AAOC_M203"
+  },
+  {
+    "seance": "S275_0",
+    "jour": "jeudi",
+    "creneau": 4,
+    "salle": "At THP",
+    "formateur": "1985_4",
+    "groupe": "AAOC202",
+    "module": "AAOC_M203"
+  },
+  {
+    "seance": "S275_1",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "S17",
+    "formateur": "1985_4",
+    "groupe": "AAOC202",
+    "module": "AAOC_M203"
+  },
+  {
+    "seance": "S276_0",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "S7",
+    "formateur": "1985_4",
+    "groupe": "AAOC203",
+    "module": "AAOC_M203"
+  },
+  {
+    "seance": "S276_1",
+    "jour": "samedi",
+    "creneau": 4,
+    "salle": "At Mod",
+    "formateur": "1985_4",
+    "groupe": "AAOC203",
+    "module": "AAOC_M203"
+  },
+  {
+    "seance": "S277_0",
+    "jour": "lundi",
+    "creneau": 3,
+    "salle": "S3",
+    "formateur": "1985_4",
+    "groupe": "AAOG201",
+    "module": "AAOG_EGTS204"
+  },
+  {
+    "seance": "S278_0",
+    "jour": "lundi",
+    "creneau": 1,
+    "salle": "At Mod",
+    "formateur": "1985_4",
+    "groupe": "AAOG202",
+    "module": "AAOG_EGT204"
+  },
+  {
+    "seance": "S279_0",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "S20",
+    "formateur": "1985_4",
+    "groupe": "GEOCM201",
+    "module": "GEOCM_EGTS204"
+  },
+  {
+    "seance": "S280_0",
+    "jour": "jeudi",
+    "creneau": 1,
+    "salle": "S17",
+    "formateur": "1985_4",
+    "groupe": "GEOCM202",
+    "module": "GEOCM_EGTS204"
+  },
+  {
+    "seance": "S281_0",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "S11",
+    "formateur": "1985_4",
+    "groupe": "GEOCM203",
+    "module": "GEOCM_EGTS204"
+  },
+  {
+    "seance": "S282_0",
+    "jour": "vendredi",
+    "creneau": 4,
+    "salle": "At CI",
+    "formateur": "1985_4",
+    "groupe": "GEOCM204",
+    "module": "GEOCM_EGTS204"
+  },
+  {
+    "seance": "S283_0",
+    "jour": "lundi",
+    "creneau": 1,
+    "salle": "S3",
+    "formateur": "1985_5",
+    "groupe": "HB101",
+    "module": "HB_M103"
+  },
+  {
+    "seance": "S284_0",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "S6",
+    "formateur": "1985_5",
+    "groupe": "HB102",
+    "module": "HB_M103"
+  },
+  {
+    "seance": "S285_0",
+    "jour": "samedi",
+    "creneau": 4,
+    "salle": "S7",
+    "formateur": "1985_5",
+    "groupe": "THI101",
+    "module": "THI_M103"
+  },
+  {
+    "seance": "S286_0",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "S4",
+    "formateur": "1985_5",
+    "groupe": "THI101",
+    "module": "THI_M106"
+  },
+  {
+    "seance": "S287_0",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "S3",
+    "formateur": "1985_5",
+    "groupe": "THI201",
+    "module": "THI_M201"
+  },
+  {
+    "seance": "S287_1",
+    "jour": "jeudi",
+    "creneau": 4,
+    "salle": "S22",
+    "formateur": "1985_5",
+    "groupe": "THI201",
+    "module": "THI_M201"
+  },
+  {
+    "seance": "S288_0",
+    "jour": "mardi",
+    "creneau": 4,
+    "salle": "TEAMS",
+    "formateur": "1985_5",
+    "groupe": "THP201",
+    "module": "THP_M201"
+  },
+  {
+    "seance": "S289_0",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "S18",
+    "formateur": "1985_5",
+    "groupe": "TMI201",
+    "module": "TMI_M205"
+  },
+  {
+    "seance": "S291_0",
+    "jour": "mercredi",
+    "creneau": 3,
+    "salle": "S10",
+    "formateur": "1985_5",
+    "groupe": "TMI202",
+    "module": "TMI_M205"
+  },
+  {
+    "seance": "S293_0",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "S9",
+    "formateur": "1985_6",
+    "groupe": "AAOC201",
+    "module": "AAOC_M204"
+  },
+  {
+    "seance": "S295_0",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "At CI",
+    "formateur": "1985_6",
+    "groupe": "AAOC202",
+    "module": "AAOC_M204"
+  },
+  {
+    "seance": "S297_0",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "S16",
+    "formateur": "1985_6",
+    "groupe": "AAOC203",
+    "module": "AAOC_M204"
+  },
+  {
+    "seance": "S299_0",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "S14",
+    "formateur": "1985_6",
+    "groupe": "AAOG201",
+    "module": "AAOG_M204"
+  },
+  {
+    "seance": "S300_0",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "S11",
+    "formateur": "1985_6",
+    "groupe": "AAOG202",
+    "module": "AAOG_M204"
+  },
+  {
+    "seance": "S301_0",
+    "jour": "lundi",
+    "creneau": 2,
+    "salle": "At TMMC",
+    "formateur": "1985_6",
+    "groupe": "COMPT301",
+    "module": "COMPT_M306"
+  },
+  {
+    "seance": "S302_0",
+    "jour": "samedi",
+    "creneau": 4,
+    "salle": "S5",
+    "formateur": "1985_6",
+    "groupe": "GE103",
+    "module": "GE_M104"
+  },
+  {
+    "seance": "S302_1",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "S5",
+    "formateur": "1985_6",
+    "groupe": "GE103",
+    "module": "GE_M104"
+  },
+  {
+    "seance": "S304_0",
+    "jour": "lundi",
+    "creneau": 3,
+    "salle": "S2",
+    "formateur": "1985_6",
+    "groupe": "GEOCM203",
+    "module": "GEOCM_M 210"
+  },
+  {
+    "seance": "S305_0",
+    "jour": "jeudi",
+    "creneau": 1,
+    "salle": "S22",
+    "formateur": "1985_6",
+    "groupe": "GEOCM204",
+    "module": "GEOCM_M 210"
+  },
+  {
+    "seance": "S306_0",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "S7",
+    "formateur": "1985_7",
+    "groupe": "TCPS102",
+    "module": "TCPS_M : TCS01"
+  },
+  {
+    "seance": "S307_0",
+    "jour": "samedi",
+    "creneau": 4,
+    "salle": "Conference",
+    "formateur": "1985_7",
+    "groupe": "TCPS102",
+    "module": "TCPS_M : TCS02"
+  },
+  {
+    "seance": "S308_0",
+    "jour": "mardi",
+    "creneau": 1,
+    "salle": "S2",
+    "formateur": "1985_8",
+    "groupe": "AA101",
+    "module": "AA_M103"
+  },
+  {
+    "seance": "S308_1",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "At Mod",
+    "formateur": "1985_8",
+    "groupe": "AA101",
+    "module": "AA_M103"
+  },
+  {
+    "seance": "S310_0",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "TEAMS",
+    "formateur": "1985_8",
+    "groupe": "AA102",
+    "module": "AA_M103"
+  },
+  {
+    "seance": "S310_1",
+    "jour": "lundi",
+    "creneau": 1,
+    "salle": "At TMMC",
+    "formateur": "1985_8",
+    "groupe": "AA102",
+    "module": "AA_M103"
+  },
+  {
+    "seance": "S312_0",
+    "jour": "lundi",
+    "creneau": 2,
+    "salle": "S2",
+    "formateur": "1985_8",
+    "groupe": "GE101",
+    "module": "GE_M102"
+  },
+  {
+    "seance": "S313_0",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "S5",
+    "formateur": "1985_8",
+    "groupe": "GE102",
+    "module": "GE_M102"
+  },
+  {
+    "seance": "S314_0",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "At TMMC",
+    "formateur": "1985_8",
+    "groupe": "GE103",
+    "module": "GE_M102"
+  },
+  {
+    "seance": "S315_0",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "At Mod",
+    "formateur": "1985_8",
+    "groupe": "GE105",
+    "module": "GE_M104"
+  },
+  {
+    "seance": "S315_1",
+    "jour": "jeudi",
+    "creneau": 4,
+    "salle": "S14",
+    "formateur": "1985_8",
+    "groupe": "GE105",
+    "module": "GE_M104"
+  },
+  {
+    "seance": "S317_0",
+    "jour": "samedi",
+    "creneau": 1,
+    "salle": "At TMMC",
+    "formateur": "1985_8",
+    "groupe": "GE106",
+    "module": "GE_M104"
+  },
+  {
+    "seance": "S317_1",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "S17",
+    "formateur": "1985_8",
+    "groupe": "GE106",
+    "module": "GE_M104"
+  },
+  {
+    "seance": "S319_0",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "TEAMS",
+    "formateur": "1985_9",
+    "groupe": "AAOG201",
+    "module": "AAOG_M208"
+  },
+  {
+    "seance": "S320_0",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "S10",
+    "formateur": "1985_9",
+    "groupe": "AAOG202",
+    "module": "AAOG_M208"
+  },
+  {
+    "seance": "S321_0",
+    "jour": "vendredi",
+    "creneau": 1,
+    "salle": "S11",
+    "formateur": "1985_9",
+    "groupe": "GE104",
+    "module": "GE_M105"
+  },
+  {
+    "seance": "S323_0",
+    "jour": "mardi",
+    "creneau": 4,
+    "salle": "S17",
+    "formateur": "1985_9",
+    "groupe": "GE105",
+    "module": "GE_M105"
+  },
+  {
+    "seance": "S325_0",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "S3",
+    "formateur": "1985_9",
+    "groupe": "GE106",
+    "module": "GE_M105"
+  },
+  {
+    "seance": "S325_1",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "At Mod",
+    "formateur": "1985_9",
+    "groupe": "GE106",
+    "module": "GE_M105"
+  },
+  {
+    "seance": "S327_0",
+    "jour": "lundi",
+    "creneau": 3,
+    "salle": "S14",
+    "formateur": "1985_9",
+    "groupe": "HB101",
+    "module": "HB_EGTA106"
+  },
+  {
+    "seance": "S327_1",
+    "jour": "jeudi",
+    "creneau": 4,
+    "salle": "S19",
+    "formateur": "1985_9",
+    "groupe": "HB101",
+    "module": "HB_EGTA106"
+  },
+  {
+    "seance": "S328_0",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "S11",
+    "formateur": "1985_9",
+    "groupe": "THI101",
+    "module": "THI_EGTSA106"
+  },
+  {
+    "seance": "S328_1",
+    "jour": "lundi",
+    "creneau": 1,
+    "salle": "S22",
+    "formateur": "1985_9",
+    "groupe": "THI101",
+    "module": "THI_EGTSA106"
+  },
+  {
+    "seance": "S329_0",
+    "jour": "jeudi",
+    "creneau": 1,
+    "salle": "S6",
+    "formateur": "7497",
+    "groupe": "AA101",
+    "module": "AA_ M106"
+  },
+  {
+    "seance": "S330_0",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "S15",
+    "formateur": "7497",
+    "groupe": "AA102",
+    "module": "AA_EGTA106"
+  },
+  {
+    "seance": "S331_0",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "Conference",
+    "formateur": "7497",
+    "groupe": "AA103",
+    "module": "AA_EGTA106"
+  },
+  {
+    "seance": "S331_1",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "Conference",
+    "formateur": "7497",
+    "groupe": "AA103",
+    "module": "AA_EGTA106"
+  },
+  {
+    "seance": "S332_0",
+    "jour": "jeudi",
+    "creneau": 4,
+    "salle": "TEAMS",
+    "formateur": "7497",
+    "groupe": "AA104",
+    "module": "AA_EGTA106"
+  },
+  {
+    "seance": "S333_0",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "S16",
+    "formateur": "7497",
+    "groupe": "AA105",
+    "module": "AA_EGTA106"
+  },
+  {
+    "seance": "S334_0",
+    "jour": "vendredi",
+    "creneau": 4,
+    "salle": "S15",
+    "formateur": "7497",
+    "groupe": "AAOC201",
+    "module": "AAOC_M205"
+  },
+  {
+    "seance": "S335_0",
+    "jour": "mercredi",
+    "creneau": 3,
+    "salle": "S20",
+    "formateur": "7497",
+    "groupe": "AAOC202",
+    "module": "AAOC_M205"
+  },
+  {
+    "seance": "S336_0",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "S15",
+    "formateur": "7497",
+    "groupe": "AAOC203",
+    "module": "AAOC_M205"
+  },
+  {
+    "seance": "S340_0",
+    "jour": "lundi",
+    "creneau": 3,
+    "salle": "S21",
+    "formateur": "7497",
+    "groupe": "HB103",
+    "module": "HB_EGTA106"
+  },
+  {
+    "seance": "S341_0",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "S20",
+    "formateur": "8403",
+    "groupe": "HB101",
+    "module": "HB_M107"
+  },
+  {
+    "seance": "S341_1",
+    "jour": "vendredi",
+    "creneau": 1,
+    "salle": "At Mod",
+    "formateur": "8403",
+    "groupe": "HB101",
+    "module": "HB_M107"
+  },
+  {
+    "seance": "S341_2",
+    "jour": "mardi",
+    "creneau": 4,
+    "salle": "S16",
+    "formateur": "8403",
+    "groupe": "HB101",
+    "module": "HB_M107"
+  },
+  {
+    "seance": "S342_0",
+    "jour": "mardi",
+    "creneau": 1,
+    "salle": "S15",
+    "formateur": "8403",
+    "groupe": "HB102",
+    "module": "HB_M107"
+  },
+  {
+    "seance": "S342_1",
+    "jour": "mercredi",
+    "creneau": 3,
+    "salle": "S18",
+    "formateur": "8403",
+    "groupe": "HB102",
+    "module": "HB_M107"
+  },
+  {
+    "seance": "S342_2",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "S10",
+    "formateur": "8403",
+    "groupe": "HB102",
+    "module": "HB_M107"
+  },
+  {
+    "seance": "S342_3",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "S12",
+    "formateur": "8403",
+    "groupe": "HB102",
+    "module": "HB_M107"
+  },
+  {
+    "seance": "S343_0",
+    "jour": "jeudi",
+    "creneau": 1,
+    "salle": "S20",
+    "formateur": "8403",
+    "groupe": "THI101",
+    "module": "THI_M107"
+  },
+  {
+    "seance": "S343_1",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "S16",
+    "formateur": "8403",
+    "groupe": "THI101",
+    "module": "THI_M107"
+  },
+  {
+    "seance": "S343_2",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "At TMMC",
+    "formateur": "8403",
+    "groupe": "THI101",
+    "module": "THI_M107"
+  },
+  {
+    "seance": "S344_0",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "S2",
+    "formateur": "8403",
+    "groupe": "THI201",
+    "module": "THI_M202"
+  },
+  {
+    "seance": "S344_1",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "S19",
+    "formateur": "8403",
+    "groupe": "THI201",
+    "module": "THI_M202"
+  },
+  {
+    "seance": "S345_0",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "S4",
+    "formateur": "8539",
+    "groupe": "GE101",
+    "module": "GE_M101"
+  },
+  {
+    "seance": "S346_0",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "S3",
+    "formateur": "8539",
+    "groupe": "GE101",
+    "module": "GE_M104"
+  },
+  {
+    "seance": "S346_1",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "S5",
+    "formateur": "8539",
+    "groupe": "GE101",
+    "module": "GE_M104"
+  },
+  {
+    "seance": "S348_0",
+    "jour": "mercredi",
+    "creneau": 3,
+    "salle": "S12",
+    "formateur": "8539",
+    "groupe": "GE102",
+    "module": "GE_M101"
+  },
+  {
+    "seance": "S349_0",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "S13",
+    "formateur": "8539",
+    "groupe": "GE102",
+    "module": "GE_M104"
+  },
+  {
+    "seance": "S349_1",
+    "jour": "vendredi",
+    "creneau": 4,
+    "salle": "S6",
+    "formateur": "8539",
+    "groupe": "GE102",
+    "module": "GE_M104"
+  },
+  {
+    "seance": "S354_0",
+    "jour": "jeudi",
+    "creneau": 4,
+    "salle": "S13",
+    "formateur": "8741",
+    "groupe": "AA101",
+    "module": "AA_M105"
+  },
+  {
+    "seance": "S356_0",
+    "jour": "lundi",
+    "creneau": 2,
+    "salle": "S17",
+    "formateur": "8741",
+    "groupe": "AA102",
+    "module": "AA_M105"
+  },
+  {
+    "seance": "S358_0",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "S3",
+    "formateur": "8741",
+    "groupe": "AA103",
+    "module": "AA_M105"
+  },
+  {
+    "seance": "S360_0",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "S10",
+    "formateur": "8741",
+    "groupe": "AA104",
+    "module": "AA_M105"
+  },
+  {
+    "seance": "S362_0",
+    "jour": "samedi",
+    "creneau": 4,
+    "salle": "S15",
+    "formateur": "8741",
+    "groupe": "AA105",
+    "module": "AA_M105"
+  },
+  {
+    "seance": "S364_0",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "At Rep",
+    "formateur": "8741",
+    "groupe": "AAOG202",
+    "module": "AAOG_M205"
+  },
+  {
+    "seance": "S365_0",
+    "jour": "vendredi",
+    "creneau": 4,
+    "salle": "S12",
+    "formateur": "8741",
+    "groupe": "GEOOM201",
+    "module": "GEOOM_M206"
+  },
+  {
+    "seance": "S366_0",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "S11",
+    "formateur": "D121187",
+    "groupe": "HB101",
+    "module": "HB_M109"
+  },
+  {
+    "seance": "S366_1",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "S21",
+    "formateur": "D121187",
+    "groupe": "HB101",
+    "module": "HB_M109"
+  },
+  {
+    "seance": "S367_0",
+    "jour": "samedi",
+    "creneau": 1,
+    "salle": "S13",
+    "formateur": "D121187",
+    "groupe": "HB102",
+    "module": "HB_M109"
+  },
+  {
+    "seance": "S368_0",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "At Rep",
+    "formateur": "D121187",
+    "groupe": "HB103",
+    "module": "HB_M109"
+  },
+  {
+    "seance": "S369_0",
+    "jour": "lundi",
+    "creneau": 2,
+    "salle": "S8",
+    "formateur": "D121187",
+    "groupe": "THI201",
+    "module": "THI_M205"
+  },
+  {
+    "seance": "S369_1",
+    "jour": "mardi",
+    "creneau": 1,
+    "salle": "S11",
+    "formateur": "D121187",
+    "groupe": "THI201",
+    "module": "THI_M205"
+  },
+  {
+    "seance": "S370_0",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "S22",
+    "formateur": "D121187",
+    "groupe": "THP201",
+    "module": "THP_M205"
+  },
+  {
+    "seance": "S370_1",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "S22",
+    "formateur": "D121187",
+    "groupe": "THP201",
+    "module": "THP_M205"
+  },
+  {
+    "seance": "S370_2",
+    "jour": "vendredi",
+    "creneau": 4,
+    "salle": "S8",
+    "formateur": "D121187",
+    "groupe": "THP201",
+    "module": "THP_M205"
+  },
+  {
+    "seance": "S372_0",
+    "jour": "vendredi",
+    "creneau": 4,
+    "salle": "S16",
+    "formateur": "D143887",
+    "groupe": "HB101",
+    "module": "HB_M104"
+  },
+  {
+    "seance": "S372_1",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "Conference",
+    "formateur": "D143887",
+    "groupe": "HB101",
+    "module": "HB_M104"
+  },
+  {
+    "seance": "S373_0",
+    "jour": "lundi",
+    "creneau": 1,
+    "salle": "S10",
+    "formateur": "D143887",
+    "groupe": "HB102",
+    "module": "HB_M104"
+  },
+  {
+    "seance": "S373_1",
+    "jour": "lundi",
+    "creneau": 3,
+    "salle": "At THP",
+    "formateur": "D143887",
+    "groupe": "HB102",
+    "module": "HB_M104"
+  },
+  {
+    "seance": "S374_0",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "S19",
+    "formateur": "D143887",
+    "groupe": "TMI201",
+    "module": "TMI_M201"
+  },
+  {
+    "seance": "S374_1",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "S9",
+    "formateur": "D143887",
+    "groupe": "TMI201",
+    "module": "TMI_M201"
+  },
+  {
+    "seance": "S375_0",
+    "jour": "samedi",
+    "creneau": 1,
+    "salle": "S14",
+    "formateur": "D143887",
+    "groupe": "TMI202",
+    "module": "TMI_M201"
+  },
+  {
+    "seance": "S375_1",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "At Rep",
+    "formateur": "D143887",
+    "groupe": "TMI202",
+    "module": "TMI_M201"
+  },
+  {
+    "seance": "S376_0",
+    "jour": "samedi",
+    "creneau": 4,
+    "salle": "S16",
+    "formateur": "D143887",
+    "groupe": "TMMC101",
+    "module": "TMMC_M106"
+  },
+  {
+    "seance": "S378_0",
+    "jour": "samedi",
+    "creneau": 4,
+    "salle": "S6",
+    "formateur": "D145987",
+    "groupe": "AA101",
+    "module": "AA_EGT103"
+  },
+  {
+    "seance": "S379_0",
+    "jour": "vendredi",
+    "creneau": 1,
+    "salle": "S6",
+    "formateur": "D145987",
+    "groupe": "AA103",
+    "module": "AA_EGT103"
+  },
+  {
+    "seance": "S380_0",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "S5",
+    "formateur": "D145987",
+    "groupe": "AAOG201",
+    "module": "AAOG_EGT203"
+  },
+  {
+    "seance": "S381_0",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "S10",
+    "formateur": "D145987",
+    "groupe": "AAOG202",
+    "module": "AAOG_EGT203"
+  },
+  {
+    "seance": "S382_0",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "S10",
+    "formateur": "D145987",
+    "groupe": "GE103",
+    "module": "GE_EGTS103"
+  },
+  {
+    "seance": "S383_0",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "S4",
+    "formateur": "D145987",
+    "groupe": "GE104",
+    "module": "GE_EGTS103"
+  },
+  {
+    "seance": "S384_0",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "S10",
+    "formateur": "D145987",
+    "groupe": "GE105",
+    "module": "GE_EGTS103"
+  },
+  {
+    "seance": "S385_0",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "S10",
+    "formateur": "D145987",
+    "groupe": "GE106",
+    "module": "GE_EGTS103"
+  },
+  {
+    "seance": "S386_0",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "S17",
+    "formateur": "D161271",
+    "groupe": "DEVOWFS201",
+    "module": "DEVOWFS_M202"
+  },
+  {
+    "seance": "S386_1",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "S12",
+    "formateur": "D161271",
+    "groupe": "DEVOWFS201",
+    "module": "DEVOWFS_M202"
+  },
+  {
+    "seance": "S386_2",
+    "jour": "jeudi",
+    "creneau": 4,
+    "salle": "S2",
+    "formateur": "D161271",
+    "groupe": "DEVOWFS201",
+    "module": "DEVOWFS_M202"
+  },
+  {
+    "seance": "S388_0",
+    "jour": "jeudi",
+    "creneau": 1,
+    "salle": "S9",
+    "formateur": "D161271",
+    "groupe": "DEVOWFS202",
+    "module": "DEVOWFS_M202"
+  },
+  {
+    "seance": "S388_1",
+    "jour": "samedi",
+    "creneau": 4,
+    "salle": "S13",
+    "formateur": "D161271",
+    "groupe": "DEVOWFS202",
+    "module": "DEVOWFS_M202"
+  },
+  {
+    "seance": "S388_2",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "S10",
+    "formateur": "D161271",
+    "groupe": "DEVOWFS202",
+    "module": "DEVOWFS_M202"
+  },
+  {
+    "seance": "S390_0",
+    "jour": "samedi",
+    "creneau": 1,
+    "salle": "S11",
+    "formateur": "D161271",
+    "groupe": "DEVOWFS203",
+    "module": "DEVOWFS_M202"
+  },
+  {
+    "seance": "S390_1",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "S19",
+    "formateur": "D161271",
+    "groupe": "DEVOWFS203",
+    "module": "DEVOWFS_M202"
+  },
+  {
+    "seance": "S390_2",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "S22",
+    "formateur": "D161271",
+    "groupe": "DEVOWFS203",
+    "module": "DEVOWFS_M202"
+  },
+  {
+    "seance": "S392_0",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "TEAMS",
+    "formateur": "D304508",
+    "groupe": "HB103",
+    "module": "HB_M104"
+  },
+  {
+    "seance": "S392_1",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "S13",
+    "formateur": "D304508",
+    "groupe": "HB103",
+    "module": "HB_M104"
+  },
+  {
+    "seance": "S392_2",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "S8",
+    "formateur": "D304508",
+    "groupe": "HB103",
+    "module": "HB_M104"
+  },
+  {
+    "seance": "S392_3",
+    "jour": "samedi",
+    "creneau": 1,
+    "salle": "At Mod",
+    "formateur": "D304508",
+    "groupe": "HB103",
+    "module": "HB_M104"
+  },
+  {
+    "seance": "S393_0",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "Conference",
+    "formateur": "D304508",
+    "groupe": "TMI201",
+    "module": "TMI_M203"
+  },
+  {
+    "seance": "S393_1",
+    "jour": "lundi",
+    "creneau": 1,
+    "salle": "S14",
+    "formateur": "D304508",
+    "groupe": "TMI201",
+    "module": "TMI_M203"
+  },
+  {
+    "seance": "S394_0",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "S20",
+    "formateur": "D304508",
+    "groupe": "TMI202",
+    "module": "TMI_M203"
+  },
+  {
+    "seance": "S394_1",
+    "jour": "mardi",
+    "creneau": 1,
+    "salle": "S19",
+    "formateur": "D304508",
+    "groupe": "TMI202",
+    "module": "TMI_M203"
+  },
+  {
+    "seance": "S394_2",
+    "jour": "vendredi",
+    "creneau": 1,
+    "salle": "S18",
+    "formateur": "D304508",
+    "groupe": "TMI202",
+    "module": "TMI_M203"
+  },
+  {
+    "seance": "S394_3",
+    "jour": "lundi",
+    "creneau": 2,
+    "salle": "S12",
+    "formateur": "D304508",
+    "groupe": "TMI202",
+    "module": "TMI_M203"
+  },
+  {
+    "seance": "S395_0",
+    "jour": "jeudi",
+    "creneau": 4,
+    "salle": "S9",
+    "formateur": "D49474",
+    "groupe": "TMMC101",
+    "module": "TMMC_M102"
+  },
+  {
+    "seance": "S395_1",
+    "jour": "vendredi",
+    "creneau": 4,
+    "salle": "S9",
+    "formateur": "D49474",
+    "groupe": "TMMC101",
+    "module": "TMMC_M102"
+  },
+  {
+    "seance": "S397_0",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "S18",
+    "formateur": "D49474",
+    "groupe": "TMMC201",
+    "module": "TMMC_M201"
+  },
+  {
+    "seance": "S397_1",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "S22",
+    "formateur": "D49474",
+    "groupe": "TMMC201",
+    "module": "TMMC_M201"
+  },
+  {
+    "seance": "S397_2",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "S20",
+    "formateur": "D49474",
+    "groupe": "TMMC201",
+    "module": "TMMC_M201"
+  },
+  {
+    "seance": "S397_3",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "At TMMC",
+    "formateur": "D49474",
+    "groupe": "TMMC201",
+    "module": "TMMC_M201"
+  },
+  {
+    "seance": "S399_0",
+    "jour": "mardi",
+    "creneau": 1,
+    "salle": "S18",
+    "formateur": "D618126",
+    "groupe": "DEV101",
+    "module": "DEV_EGTS102"
+  },
+  {
+    "seance": "S400_0",
+    "jour": "vendredi",
+    "creneau": 4,
+    "salle": "S11",
+    "formateur": "D618126",
+    "groupe": "DEV102",
+    "module": "DEV_EGTS102"
+  },
+  {
+    "seance": "S401_0",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "S12",
+    "formateur": "D618126",
+    "groupe": "DEV103",
+    "module": "DEV_EGTS102"
+  },
+  {
+    "seance": "S402_0",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "S19",
+    "formateur": "D618126",
+    "groupe": "DEV104",
+    "module": "DEV_EGTS102"
+  },
+  {
+    "seance": "S403_0",
+    "jour": "lundi",
+    "creneau": 3,
+    "salle": "S17",
+    "formateur": "UC3690",
+    "groupe": "DEVOAM201",
+    "module": "DEVOAM_M201"
+  },
+  {
+    "seance": "S403_1",
+    "jour": "mercredi",
+    "creneau": 3,
+    "salle": "S13",
+    "formateur": "UC3690",
+    "groupe": "DEVOAM201",
+    "module": "DEVOAM_M201"
+  },
+  {
+    "seance": "S403_2",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "At Mod",
+    "formateur": "UC3690",
+    "groupe": "DEVOAM201",
+    "module": "DEVOAM_M201"
+  },
+  {
+    "seance": "S403_3",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "At TMMC",
+    "formateur": "UC3690",
+    "groupe": "DEVOAM201",
+    "module": "DEVOAM_M201"
+  },
+  {
+    "seance": "S403_4",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "S9",
+    "formateur": "UC3690",
+    "groupe": "DEVOAM201",
+    "module": "DEVOAM_M201"
+  },
+  {
+    "seance": "S405_0",
+    "jour": "mardi",
+    "creneau": 4,
+    "salle": "S12",
+    "formateur": "UC3690",
+    "groupe": "DEVOAM202",
+    "module": "DEVOAM_M201"
+  },
+  {
+    "seance": "S405_1",
+    "jour": "mardi",
+    "creneau": 1,
+    "salle": "S16",
+    "formateur": "UC3690",
+    "groupe": "DEVOAM202",
+    "module": "DEVOAM_M201"
+  },
+  {
+    "seance": "S405_2",
+    "jour": "jeudi",
+    "creneau": 1,
+    "salle": "S15",
+    "formateur": "UC3690",
+    "groupe": "DEVOAM202",
+    "module": "DEVOAM_M201"
+  },
+  {
+    "seance": "S405_3",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "S11",
+    "formateur": "UC3690",
+    "groupe": "DEVOAM202",
+    "module": "DEVOAM_M201"
+  },
+  {
+    "seance": "S405_4",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "At Mod",
+    "formateur": "UC3690",
+    "groupe": "DEVOAM202",
+    "module": "DEVOAM_M201"
+  },
+  {
+    "seance": "S407_0",
+    "jour": "jeudi",
+    "creneau": 4,
+    "salle": "S20",
+    "formateur": "V30169",
+    "groupe": "AAOC201",
+    "module": "AAOC_M201"
+  },
+  {
+    "seance": "S409_0",
+    "jour": "mercredi",
+    "creneau": 1,
+    "salle": "At THP",
+    "formateur": "V30169",
+    "groupe": "AAOC202",
+    "module": "AAOC_M201"
+  },
+  {
+    "seance": "S411_0",
+    "jour": "lundi",
+    "creneau": 1,
+    "salle": "S7",
+    "formateur": "V30169",
+    "groupe": "AAOC203",
+    "module": "AAOC_M201"
+  },
+  {
+    "seance": "S413_0",
+    "jour": "vendredi",
+    "creneau": 1,
+    "salle": "At THP",
+    "formateur": "V30169",
+    "groupe": "GEOOM201",
+    "module": "GEOOM_EGTS204"
+  },
+  {
+    "seance": "S414_0",
+    "jour": "lundi",
+    "creneau": 3,
+    "salle": "S18",
+    "formateur": "V30169",
+    "groupe": "IDOCC201",
+    "module": "IDOCC_EGTS204"
+  },
+  {
+    "seance": "S415_0",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "S4",
+    "formateur": "V30169",
+    "groupe": "IDOCC202",
+    "module": "IDOCC_EGTS204"
+  },
+  {
+    "seance": "S416_0",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "S17",
+    "formateur": "V30169",
+    "groupe": "IDOSR201",
+    "module": "IDOSR_EGTS204"
+  },
+  {
+    "seance": "S417_0",
+    "jour": "samedi",
+    "creneau": 1,
+    "salle": "S10",
+    "formateur": "V30169",
+    "groupe": "IDOSR202",
+    "module": "IDOSR_EGTS204"
+  },
+  {
+    "seance": "S418_0",
+    "jour": "samedi",
+    "creneau": 3,
+    "salle": "S6",
+    "formateur": "V30169",
+    "groupe": "IDOSR203",
+    "module": "IDOSR_EGTS204"
+  }
+]

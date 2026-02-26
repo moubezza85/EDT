@@ -1,5 +1,5 @@
 {
-  "version": 51,
+  "version": 44,
   "sessions": [
     {
       "id": "S1_0",
@@ -1892,6 +1892,15 @@
       "salle": "S17"
     },
     {
+      "id": "S202_0",
+      "formateur": "14017",
+      "groupe": "DEV103",
+      "module": "DEV_M102",
+      "jour": "lundi",
+      "creneau": 1,
+      "salle": "S16"
+    },
+    {
       "id": "S202_1",
       "formateur": "14017",
       "groupe": "DEV103",
@@ -1907,7 +1916,7 @@
       "module": "DEV_M102",
       "jour": "lundi",
       "creneau": 4,
-      "salle": "S19"
+      "salle": "S21"
     },
     {
       "id": "S204_0",
@@ -1930,11 +1939,11 @@
     {
       "id": "S208_0",
       "formateur": "14017",
-      "groupe": "DEV102",
-      "module": "DEVM102",
+      "groupe": "DEVOWFS203",
+      "module": "DEVOWFS_M202",
       "jour": "mardi",
       "creneau": 1,
-      "salle": "S10"
+      "salle": "S16"
     },
     {
       "id": "S209_0",
@@ -4140,15 +4149,6 @@
       "creneau": 1,
       "salle": "S21",
       "id": "TEACHER_NEW_1770138354_93ab3909"
-    },
-    {
-      "formateur": "14017",
-      "groupe": "DEV102",
-      "module": "DEVM102",
-      "jour": "lundi",
-      "creneau": 1,
-      "salle": "S11",
-      "id": "TEACHER_NEW_1771925587_58e0a74b"
     }
   ]
 }

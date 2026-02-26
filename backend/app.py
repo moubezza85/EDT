@@ -623,6 +623,10 @@ app.register_blueprint(publish_bp)
 from routes.generate_routes import generate_bp
 app.register_blueprint(generate_bp)
 
+from routes.seances_routes import seances_bp
+app.register_blueprint(seances_bp)
+
+
 
 print(app.url_map)
 if __name__ == "__main__":
