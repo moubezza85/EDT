@@ -83,7 +83,6 @@ function OrderedTagEditor({
           Ajouter
         </Button>
       </div>
-
       <div className="flex flex-wrap gap-2">
         {values.map((v) => (
           <span key={v} className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-sm">
@@ -103,7 +102,7 @@ function OrderedTagEditor({
   );
 }
 
-// ── Config Tab ─────────────────────────────────────────────────────────────
+// ── Config Tab ────────────────────────────────────────────────────────────────
 type ConfigMeta = {
   nomEtablissement: string;
   jours: string[];
@@ -270,16 +269,15 @@ function ConfigTab() {
   );
 }
 
-// ── Types Séances ───────────────────────────────────────────────────────────
-type SeanceMode = "PRESENTIEL" | "DISTANCIEL";
-
+// ── Types Séances ────────────────────────────────────────────────────────────────
+// Format canonique seances.json
 interface Seance {
   id: string;
-  teacher: string;      // matricule
-  group: string;
+  formateur: string;   // matricule
+  groupe: string;
   module: string;
-  volume: number;       // nombre de séances
-  mode: SeanceMode;
+  volume: number;
+  type_salle: string;  // ex: "Cours", "Virtuelle", "Informatique"…
 }
 
 interface TeacherInfo {
@@ -294,12 +292,23 @@ interface Assignment {
   mode: string;
 }
 
+interface OnlineFusion {
+  id: string;
+  groupes: string[];
+}
+
+// Séance virtuelle si type_salle === "Virtuelle"
+const isDistanciel = (type_salle: string) =>
+  (type_salle ?? "").toLowerCase() === "virtuelle";
+
 // ── Séances Tab ─────────────────────────────────────────────────────────────
 function SeancesTab() {
   const { toast } = useToast();
   const [seances, setSeances] = useState<Seance[]>([]);
   const [teachers, setTeachers] = useState<TeacherInfo[]>([]);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [onlineFusions, setOnlineFusions] = useState<OnlineFusion[]>([]);
+  const [typeSalles, setTypeSalles] = useState<string[]>([]);
   const [massMin, setMassMin] = useState<number>(26);
   const [loading, setLoading] = useState(false);
 
@@ -307,31 +316,32 @@ function SeancesTab() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState<string>("");
   const [newSeance, setNewSeance] = useState<Partial<Seance>>({
-    mode: "PRESENTIEL",
+    type_salle: "",
     volume: 1,
   });
 
-  // volumes locaux en cours d'édition
+  // Volumes locaux en cours d'édition (dirty check)
   const [localVolumes, setLocalVolumes] = useState<Record<string, number>>({});
 
   const HEURES_PAR_SEANCE = 2.5;
 
+  // ── Chargement des données ──
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [seancesData, catalogData, configData] = await Promise.all([
+      const [seancesData, teachersData, asgnData, fusionsData, roomsData, configData] = await Promise.all([
         httpJson<{ seances: Seance[] }>("/api/admin/seances"),
-        httpJson<{ teachers: TeacherInfo[]; assignments: Assignment[] }>("/api/admin/catalog/teachers").then(
-          async (t) => {
-            const asgn = await httpJson<{ assignments: Assignment[] }>("/api/admin/catalog/assignments");
-            return { teachers: t.teachers, assignments: asgn.assignments };
-          }
-        ),
+        httpJson<{ teachers: TeacherInfo[] }>("/api/admin/catalog/teachers"),
+        httpJson<{ assignments: Assignment[] }>("/api/admin/catalog/assignments"),
+        httpJson<{ onlineFusions: OnlineFusion[] }>("/api/admin/catalog/online-fusions"),
+        httpJson<{ typeSalle: string[] }>("/api/admin/config/rooms"),
         httpJson<{ massHoraireMinimale?: number }>("/api/admin/config/meta"),
       ]);
       setSeances(seancesData.seances || []);
-      setTeachers(catalogData.teachers || []);
-      setAssignments(catalogData.assignments || []);
+      setTeachers(teachersData.teachers || []);
+      setAssignments(asgnData.assignments || []);
+      setOnlineFusions(fusionsData.onlineFusions || []);
+      setTypeSalles(roomsData.typeSalle || []);
       setMassMin(Number(configData.massHoraireMinimale ?? 26));
     } catch (e: any) {
       toast({ variant: "destructive", title: "Erreur chargement", description: e.message });
@@ -342,65 +352,85 @@ function SeancesTab() {
 
   useEffect(() => { load(); }, [load]);
 
-  // Calcul heures par formateur
-  const heuresByTeacher = (teacherId: string) => {
-    const total = seances
-      .filter((s) => s.teacher === teacherId)
-      .reduce((sum, s) => sum + (s.volume || 0), 0);
-    return total * HEURES_PAR_SEANCE;
-  };
+  // ── Helpers ──
 
-  // Formateurs sous le seuil
+  /** Retourne l'ensemble des IDs de fusion */
+  const fusionIds = new Set(onlineFusions.map((f) => f.id));
+
+  /** Vrai si le groupe est une fusion en ligne */
+  const isFusionGroup = (groupId: string) => fusionIds.has(groupId);
+
+  /** Heures cumulées pour un formateur */
+  const heuresByTeacher = (formateurId: string) =>
+    seances
+      .filter((s) => s.formateur === formateurId)
+      .reduce((sum, s) => sum + (s.volume || 0), 0) * HEURES_PAR_SEANCE;
+
+  /** Formateurs sous le seuil */
   const teachersUnderThreshold = teachers.filter(
     (t) => heuresByTeacher(t.id) < massMin
   );
 
-  // Modules affectés à un formateur
-  const modulesForTeacher = (teacherId: string) => {
-    return [...new Set(
+  /** Modules affectés à un formateur */
+  const modulesForTeacher = (formateurId: string) =>
+    [...new Set(
       assignments
-        .filter((a) => a.teacher === teacherId)
+        .filter((a) => a.teacher === formateurId)
         .map((a) => a.module)
     )];
-  };
 
-  // Groupes disponibles pour un formateur+module
-  const groupsForTeacherModule = (teacherId: string, module: string) => {
-    return assignments
-      .filter((a) => a.teacher === teacherId && a.module === module)
+  /** Groupes disponibles pour un formateur + module */
+  const groupsForTeacherModule = (formateurId: string, module: string) =>
+    assignments
+      .filter((a) => a.teacher === formateurId && a.module === module)
       .map((a) => a.group);
-  };
 
   const getTeacherName = (id: string) =>
     teachers.find((t) => t.id === id)?.name ?? id;
 
-  // Ouvre modal pour un formateur
-  const openModal = (teacherId: string) => {
-    setSelectedTeacher(teacherId);
-    const mods = modulesForTeacher(teacherId);
+  /** Détermine le type de salle à utiliser selon le groupe */
+  const resolveTypeSalle = (groupe: string, current: string) => {
+    if (isFusionGroup(groupe)) return "Virtuelle";
+    return current;
+  };
+
+  // ── Ouvrir la modale pour un formateur ──
+  const openModal = (formateurId: string) => {
+    setSelectedTeacher(formateurId);
+    const mods = modulesForTeacher(formateurId);
+    const firstMod = mods[0] ?? "";
+    const firstGroup = firstMod
+      ? groupsForTeacherModule(formateurId, firstMod)[0] ?? ""
+      : "";
+    const defaultType =
+      firstGroup && isFusionGroup(firstGroup)
+        ? "Virtuelle"
+        : typeSalles.find((t) => t !== "Virtuelle") ?? typeSalles[0] ?? "";
+
     setNewSeance({
-      mode: "PRESENTIEL",
       volume: 1,
-      module: mods[0] ?? "",
-      group: mods[0] ? groupsForTeacherModule(teacherId, mods[0])[0] ?? "" : "",
+      module: firstMod,
+      groupe: firstGroup,
+      type_salle: defaultType,
     });
     setModalOpen(true);
   };
 
+  // ── Ajout séance ──
   const handleAddSeance = async () => {
-    if (!selectedTeacher || !newSeance.group || !newSeance.module) {
-      toast({ variant: "destructive", title: "Champs requis", description: "Groupe, module requis." });
+    if (!selectedTeacher || !newSeance.groupe || !newSeance.module || !newSeance.type_salle) {
+      toast({ variant: "destructive", title: "Champs requis", description: "Groupe, module et type de salle requis." });
       return;
     }
     try {
       await httpJson("/api/admin/seances", {
         method: "POST",
         body: JSON.stringify({
-          teacher: selectedTeacher,
-          group: newSeance.group,
+          formateur: selectedTeacher,
+          groupe: newSeance.groupe,
           module: newSeance.module,
           volume: newSeance.volume ?? 1,
-          mode: newSeance.mode ?? "PRESENTIEL",
+          type_salle: newSeance.type_salle,
         }),
       });
       toast({ title: "Séance ajoutée ✓" });
@@ -411,6 +441,7 @@ function SeancesTab() {
     }
   };
 
+  // ── Sauvegarder volume ──
   const handleSaveVolume = async (seance: Seance) => {
     const vol = localVolumes[seance.id] ?? seance.volume;
     try {
@@ -419,12 +450,14 @@ function SeancesTab() {
         body: JSON.stringify({ volume: vol }),
       });
       toast({ title: "Volume mis à jour ✓" });
+      setLocalVolumes((prev) => { const n = { ...prev }; delete n[seance.id]; return n; });
       load();
     } catch (e: any) {
       toast({ variant: "destructive", title: "Erreur", description: e.message });
     }
   };
 
+  // ── Supprimer séance ──
   const handleDeleteSeance = async (id: string) => {
     if (!confirm("Supprimer cette séance ?")) return;
     try {
@@ -436,10 +469,10 @@ function SeancesTab() {
     }
   };
 
-  // Séances par formateur
-  const seancesByTeacher = (teacherId: string) =>
-    seances.filter((s) => s.teacher === teacherId);
+  const seancesByTeacher = (formateurId: string) =>
+    seances.filter((s) => s.formateur === formateurId);
 
+  // ── RENDER ──
   return (
     <div className="space-y-5">
       {/* Bannière formateurs sous seuil */}
@@ -472,163 +505,133 @@ function SeancesTab() {
       )}
 
       {/* Cartes par formateur */}
-      {!loading && teachers.map((teacher) => {
-        const tSeances = seancesByTeacher(teacher.id);
-        const heures = heuresByTeacher(teacher.id);
-        const underThreshold = heures < massMin;
-        return (
-          <Card
-            key={teacher.id}
-            className={underThreshold ? "border-orange-300" : ""}
-          >
-            <CardHeader className="py-3 px-4">
-              <div className="flex items-center justify-between gap-3 flex-wrap">
-                <div className="flex items-center gap-3">
-                  <span className="font-mono text-xs text-muted-foreground bg-gray-100 rounded px-2 py-0.5">
-                    {teacher.id}
-                  </span>
-                  <span className="font-semibold text-sm">{teacher.name}</span>
-                  <Badge variant={underThreshold ? "destructive" : "secondary"}>
-                    {heures.toFixed(1)}h ({tSeances.reduce((s, x) => s + (x.volume || 0), 0)} séances)
-                  </Badge>
+      {!loading &&
+        teachers.map((teacher) => {
+          const tSeances = seancesByTeacher(teacher.id);
+          const heures = heuresByTeacher(teacher.id);
+          const underThreshold = heures < massMin;
+          return (
+            <Card key={teacher.id} className={underThreshold ? "border-orange-300" : ""}>
+              <CardHeader className="py-3 px-4">
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-xs text-muted-foreground bg-gray-100 rounded px-2 py-0.5">
+                      {teacher.id}
+                    </span>
+                    <span className="font-semibold text-sm">{teacher.name}</span>
+                    <Badge variant={underThreshold ? "destructive" : "secondary"}>
+                      {heures.toFixed(1)}h ({tSeances.reduce((s, x) => s + (x.volume || 0), 0)} séances)
+                    </Badge>
+                  </div>
+                  <Button size="sm" onClick={() => openModal(teacher.id)}>
+                    + Ajouter séance
+                  </Button>
                 </div>
-                <Button size="sm" onClick={() => openModal(teacher.id)}>
-                  + Ajouter séance
-                </Button>
-              </div>
-            </CardHeader>
+              </CardHeader>
 
-            {tSeances.length > 0 && (
-              <CardContent className="px-4 pb-4">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="text-left text-xs text-muted-foreground border-b">
-                        <th className="pb-2 pr-4">Mode</th>
-                        <th className="pb-2 pr-4">Groupe</th>
-                        <th className="pb-2 pr-4">Module</th>
-                        <th className="pb-2 pr-4 w-28">Volume (séances)</th>
-                        <th className="pb-2">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {tSeances.map((s) => {
-                        const localVol =
-                          localVolumes[s.id] !== undefined
-                            ? localVolumes[s.id]
-                            : s.volume;
-                        const isDirty = localVol !== s.volume;
-                        return (
-                          <tr key={s.id} className="border-b last:border-0">
-                            <td className="py-2 pr-4">
-                              <span
-                                className={`text-xs rounded-full px-2 py-0.5 font-medium ${
-                                  s.mode === "DISTANCIEL"
-                                    ? "bg-blue-100 text-blue-700"
-                                    : "bg-green-100 text-green-700"
-                                }`}
-                              >
-                                {s.mode === "DISTANCIEL" ? "🌐 Distanciel" : "🏫 Présentiel"}
-                              </span>
-                            </td>
-                            <td className="py-2 pr-4 font-mono text-xs">{s.group}</td>
-                            <td className="py-2 pr-4 font-mono text-xs">{s.module}</td>
-                            <td className="py-2 pr-4">
-                              <Input
-                                type="number"
-                                min={1}
-                                value={localVol}
-                                onChange={(e) =>
-                                  setLocalVolumes((prev) => ({
-                                    ...prev,
-                                    [s.id]: Number(e.target.value),
-                                  }))
-                                }
-                                className="w-24 h-7 text-xs"
-                              />
-                            </td>
-                            <td className="py-2">
-                              <div className="flex gap-2">
-                                {isDirty && (
+              {tSeances.length > 0 ? (
+                <CardContent className="px-4 pb-4">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="text-left text-xs text-muted-foreground border-b">
+                          <th className="pb-2 pr-4">Type salle</th>
+                          <th className="pb-2 pr-4">Groupe</th>
+                          <th className="pb-2 pr-4">Module</th>
+                          <th className="pb-2 pr-4 w-28">Volume</th>
+                          <th className="pb-2">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {tSeances.map((s) => {
+                          const localVol =
+                            localVolumes[s.id] !== undefined ? localVolumes[s.id] : s.volume;
+                          const isDirty = localVol !== s.volume;
+                          const distanciel = isDistanciel(s.type_salle);
+                          return (
+                            <tr key={s.id} className="border-b last:border-0">
+                              <td className="py-2 pr-4">
+                                <span
+                                  className={`text-xs rounded-full px-2 py-0.5 font-medium ${
+                                    distanciel
+                                      ? "bg-blue-100 text-blue-700"
+                                      : "bg-green-100 text-green-700"
+                                  }`}
+                                >
+                                  {distanciel ? "🌐" : "🏫"} {s.type_salle}
+                                </span>
+                              </td>
+                              <td className="py-2 pr-4 font-mono text-xs">{s.groupe}</td>
+                              <td className="py-2 pr-4 font-mono text-xs">{s.module}</td>
+                              <td className="py-2 pr-4">
+                                <Input
+                                  type="number"
+                                  min={1}
+                                  value={localVol}
+                                  onChange={(e) =>
+                                    setLocalVolumes((prev) => ({
+                                      ...prev,
+                                      [s.id]: Number(e.target.value),
+                                    }))
+                                  }
+                                  className="w-20 h-7 text-xs"
+                                />
+                              </td>
+                              <td className="py-2">
+                                <div className="flex gap-2">
+                                  {isDirty && (
+                                    <Button
+                                      size="sm"
+                                      className="h-7 text-xs"
+                                      onClick={() => handleSaveVolume(s)}
+                                    >
+                                      💾 Sauvegarder
+                                    </Button>
+                                  )}
                                   <Button
                                     size="sm"
+                                    variant="destructive"
                                     className="h-7 text-xs"
-                                    onClick={() => handleSaveVolume(s)}
+                                    onClick={() => handleDeleteSeance(s.id)}
                                   >
-                                    💾 Sauvegarder
+                                    ✕
                                   </Button>
-                                )}
-                                <Button
-                                  size="sm"
-                                  variant="destructive"
-                                  className="h-7 text-xs"
-                                  onClick={() => handleDeleteSeance(s.id)}
-                                >
-                                  ✕
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            )}
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              ) : (
+                <CardContent className="px-4 pb-3">
+                  <p className="text-xs text-muted-foreground">Aucune séance définie.</p>
+                </CardContent>
+              )}
+            </Card>
+          );
+        })}
 
-            {tSeances.length === 0 && (
-              <CardContent className="px-4 pb-3">
-                <p className="text-xs text-muted-foreground">Aucune séance définie.</p>
-              </CardContent>
-            )}
-          </Card>
-        );
-      })}
-
-      {/* Modal ajout séance */}
+      {/* ─ Modal ajout séance ─ */}
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>
-              ➕ Ajouter une séance —{" "}
-              <span className="font-mono text-sm">{selectedTeacher}</span>{" "}
+              ➕ Ajouter une séance — 
+              <span className="font-mono text-sm">{selectedTeacher}</span>
               {getTeacherName(selectedTeacher) !== selectedTeacher && (
-                <span className="text-base font-normal">{getTeacherName(selectedTeacher)}</span>
+                <span className="text-base font-normal ml-1">
+                  {getTeacherName(selectedTeacher)}
+                </span>
               )}
             </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4 py-2">
-            {/* Mode */}
-            <div className="space-y-2">
-              <Label>Type de séance</Label>
-              <div className="flex gap-4">
-                {(["PRESENTIEL", "DISTANCIEL"] as SeanceMode[]).map((m) => (
-                  <label
-                    key={m}
-                    className={`flex items-center gap-2 cursor-pointer px-3 py-2 border rounded-lg hover:bg-gray-50 ${
-                      newSeance.mode === m ? "border-blue-500 bg-blue-50" : ""
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="mode"
-                      value={m}
-                      checked={newSeance.mode === m}
-                      onChange={() =>
-                        setNewSeance((p) => ({ ...p, mode: m, group: "", module: "" }))
-                      }
-                    />
-                    <span className="text-sm">
-                      {m === "PRESENTIEL" ? "🏫 Présentiel" : "🌐 Distanciel"}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </div>
 
-            {/* Module (filtré par formateur) */}
+            {/* Module */}
             <div className="space-y-2">
               <Label>Module</Label>
               <select
@@ -637,10 +640,17 @@ function SeancesTab() {
                 onChange={(e) => {
                   const mod = e.target.value;
                   const groups = groupsForTeacherModule(selectedTeacher, mod);
+                  const firstGroup = groups[0] ?? "";
+                  const autoType = isFusionGroup(firstGroup)
+                    ? "Virtuelle"
+                    : newSeance.type_salle && !isFusionGroup(firstGroup)
+                    ? newSeance.type_salle
+                    : typeSalles.find((t) => t !== "Virtuelle") ?? typeSalles[0] ?? "";
                   setNewSeance((p) => ({
                     ...p,
                     module: mod,
-                    group: groups[0] ?? "",
+                    groupe: firstGroup,
+                    type_salle: autoType,
                   }));
                 }}
               >
@@ -656,10 +666,21 @@ function SeancesTab() {
               <Label>Groupe</Label>
               <select
                 className="w-full border rounded-md px-3 py-2 text-sm bg-background"
-                value={newSeance.group ?? ""}
-                onChange={(e) =>
-                  setNewSeance((p) => ({ ...p, group: e.target.value }))
-                }
+                value={newSeance.groupe ?? ""}
+                onChange={(e) => {
+                  const grp = e.target.value;
+                  const fusion = isFusionGroup(grp);
+                  setNewSeance((p) => ({
+                    ...p,
+                    groupe: grp,
+                    // Verrouillage automatique si fusion
+                    type_salle: fusion
+                      ? "Virtuelle"
+                      : p.type_salle === "Virtuelle"
+                      ? typeSalles.find((t) => t !== "Virtuelle") ?? ""
+                      : p.type_salle,
+                  }));
+                }}
               >
                 <option value="">-- Choisir un groupe --</option>
                 {newSeance.module
@@ -668,6 +689,42 @@ function SeancesTab() {
                     ))
                   : null}
               </select>
+
+              {/* Indicateur fusion */}
+              {newSeance.groupe && isFusionGroup(newSeance.groupe) && (
+                <p className="text-xs text-blue-600 bg-blue-50 rounded px-2 py-1">
+                  🌐 Groupe de fusion — type de salle verrouillé à <strong>Virtuelle</strong>
+                </p>
+              )}
+            </div>
+
+            {/* Type de salle */}
+            <div className="space-y-2">
+              <Label>Type de salle</Label>
+              <select
+                className={`w-full border rounded-md px-3 py-2 text-sm bg-background ${
+                  newSeance.groupe && isFusionGroup(newSeance.groupe)
+                    ? "opacity-60 cursor-not-allowed"
+                    : ""
+                }`}
+                value={newSeance.type_salle ?? ""}
+                disabled={!!(newSeance.groupe && isFusionGroup(newSeance.groupe))}
+                onChange={(e) =>
+                  setNewSeance((p) => ({ ...p, type_salle: e.target.value }))
+                }
+              >
+                <option value="">-- Choisir un type --</option>
+                {typeSalles.map((t) => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+              <p className="text-xs text-muted-foreground">
+                {newSeance.type_salle
+                  ? isDistanciel(newSeance.type_salle)
+                    ? "🌐 Séance distancielle (Virtuelle)"
+                    : `🏫 Séance présentielle (${newSeance.type_salle})`
+                  : ""}
+              </p>
             </div>
 
             {/* Volume */}
@@ -688,9 +745,7 @@ function SeancesTab() {
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setModalOpen(false)}>
-              Annuler
-            </Button>
+            <Button variant="outline" onClick={() => setModalOpen(false)}>Annuler</Button>
             <Button onClick={handleAddSeance}>Ajouter</Button>
           </DialogFooter>
         </DialogContent>
@@ -700,9 +755,9 @@ function SeancesTab() {
 }
 
 // ── Launch Tab ──────────────────────────────────────────────────────────────
-type Mode = "memetic" | "hc" | "cp_only";
+type OptMode = "memetic" | "hc" | "cp_only";
 
-const MODES: { value: Mode; label: string; desc: string }[] = [
+const OPT_MODES: { value: OptMode; label: string; desc: string }[] = [
   { value: "memetic", label: "🧬 Mémétique", desc: "GA + HC intégré — qualité optimale (recommandé)" },
   { value: "hc", label: "🔄 Hill Climbing", desc: "Plus rapide, bon compromis qualité/temps" },
   { value: "cp_only", label: "⚙️ CP seulement", desc: "Contraintes dures uniquement, pas d'optimisation douce" },
@@ -710,7 +765,7 @@ const MODES: { value: Mode; label: string; desc: string }[] = [
 
 function LaunchTab({ onJobStarted }: { onJobStarted: (id: string) => void }) {
   const { toast } = useToast();
-  const [mode, setMode] = useState<Mode>("memetic");
+  const [mode, setMode] = useState<OptMode>("memetic");
   const [params, setParams] = useState({
     cp_time: 120,
     cp_workers: 8,
@@ -762,7 +817,7 @@ function LaunchTab({ onJobStarted }: { onJobStarted: (id: string) => void }) {
       <div className="space-y-2">
         <p className="text-sm font-medium text-gray-700">Mode d'optimisation</p>
         <div className="flex flex-wrap gap-3">
-          {MODES.map(({ value, label, desc }) => (
+          {OPT_MODES.map(({ value, label, desc }) => (
             <label
               key={value}
               className={`flex items-start gap-2 cursor-pointer px-3 py-2 border rounded-lg hover:bg-gray-50 ${
@@ -771,7 +826,7 @@ function LaunchTab({ onJobStarted }: { onJobStarted: (id: string) => void }) {
             >
               <input
                 type="radio"
-                name="mode"
+                name="optMode"
                 value={value}
                 checked={mode === value}
                 onChange={() => setMode(value)}
@@ -911,7 +966,9 @@ function LogsTab({ jobId, onClear }: { jobId: string | null; onClear: () => void
 
       <div className="bg-gray-950 rounded-lg p-4 h-[420px] overflow-y-auto font-mono text-xs leading-relaxed">
         {job.logs.length === 0 ? (
-          <span className="text-gray-500">Aucun log pour le moment. Lancez une génération depuis l'onglet « Lancer ».</span>
+          <span className="text-gray-500">
+            Aucun log pour le moment. Lancez une génération depuis l'onglet « Lancer ».
+          </span>
         ) : (
           job.logs.map((line, i) => (
             <div
