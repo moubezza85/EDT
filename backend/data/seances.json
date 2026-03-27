@@ -293,7 +293,7 @@
       "module": "DEVOAM_EGTS204",
       "formateur": "11121",
       "groupe": "DEVOAM201",
-      "volume": 1,
+      "volume": 3,
       "type_salle": "Cours"
     },
     {
@@ -1717,7 +1717,7 @@
       "module": "AA_ M106",
       "formateur": "7497",
       "groupe": "AA101",
-      "volume": 1,
+      "volume": 2,
       "type_salle": "Cours"
     },
     {
@@ -2233,12 +2233,12 @@
       "type_salle": "Cours"
     },
     {
-      "id": "cc4b174f",
-      "teacher": "14017",
-      "group": "DEV102",
+      "id": "S419",
+      "formateur": "14017",
+      "groupe": "DEV101_DEV102_DEV106",
       "module": "DEVM102",
-      "mode": "PRESENTIEL",
-      "volume": 2
+      "volume": 2,
+      "type_salle": "Virtuelle"
     }
   ]
 }

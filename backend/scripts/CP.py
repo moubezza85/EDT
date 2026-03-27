@@ -93,7 +93,8 @@ class TimetableCPSolver:
                     return False
             
             self.config_data = loaded_data['config']
-            raw_seances = loaded_data['seances']
+            raw = loaded_data['seances']
+            raw_seances = raw.get('seances', raw) if isinstance(raw, dict) else raw
             self.hard_constraints = loaded_data['hard']
             
             # Expansion selon volume
