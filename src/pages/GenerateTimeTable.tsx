@@ -212,50 +212,65 @@ function ConfigTab() {
 
       <Separator />
 
-      <OrderedTagEditor
-        label="Jours (ordre conservé)"
-        values={meta.jours}
-        placeholder="Ex: lundi"
-        onChange={(next) => setMeta((p) => ({ ...p, jours: next }))}
-      />
-
-      <Separator />
-
-      <div className="space-y-2">
-        <Label>Créneaux</Label>
-        <p className="text-xs text-muted-foreground">
-          Les créneaux sont triés numériquement lors de l'enregistrement.
-        </p>
-      </div>
-      <div className="space-y-2">
-        <div className="flex flex-wrap gap-2">
-          {meta.creneaux.map((c) => (
-            <span key={c} className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-sm">
-              {c}
-              <button
-                className="text-muted-foreground hover:text-foreground"
-                onClick={() => setMeta((p) => ({ ...p, creneaux: p.creneaux.filter((x) => x !== c) }))}
-                disabled={loading}
-              >×</button>
-            </span>
-          ))}
-          {meta.creneaux.length === 0 && <span className="text-sm text-muted-foreground">Aucun créneau</span>}
+      <div className="space-y-4">
+        <div>
+          <Label>Jours</Label>
+          <div className="flex flex-wrap gap-4 pt-3">
+            {["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"].map((jour) => (
+              <label key={jour} className="flex items-center gap-2 text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  checked={meta.jours.includes(jour)}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    setMeta((p) => {
+                      let nextJours = checked
+                        ? [...p.jours, jour]
+                        : p.jours.filter((j) => j !== jour);
+                      const ALL_DAYS = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
+                      nextJours = ALL_DAYS.filter((d) => nextJours.includes(d));
+                      return { ...p, jours: nextJours };
+                    });
+                  }}
+                  disabled={loading}
+                />
+                <span className="capitalize">{jour}</span>
+              </label>
+            ))}
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Input
-            placeholder="Ajouter un créneau (ex: 5)"
-            disabled={loading}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                const v = (e.currentTarget.value || "").trim();
-                const n = Number(v);
-                if (!Number.isFinite(n)) return;
-                setMeta((p) => ({ ...p, creneaux: uniqNumsSorted([...p.creneaux, n]) }));
-                e.currentTarget.value = "";
-              }
-            }}
-          />
+
+        <Separator />
+
+        <div>
+          <Label>Créneaux</Label>
+          <p className="text-xs text-muted-foreground mt-1 mb-3">
+            Sélectionnez les créneaux horaires à générer (1 à 8).
+          </p>
+          <div className="flex flex-wrap gap-4">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((c) => (
+              <label key={c} className="flex items-center gap-2 text-sm cursor-pointer border rounded-md px-3 py-2 bg-background hover:bg-accent hover:text-accent-foreground">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  checked={meta.creneaux.includes(c)}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    setMeta((p) => {
+                      let nextCreneaux = checked
+                        ? [...p.creneaux, c]
+                        : p.creneaux.filter((x) => x !== c);
+                      nextCreneaux = uniqNumsSorted(nextCreneaux);
+                      return { ...p, creneaux: nextCreneaux };
+                    });
+                  }}
+                  disabled={loading}
+                />
+                <span className="font-medium whitespace-nowrap">Créneau {c}</span>
+              </label>
+            ))}
+          </div>
         </div>
       </div>
 
