@@ -1,85 +1,50 @@
-# Fonctionnalités de TIZIMI (EDT)
+# Fonctionnalités de l'Application EmploiDuTempsTizimi
 
-## Vue d'ensemble
+Cette application est un système complet de gestion et de génération automatique d'emplois du temps, avec une architecture adaptée aux différentes parties prenantes de l'établissement (Administrateur, Surveillant, Formateur).
 
-TIZIMI est une application web de gestion d'Emploi du Temps (EDT) conçue pour organiser et planifier les séances de cours de façon interactive. Elle permet aux établissements d'enseignement de gérer leurs emplois du temps avec une interface moderne et intuitive.
+## 1. Sécurité et Gestion des Rôles
+- **Authentification sécurisée** : Connexion par identifiant et mot de passe.
+- **Contrôle d'accès basé sur les rôles (RBAC)** :
+  - **Admin** : Accès total (Génération, Paramètres, Exports, Validation des demandes).
+  - **Surveillant** : Accès opérationnel (Consultation des emplois du temps, Salles libres, Tableau de bord).
+  - **Formateur** : Accès restreint (Consultation de son propre emploi du temps, Emploi du temps virtuel, Changement de mot de passe, Soumission de demandes).
 
----
+## 2. Génération Automatique des Emplois du Temps
+- **Moteur de génération avancé** : Utilisation d'algorithmes d'optimisation heuristiques et de contraintes (Mémétique, Hill Climbing, Programmation par Contraintes - CP).
+- **Gestion des contraintes (Constraints Management)** :
+  - **Contraintes strictes (Hard Constraints)** : Non-chevauchement des séances pour un formateur ou un groupe, disponibilité des salles.
+  - **Contraintes souples (Soft Constraints)** : Optimisation des trous dans l'emploi du temps, minimisation des déplacements, limitation du nombre de séances consécutives.
+- **Interface de configuration de la génération** : Choix des algorithmes, ajustement des temps de calcul et des paramètres génétiques.
 
-## Fonctionnalités Principales
+## 3. Paramétrage et Données de Référence
+- **Configuration de l'Établissement** :
+  - Définition des jours ouvrables (ex: du lundi au samedi).
+  - Définition des créneaux horaires journaliers (ex: de 1 à 8 créneaux).
+  - Paramétrage de la masse horaire minimale/maximale par formateur et par groupe.
+- **Gestion des Ressources** :
+  - Ajout et modification des **Formateurs**, **Groupes**, **Salles** (présentielles et virtuelles), et **Modules**.
+  - **Affectations (Assignments)** : Liaison entre un formateur, un groupe et un module.
+  - **Séances** : Définition des volumes horaires (en nombre de séances) à générer.
 
-### 1. 📅 Grille d'Emploi du Temps Dynamique
-- Affichage des séances organisées par **jour** et par **créneau horaire**
-- Vue claire et structurée de l'ensemble des sessions planifiées
-- Interface visuelle interactive et facile à lire
+## 4. Tableaux de Bord et Consultations
+- **Tableau de Bord Global (Dashboard)** : Vue d'ensemble de l'état de l'établissement.
+- **Recherche de Salles Libres** : Permet de trouver instantanément une salle non occupée sur un jour et un créneau précis (idéal pour les surveillants).
+- **Vue "Mon Emploi" (Formateur)** : Interface dédiée au formateur pour visualiser ses propres séances de la semaine.
 
-### 2. 🔍 Filtrage Multi-Critères
-- Filtrer les séances par **Formateur** (enseignant)
-- Filtrer les séances par **Groupe** (classe/promotion)
-- Filtrer les séances par **Salle** (local/amphithéâtre)
-- Mise à jour instantanée de la grille lors de la sélection d'un filtre
-- Possibilité de réinitialiser les filtres
+## 5. Distanciel et Fusions de Groupes
+- **Emploi du temps Virtuel** : Gestion spécifique des séances à distance (distanciel).
+- **Fusions en ligne (Online Fusions)** : Capacité de regrouper plusieurs groupes dans une même salle virtuelle avec un seul formateur pour un module commun.
 
-### 3. 🖱️ Drag & Drop (Glisser-Déposer)
-- Déplacer les séances directement dans la grille pour les reprogrammer
-- Interface intuitive sans nécessité de formulaires complexes
-- Repositionnement rapide des cours d'un créneau à un autre
+## 6. Demandes et Workflow (Pending Requests)
+- **Système de requêtes** : Les formateurs peuvent soumettre des demandes administratives ou d'aménagement (changement de créneau, rattrapage, etc.).
+- **Validation** : Interface pour les administrateurs permettant d'approuver ou de rejeter ces demandes.
 
-### 4. ⚠️ Détection de Conflits
-- Détection automatique des conflits lors du déplacement d'une séance
-- Alerte immédiate si le créneau cible est déjà occupé
-- Prévention des doubles réservations de salles ou de formateurs
+## 7. Exportation (Exports)
+- **Exports multi-formats** :
+  - Génération de fichiers PDF pour l'impression et l'affichage.
+  - Exportation en Excel pour d'éventuels traitements ultérieurs.
+  - Exports personnalisés par Entité (Par Formateur, Par Groupe, Par Salle, ou Global).
 
-### 5. 🏫 Modal de Sélection de Salle
-- En cas de conflit, une fenêtre modale s'ouvre pour proposer des alternatives
-- Sélection d'une salle disponible pour résoudre le conflit
-- Validation rapide sans quitter l'interface principale
-
-### 6. 🔄 Rafraîchissement en Temps Réel
-- Bouton de rechargement pour récupérer les dernières données
-- Synchronisation avec l'API backend via **React Query**
-- Mise en cache intelligente des données pour des performances optimales
-
-### 7. 📱 Design Responsive
-- Interface adaptée aux écrans **desktop** et **mobile**
-- Mise en page fluide grâce à **Tailwind CSS**
-- Composants UI modernes fournis par **shadcn/ui**
-
-### 8. 🔐 Authentification
-- Module de gestion des utilisateurs et des connexions
-- Accès sécurisé à l'application
-- Gestion des sessions utilisateurs
-
----
-
-## Stack Technique
-
-| Couche        | Technologie           |
-|---------------|-----------------------|
-| Frontend      | React + TypeScript    |
-| Build         | Vite                  |
-| Style         | Tailwind CSS          |
-| Composants UI | shadcn/ui             |
-| Drag & Drop   | React DnD             |
-| Data Fetching | React Query           |
-| Backend       | API séparée (dossier `backend/`) |
-
----
-
-## Structure du Projet
-
-```
-src/
-├── api/          → Appels API et endpoints
-├── app/          → Configuration principale de l'app
-├── auth/         → Module d'authentification
-├── components/   → Composants React réutilisables
-├── hooks/        → Hooks personnalisés
-├── lib/          → Utilitaires et helpers
-├── pages/        → Pages principales de l'application
-└── types/        → Types TypeScript
-```
-
----
-
-*Fichier généré le 23/02/2026*
+## 8. Interface Utilisateur
+- **Design Moderne** : Application responsive avec menus latéraux de navigation.
+- **UX fluide** : Modification de volumes horaires, cases à cocher pour les jours/créneaux, utilisation de fenêtres modales (Dialog) pour les actions rapides.

@@ -95,3 +95,7 @@ This project is licensed under the MIT License.
 ## Contact
 
 For questions or support, please contact the project maintainer.
+
+pour lancer backend :
+cd backend
+flask --app app run
