@@ -44,6 +44,203 @@ interface Teacher {
   name: string;
 }
 
+// ── SC9 : Préférences salle des GROUPES ──────────────────────────────────────
+function GroupeSallePrefs({
+  prefs,
+  salles,
+  onChange,
+}: {
+  prefs: Record<string, string>;
+  salles: string[];
+  onChange: (next: Record<string, string>) => void;
+}) {
+  const [newGroupe, setNewGroupe] = useState("");
+
+  const add = () => {
+    const g = newGroupe.trim();
+    if (!g) return;
+    onChange({ ...prefs, [g]: salles[0] ?? "" });
+    setNewGroupe("");
+  };
+
+  return (
+    <div className="ml-4 mt-2 space-y-2">
+      <p className="text-xs text-gray-500 font-medium">Salle préférée par groupe :</p>
+      {Object.entries(prefs).map(([groupe, salle]) => (
+        <div key={groupe} className="flex items-center gap-2 flex-wrap">
+          <Input
+            value={groupe}
+            readOnly
+            className="h-7 w-28 text-xs font-mono bg-gray-50"
+          />
+          <span className="text-xs text-gray-400">→</span>
+          <Select
+            value={salle}
+            onValueChange={(ns) => onChange({ ...prefs, [groupe]: ns })}
+          >
+            <SelectTrigger className="h-7 w-28 text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {salles.map((s) => (
+                <SelectItem key={s} value={s}>{s}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button
+            variant="ghost" size="icon" className="h-6 w-6"
+            onClick={() => {
+              const np = { ...prefs };
+              delete np[groupe];
+              onChange(np);
+            }}
+          >
+            <Trash2 className="h-3 w-3" />
+          </Button>
+        </div>
+      ))}
+      <div className="flex gap-2 mt-1">
+        <Input
+          placeholder="ID groupe (ex: G101)"
+          value={newGroupe}
+          onChange={(e) => setNewGroupe(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add(); } }}
+          className="h-7 w-44 text-xs"
+        />
+        <Button variant="outline" size="sm" className="h-7 text-xs" onClick={add}>
+          <Plus className="h-3 w-3 mr-1" /> Ajouter groupe
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+// ── SC8 : Préférences créneaux des GROUPES ───────────────────────────────────
+function GroupeCreneauxPrefs({
+  prefs,
+  jours,
+  creneaux,
+  onChange,
+}: {
+  prefs: Record<string, { jour: string; creneaux: number[] }[]>;
+  jours: string[];
+  creneaux: number[];
+  onChange: (next: Record<string, { jour: string; creneaux: number[] }[]>) => void;
+}) {
+  const [newGroupe, setNewGroupe] = useState("");
+
+  const add = () => {
+    const g = newGroupe.trim();
+    if (!g) return;
+    onChange({ ...prefs, [g]: [{ jour: jours[0] ?? "lundi", creneaux: [] }] });
+    setNewGroupe("");
+  };
+
+  return (
+    <div className="ml-4 mt-2 space-y-3">
+      <p className="text-xs text-gray-500 font-medium">Créneaux préférés par groupe :</p>
+      {Object.entries(prefs).map(([groupe, slots]) => (
+        <div key={groupe} className="rounded border bg-gray-50 p-2 space-y-1.5">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-mono font-semibold text-gray-700 bg-green-100 px-2 py-0.5 rounded">
+              {groupe}
+            </span>
+            <Button
+              variant="ghost" size="icon" className="h-6 w-6"
+              onClick={() => {
+                const np = { ...prefs };
+                delete np[groupe];
+                onChange(np);
+              }}
+            >
+              <Trash2 className="h-3 w-3" />
+            </Button>
+          </div>
+
+          {slots.map((slot, si) => (
+            <div key={si} className="flex items-center gap-1.5 flex-wrap ml-2">
+              <Select
+                value={slot.jour}
+                onValueChange={(v) => {
+                  const ns = slots.map((s, i) => (i === si ? { ...s, jour: v } : s));
+                  onChange({ ...prefs, [groupe]: ns });
+                }}
+              >
+                <SelectTrigger className="h-6 w-28 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {jours.map((j) => (
+                    <SelectItem key={j} value={j}>{j}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <span className="text-xs text-gray-400">→</span>
+              <div className="flex gap-1">
+                {creneaux.map((cr) => (
+                  <button
+                    key={cr}
+                    type="button"
+                    onClick={() => {
+                      const curr = slot.creneaux ?? [];
+                      const next = curr.includes(cr)
+                        ? curr.filter((x) => x !== cr)
+                        : [...curr, cr].sort((a, b) => a - b);
+                      const ns = slots.map((s, i) =>
+                        i === si ? { ...s, creneaux: next } : s
+                      );
+                      onChange({ ...prefs, [groupe]: ns });
+                    }}
+                    className={`w-7 h-6 rounded text-xs border ${
+                      slot.creneaux?.includes(cr)
+                        ? "bg-green-500 text-white border-green-500"
+                        : "bg-white text-gray-600 border-gray-300 hover:bg-gray-100"
+                    }`}
+                  >
+                    {cr}
+                  </button>
+                ))}
+              </div>
+              <Button
+                variant="ghost" size="icon" className="h-6 w-6"
+                onClick={() => {
+                  const ns = slots.filter((_, i) => i !== si);
+                  onChange({ ...prefs, [groupe]: ns });
+                }}
+              >
+                <Trash2 className="h-3 w-3" />
+              </Button>
+            </div>
+          ))}
+
+          <Button
+            variant="ghost" size="sm" className="h-6 text-xs ml-2"
+            onClick={() => {
+              const ns = [...slots, { jour: jours[0] ?? "lundi", creneaux: [] }];
+              onChange({ ...prefs, [groupe]: ns });
+            }}
+          >
+            <Plus className="h-3 w-3 mr-1" /> Ajouter jour
+          </Button>
+        </div>
+      ))}
+
+      <div className="flex gap-2">
+        <Input
+          placeholder="ID groupe (ex: G101)"
+          value={newGroupe}
+          onChange={(e) => setNewGroupe(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add(); } }}
+          className="h-7 w-44 text-xs"
+        />
+        <Button variant="outline" size="sm" className="h-7 text-xs" onClick={add}>
+          <Plus className="h-3 w-3 mr-1" /> Ajouter groupe
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 export default function SoftConstraintsTab() {
   const { toast } = useToast();
   const [constraints, setConstraints] = useState<SoftConstraint[]>([]);
@@ -133,11 +330,25 @@ export default function SoftConstraintsTab() {
       );
     }
 
+    // ── preference_salle ──────────────────────────────────────────────────────
     if (c.type === "preference_salle") {
       const prefs: Record<string, string> = c.params?.preferences ?? {};
+
+      // SC9 = préférence salle des GROUPES
+      if (c.id === "SC9") {
+        return (
+          <GroupeSallePrefs
+            prefs={prefs}
+            salles={salles}
+            onChange={(next) => setPreferences(idx, next)}
+          />
+        );
+      }
+
+      // SC1 (et autres) = préférence salle des FORMATEURS
       return (
         <div className="ml-4 mt-2 space-y-2">
-          <p className="text-xs text-gray-500 font-medium">Salle préférée par formateur :</p>
+          <p className="text-xs text-gray-500 font-medium">Salle préférée par formateur :</p>
           {Object.entries(prefs).map(([tid, sid]) => (
             <div key={tid} className="flex items-center gap-2 flex-wrap">
               <Select
@@ -198,12 +409,27 @@ export default function SoftConstraintsTab() {
       );
     }
 
+    // ── preference_creneaux ───────────────────────────────────────────────────
     if (c.type === "preference_creneaux") {
       const prefs: Record<string, { jour: string; creneaux: number[] }[]> =
         c.params?.preferences ?? {};
+
+      // SC8 = préférence créneaux des GROUPES
+      if (c.id === "SC8") {
+        return (
+          <GroupeCreneauxPrefs
+            prefs={prefs}
+            jours={jours}
+            creneaux={creneaux}
+            onChange={(next) => setPreferences(idx, next)}
+          />
+        );
+      }
+
+      // SC7 (et autres) = préférence créneaux des FORMATEURS
       return (
         <div className="ml-4 mt-2 space-y-3">
-          <p className="text-xs text-gray-500 font-medium">Créneaux préférés par formateur :</p>
+          <p className="text-xs text-gray-500 font-medium">Créneaux préférés par formateur :</p>
           {Object.entries(prefs).map(([tid, slots]) => (
             <div key={tid} className="rounded border bg-gray-50 p-2 space-y-1.5">
               <div className="flex items-center justify-between">
@@ -296,7 +522,7 @@ export default function SoftConstraintsTab() {
               <Button
                 variant="ghost" size="sm" className="h-6 text-xs ml-2"
                 onClick={() => {
-                  const ns = [...slots, { jour: jours[0] ?? "Lundi", creneaux: [] }];
+                  const ns = [...slots, { jour: jours[0] ?? "lundi", creneaux: [] }];
                   setPreferences(idx, { ...prefs, [tid]: ns });
                 }}
               >
@@ -311,7 +537,7 @@ export default function SoftConstraintsTab() {
               if (!avail) return;
               setPreferences(idx, {
                 ...prefs,
-                [avail]: [{ jour: jours[0] ?? "Lundi", creneaux: [] }],
+                [avail]: [{ jour: jours[0] ?? "lundi", creneaux: [] }],
               });
             }}
           >
@@ -343,6 +569,17 @@ export default function SoftConstraintsTab() {
                   <span className="text-[11px] font-mono bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">
                     {c.id}
                   </span>
+                  {/* Badge visuel pour distinguer groupe vs formateur */}
+                  {(c.id === "SC8" || c.id === "SC9") && (
+                    <span className="text-[10px] font-semibold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full">
+                      👥 Groupe
+                    </span>
+                  )}
+                  {(c.id === "SC7" || c.id === "SC1") && (
+                    <span className="text-[10px] font-semibold bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full">
+                      👤 Formateur
+                    </span>
+                  )}
                   <span className="text-sm font-medium text-gray-800 truncate">
                     {c.nom ?? c.type}
                   </span>
