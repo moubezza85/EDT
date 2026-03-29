@@ -48,31 +48,31 @@ interface Teacher {
 function GroupeSallePrefs({
   prefs,
   salles,
+  groupeIds,
   onChange,
 }: {
   prefs: Record<string, string>;
   salles: string[];
+  groupeIds: string[];
   onChange: (next: Record<string, string>) => void;
 }) {
-  const [newGroupe, setNewGroupe] = useState("");
+  // groupes disponibles = ceux pas encore dans prefs
+  const available = groupeIds.filter((g) => !(g in prefs));
 
-  const add = () => {
-    const g = newGroupe.trim();
+  const addGroupe = (g: string) => {
     if (!g) return;
     onChange({ ...prefs, [g]: salles[0] ?? "" });
-    setNewGroupe("");
   };
 
   return (
     <div className="ml-4 mt-2 space-y-2">
       <p className="text-xs text-gray-500 font-medium">Salle préférée par groupe :</p>
+
       {Object.entries(prefs).map(([groupe, salle]) => (
         <div key={groupe} className="flex items-center gap-2 flex-wrap">
-          <Input
-            value={groupe}
-            readOnly
-            className="h-7 w-28 text-xs font-mono bg-gray-50"
-          />
+          <span className="inline-flex items-center h-7 px-2 rounded bg-green-50 border border-green-200 font-mono text-xs font-semibold text-green-800 w-28 justify-center">
+            {groupe}
+          </span>
           <span className="text-xs text-gray-400">→</span>
           <Select
             value={salle}
@@ -99,18 +99,29 @@ function GroupeSallePrefs({
           </Button>
         </div>
       ))}
-      <div className="flex gap-2 mt-1">
-        <Input
-          placeholder="ID groupe (ex: G101)"
-          value={newGroupe}
-          onChange={(e) => setNewGroupe(e.target.value)}
-          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add(); } }}
-          className="h-7 w-44 text-xs"
-        />
-        <Button variant="outline" size="sm" className="h-7 text-xs" onClick={add}>
-          <Plus className="h-3 w-3 mr-1" /> Ajouter groupe
-        </Button>
-      </div>
+
+      {/* Select pour ajouter un groupe disponible */}
+      {available.length > 0 && (
+        <div className="flex items-center gap-2 pt-1">
+          <Select onValueChange={addGroupe}>
+            <SelectTrigger className="h-7 w-44 text-xs">
+              <SelectValue placeholder="Choisir un groupe…" />
+            </SelectTrigger>
+            <SelectContent>
+              {available.map((g) => (
+                <SelectItem key={g} value={g}>{g}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <span className="text-xs text-muted-foreground">← sélectionner pour ajouter</span>
+        </div>
+      )}
+      {available.length === 0 && groupeIds.length > 0 && (
+        <p className="text-xs text-muted-foreground italic">Tous les groupes sont déjà configurés.</p>
+      )}
+      {groupeIds.length === 0 && (
+        <p className="text-xs text-amber-600">Aucun groupe dans le catalogue.</p>
+      )}
     </div>
   );
 }
@@ -120,29 +131,30 @@ function GroupeCreneauxPrefs({
   prefs,
   jours,
   creneaux,
+  groupeIds,
   onChange,
 }: {
   prefs: Record<string, { jour: string; creneaux: number[] }[]>;
   jours: string[];
   creneaux: number[];
+  groupeIds: string[];
   onChange: (next: Record<string, { jour: string; creneaux: number[] }[]>) => void;
 }) {
-  const [newGroupe, setNewGroupe] = useState("");
+  const available = groupeIds.filter((g) => !(g in prefs));
 
-  const add = () => {
-    const g = newGroupe.trim();
+  const addGroupe = (g: string) => {
     if (!g) return;
     onChange({ ...prefs, [g]: [{ jour: jours[0] ?? "lundi", creneaux: [] }] });
-    setNewGroupe("");
   };
 
   return (
     <div className="ml-4 mt-2 space-y-3">
       <p className="text-xs text-gray-500 font-medium">Créneaux préférés par groupe :</p>
+
       {Object.entries(prefs).map(([groupe, slots]) => (
         <div key={groupe} className="rounded border bg-gray-50 p-2 space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono font-semibold text-gray-700 bg-green-100 px-2 py-0.5 rounded">
+            <span className="text-xs font-mono font-semibold text-green-800 bg-green-100 px-2 py-0.5 rounded">
               {groupe}
             </span>
             <Button
@@ -225,18 +237,28 @@ function GroupeCreneauxPrefs({
         </div>
       ))}
 
-      <div className="flex gap-2">
-        <Input
-          placeholder="ID groupe (ex: G101)"
-          value={newGroupe}
-          onChange={(e) => setNewGroupe(e.target.value)}
-          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add(); } }}
-          className="h-7 w-44 text-xs"
-        />
-        <Button variant="outline" size="sm" className="h-7 text-xs" onClick={add}>
-          <Plus className="h-3 w-3 mr-1" /> Ajouter groupe
-        </Button>
-      </div>
+      {/* Select pour ajouter un groupe disponible */}
+      {available.length > 0 && (
+        <div className="flex items-center gap-2">
+          <Select onValueChange={addGroupe}>
+            <SelectTrigger className="h-7 w-44 text-xs">
+              <SelectValue placeholder="Choisir un groupe…" />
+            </SelectTrigger>
+            <SelectContent>
+              {available.map((g) => (
+                <SelectItem key={g} value={g}>{g}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <span className="text-xs text-muted-foreground">← sélectionner pour ajouter</span>
+        </div>
+      )}
+      {available.length === 0 && groupeIds.length > 0 && (
+        <p className="text-xs text-muted-foreground italic">Tous les groupes sont déjà configurés.</p>
+      )}
+      {groupeIds.length === 0 && (
+        <p className="text-xs text-amber-600">Aucun groupe dans le catalogue.</p>
+      )}
     </div>
   );
 }
@@ -245,6 +267,7 @@ export default function SoftConstraintsTab() {
   const { toast } = useToast();
   const [constraints, setConstraints] = useState<SoftConstraint[]>([]);
   const [teacherIds, setTeacherIds] = useState<string[]>([]);
+  const [groupeIds, setGroupeIds] = useState<string[]>([]);
   const [jours, setJours] = useState<string[]>([]);
   const [creneaux, setCreneaux] = useState<number[]>([]);
   const [salles, setSalles] = useState<string[]>([]);
@@ -255,11 +278,13 @@ export default function SoftConstraintsTab() {
     Promise.all([
       apiFetch("/api/admin/constraints/soft-list").then((r) => r.json()),
       apiFetch("/api/admin/catalog/teachers").then((r) => r.json()),
+      apiFetch("/api/admin/catalog/groups").then((r) => r.json()),
       apiFetch("/api/admin/config/meta").then((r) => r.json()),
       apiFetch("/api/admin/config/rooms").then((r) => r.json()),
-    ]).then(([sc, cat, cfg, rooms]) => {
+    ]).then(([sc, cat, grpData, cfg, rooms]) => {
       setConstraints(Array.isArray(sc) ? sc : []);
       setTeacherIds((cat.teachers ?? []).map((t: Teacher) => t.id));
+      setGroupeIds((grpData.groups ?? []) as string[]);
       setJours(cfg.jours ?? []);
       setCreneaux(cfg.creneaux ?? []);
       setSalles((rooms.salles ?? []).map((s: any) => s.id ?? s));
@@ -340,6 +365,7 @@ export default function SoftConstraintsTab() {
           <GroupeSallePrefs
             prefs={prefs}
             salles={salles}
+            groupeIds={groupeIds}
             onChange={(next) => setPreferences(idx, next)}
           />
         );
@@ -421,6 +447,7 @@ export default function SoftConstraintsTab() {
             prefs={prefs}
             jours={jours}
             creneaux={creneaux}
+            groupeIds={groupeIds}
             onChange={(next) => setPreferences(idx, next)}
           />
         );
@@ -569,7 +596,6 @@ export default function SoftConstraintsTab() {
                   <span className="text-[11px] font-mono bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">
                     {c.id}
                   </span>
-                  {/* Badge visuel pour distinguer groupe vs formateur */}
                   {(c.id === "SC8" || c.id === "SC9") && (
                     <span className="text-[10px] font-semibold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full">
                       👥 Groupe
