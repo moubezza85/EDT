@@ -81,6 +81,7 @@ def _run_job(job_id: str, cli_args: list):
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True, bufsize=1,
+            encoding="utf-8",
             cwd=SCRIPTS_DIR,
         )
         for line in iter(proc.stdout.readline, ""):

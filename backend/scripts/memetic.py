@@ -808,7 +808,11 @@ class MemeticOptimizer:
         self.hard_constraints = _read_json_from_anywhere("hard.json", search_dirs) or {}
         self.soft_constraints = _read_json_from_anywhere("soft.json", search_dirs) or []
         self.solution_cp = _read_json_from_anywhere("solution_cp.json", search_dirs)
-        self.seances_meta = _read_json_from_anywhere("seances.json", search_dirs) or []
+        seances_data = _read_json_from_anywhere("seances.json", search_dirs) or []
+        if isinstance(seances_data, dict) and "seances" in seances_data:
+            self.seances_meta = seances_data["seances"]
+        else:
+            self.seances_meta = seances_data
 
         if not self.config_data or not self.solution_cp:
             self.logger.error("Fichiers manquants: config.json ou solution_cp.json")

@@ -4,7 +4,11 @@
     "description": "Pénalise si un formateur n'est pas dans sa salle préféree (si définie)",
     "id": "SC1",
     "params": {
-      "preferences": {}
+      "preferences": {
+        "14017": "S21",
+        "14039": "S4",
+        "UC3690": "S19"
+      }
     },
     "poids": 15,
     "type": "preference_salle"
@@ -28,7 +32,7 @@
     "description": "Eviter plus de 3 séances par jour par groupe",
     "id": "SC4",
     "params": {
-      "max": 3
+      "max": 2
     },
     "poids": 10,
     "type": "charge_journaliere"
@@ -38,7 +42,7 @@
     "description": "Eviter plus de 3 séances par jour par formateur",
     "id": "SC5",
     "params": {
-      "max": 3
+      "max": 2
     },
     "poids": 10,
     "type": "charge_journaliere_for"
@@ -57,38 +61,41 @@
     "id": "SC7",
     "params": {
       "preferences": {
-        "U150988": [
+        "14017": [
           {
             "creneaux": [
               3,
               4
             ],
+            "jour": "lundi"
+          },
+          {
+            "creneaux": [
+              1,
+              2
+            ],
             "jour": "mardi"
+          }
+        ],
+        "UC3690": [
+          {
+            "creneaux": [
+              1,
+              2
+            ],
+            "jour": "mardi"
+          },
+          {
+            "creneaux": [
+              3,
+              4
+            ],
+            "jour": "mercredi"
           }
         ]
       }
     },
     "poids": 20,
     "type": "preference_creneaux"
-  },
-  {
-    "active": true,
-    "description": "Pénalise si un groupe enseigne hors de ses créneaux préférés",
-    "id": "SC8",
-    "params": {
-      "preferences": {}
-    },
-    "poids": 20,
-    "type": "preference_creneaux"
-  },
-  {
-    "active": true,
-    "description": "Pénalise si un groupe n'est pas dans sa salle préferee (si définie)",
-    "id": "SC9",
-    "params": {
-      "preferences": {}
-    },
-    "poids": 15,
-    "type": "preference_salle"
   }
 ]

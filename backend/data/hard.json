@@ -5,6 +5,15 @@
         1,
         2
       ],
+      "id": "U150988",
+      "jour": "lundi",
+      "type": "formateur"
+    },
+    {
+      "creneaux": [
+        1,
+        2
+      ],
       "id": "14017",
       "jour": "lundi",
       "type": "formateur"
@@ -14,12 +23,31 @@
         3,
         4
       ],
-      "id": "DEV101",
-      "jour": "lundi",
-      "type": "groupe"
+      "id": "14017",
+      "jour": "mardi",
+      "type": "formateur"
     },
     {
       "creneaux": [
+        1,
+        2
+      ],
+      "id": "14017",
+      "jour": "mercredi",
+      "type": "formateur"
+    },
+    {
+      "creneaux": [
+        3,
+        4
+      ],
+      "id": "14017",
+      "jour": "jeudi",
+      "type": "formateur"
+    },
+    {
+      "creneaux": [
+        3,
         4
       ],
       "id": "S21",
@@ -29,18 +57,13 @@
   ],
   "exigences_specifiques": [
     {
-      "id": "14017",
+      "id": "U150988",
       "salle_obligatoire": "S21",
       "type": "formateur"
     },
     {
-      "id": "UC3690",
-      "salle_obligatoire": "S19",
-      "type": "formateur"
-    },
-    {
-      "id": "14039",
-      "salle_obligatoire": "S4",
+      "id": "14017",
+      "salle_obligatoire": "S21",
       "type": "formateur"
     }
   ]

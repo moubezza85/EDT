@@ -1,0 +1,2244 @@
+{
+  "seances": [
+    {
+      "id": "S1",
+      "module": "ID_M105",
+      "formateur": "10035",
+      "groupe": "ID101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S2",
+      "module": "ID_M105",
+      "formateur": "10035",
+      "groupe": "ID102",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S3",
+      "module": "ID_M105",
+      "formateur": "10035",
+      "groupe": "ID103",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S4",
+      "module": "ID_M105",
+      "formateur": "10035",
+      "groupe": "ID104",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S5",
+      "module": "ID_M105",
+      "formateur": "10035",
+      "groupe": "ID105",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S6",
+      "module": "IDOSR_M202",
+      "formateur": "10035",
+      "groupe": "IDOSR201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S7",
+      "module": "IDOSR_M202",
+      "formateur": "10035",
+      "groupe": "IDOSR202",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S8",
+      "module": "IDOSR_M202",
+      "formateur": "10035",
+      "groupe": "IDOSR203",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S9",
+      "module": "AA_EGT101",
+      "formateur": "10346",
+      "groupe": "AA103",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S10",
+      "module": "AA_EGT101",
+      "formateur": "10346",
+      "groupe": "AA104",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S12",
+      "module": "DEV_EGTS101",
+      "formateur": "10346",
+      "groupe": "DEV102",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S16",
+      "module": "TMMC_EGT101",
+      "formateur": "10346",
+      "groupe": "TMMC101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S17",
+      "module": "DEV_M102",
+      "formateur": "10658",
+      "groupe": "DEV101",
+      "volume": 4,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S19",
+      "module": "DEV_M102",
+      "formateur": "10658",
+      "groupe": "DEV102",
+      "volume": 4,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S21",
+      "module": "DEV_EGTS105",
+      "formateur": "10658",
+      "groupe": "DEV104",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S22",
+      "module": "DEV_M102",
+      "formateur": "10658",
+      "groupe": "DEV104",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S24",
+      "module": "AAOG_M203",
+      "formateur": "10662",
+      "groupe": "AAOG201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S25",
+      "module": "AAOG_M203",
+      "formateur": "10662",
+      "groupe": "AAOG202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S26",
+      "module": "COMPT_M201",
+      "formateur": "10662",
+      "groupe": "COMPT201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S27",
+      "module": "GEOCF_EGTSA206",
+      "formateur": "10662",
+      "groupe": "GEOCF203",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S28",
+      "module": "GEOOM_M204",
+      "formateur": "10662",
+      "groupe": "GEOOM201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S30",
+      "module": "ID_EGTS104",
+      "formateur": "10662",
+      "groupe": "ID105",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S31",
+      "module": "IDOCC_M205",
+      "formateur": "10760",
+      "groupe": "IDOCC201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S32",
+      "module": "IDOCC_M205",
+      "formateur": "10760",
+      "groupe": "IDOCC202",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S33",
+      "module": "IDOSR_M201",
+      "formateur": "10760",
+      "groupe": "IDOSR201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S34",
+      "module": "IDOSR_M201",
+      "formateur": "10760",
+      "groupe": "IDOSR202",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S35",
+      "module": "IDOSR_M201",
+      "formateur": "10760",
+      "groupe": "IDOSR203",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S36",
+      "module": "THP_EGTI206",
+      "formateur": "10760",
+      "groupe": "THP201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S37",
+      "module": "IDOCC_M203",
+      "formateur": "10974",
+      "groupe": "IDOCC201",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S38",
+      "module": "IDOCC_M203",
+      "formateur": "10974",
+      "groupe": "IDOCC202",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S39",
+      "module": "IDOSR_M203",
+      "formateur": "10974",
+      "groupe": "IDOSR201",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S40",
+      "module": "IDOSR_M203",
+      "formateur": "10974",
+      "groupe": "IDOSR202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S41",
+      "module": "IDOSR_M203",
+      "formateur": "10974",
+      "groupe": "IDOSR203",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S42",
+      "module": "GEOCF_M208",
+      "formateur": "10984",
+      "groupe": "GEOCF201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S43",
+      "module": "GEOCF_M208",
+      "formateur": "10984",
+      "groupe": "GEOCF202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S44",
+      "module": "GEOCF_M208",
+      "formateur": "10984",
+      "groupe": "GEOCF203",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S45",
+      "module": "DEVOAM_EGTS204",
+      "formateur": "11121",
+      "groupe": "DEVOAM201",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S46",
+      "module": "DEVOAM_EGTS204",
+      "formateur": "11121",
+      "groupe": "DEVOAM202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S47",
+      "module": "DEVOWFS_EGTS204",
+      "formateur": "11121",
+      "groupe": "DEVOWFS201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S48",
+      "module": "DEVOWFS_EGTS204",
+      "formateur": "11121",
+      "groupe": "DEVOWFS202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S49",
+      "module": "DEVOWFS_EGTS204",
+      "formateur": "11121",
+      "groupe": "DEVOWFS203",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S50",
+      "module": "GEOCF_EGTS204",
+      "formateur": "11121",
+      "groupe": "GEOCF201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S51",
+      "module": "GEOCF_EGTS204",
+      "formateur": "11121",
+      "groupe": "GEOCF202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S52",
+      "module": "GEOCF_EGTS204",
+      "formateur": "11121",
+      "groupe": "GEOCF203",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S53",
+      "module": "HB_EGT102",
+      "formateur": "11422",
+      "groupe": "HB101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S55",
+      "module": "HB_EGT102",
+      "formateur": "11422",
+      "groupe": "HB102",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S57",
+      "module": "HB_EGT102",
+      "formateur": "11422",
+      "groupe": "HB103",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S59",
+      "module": "IDOCC_EGTS202",
+      "formateur": "11422",
+      "groupe": "IDOCC201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S60",
+      "module": "IDOCC_EGTS202",
+      "formateur": "11422",
+      "groupe": "IDOCC202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S62",
+      "module": "THI_EGTS202",
+      "formateur": "11422",
+      "groupe": "THI201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S69",
+      "module": "DEV_EGTS103",
+      "formateur": "11712",
+      "groupe": "DEV103",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S70",
+      "module": "DEV_EGTS103",
+      "formateur": "11712",
+      "groupe": "DEV104",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S73",
+      "module": "DEVOWFS_EGTS203",
+      "formateur": "11712",
+      "groupe": "DEVOWFS203",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S77",
+      "module": "IDOSR_EGTS203",
+      "formateur": "11712",
+      "groupe": "IDOSR201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S78",
+      "module": "IDOSR_EGTS203",
+      "formateur": "11712",
+      "groupe": "IDOSR202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S79",
+      "module": "IDOSR_EGTS203",
+      "formateur": "11712",
+      "groupe": "IDOSR203",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S80",
+      "module": "AA_M104",
+      "formateur": "11845",
+      "groupe": "AA101",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S82",
+      "module": "AA_M104",
+      "formateur": "11845",
+      "groupe": "AA102",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S84",
+      "module": "AA_M104",
+      "formateur": "11845",
+      "groupe": "AA103",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S86",
+      "module": "AAOG_M202",
+      "formateur": "11845",
+      "groupe": "AAOG201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S87",
+      "module": "AAOG_M202",
+      "formateur": "11845",
+      "groupe": "AAOG202",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S88",
+      "module": "AAOC_M202",
+      "formateur": "12198",
+      "groupe": "AAOC201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S89",
+      "module": "AAOC_M202",
+      "formateur": "12198",
+      "groupe": "AAOC202",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S90",
+      "module": "AAOC_M202",
+      "formateur": "12198",
+      "groupe": "AAOC203",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S91",
+      "module": "GE_M102",
+      "formateur": "12198",
+      "groupe": "GE104",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S92",
+      "module": "GE_M102",
+      "formateur": "12198",
+      "groupe": "GE105",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S93",
+      "module": "GE_M102",
+      "formateur": "12198",
+      "groupe": "GE106",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S94",
+      "module": "HB_M114",
+      "formateur": "12321",
+      "groupe": "HB103",
+      "volume": 4,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S95",
+      "module": "COMPT_M311",
+      "formateur": "12326",
+      "groupe": "COMPT301",
+      "volume": 4,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S96",
+      "module": "GEOCF_M201",
+      "formateur": "12326",
+      "groupe": "GEOCF201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S98",
+      "module": "GEOCF_M201",
+      "formateur": "12326",
+      "groupe": "GEOCF202",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S100",
+      "module": "GEOCF_M201",
+      "formateur": "12326",
+      "groupe": "GEOCF203",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S102",
+      "module": "GE_EGTS102",
+      "formateur": "12337",
+      "groupe": "GE101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S104",
+      "module": "GE_EGTS102",
+      "formateur": "12337",
+      "groupe": "GE102",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S111",
+      "module": "GEOCM_EGTS202",
+      "formateur": "12337",
+      "groupe": "GEOCM201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S113",
+      "module": "GEOCM_EGTS202",
+      "formateur": "12337",
+      "groupe": "GEOCM202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S115",
+      "module": "GEOCM_EGTS202",
+      "formateur": "12337",
+      "groupe": "GEOCM203",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S117",
+      "module": "GEOCM_EGTS202",
+      "formateur": "12337",
+      "groupe": "GEOCM204",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S120",
+      "module": "ID_M104",
+      "formateur": "12415",
+      "groupe": "ID101",
+      "volume": 4,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S121",
+      "module": "ID_M104",
+      "formateur": "12415",
+      "groupe": "ID102",
+      "volume": 4,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S122",
+      "module": "ID_M104",
+      "formateur": "12415",
+      "groupe": "ID103",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S123",
+      "module": "AAOC_EGT202",
+      "formateur": "13133",
+      "groupe": "AAOC201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S125",
+      "module": "AAOC_EGT202",
+      "formateur": "13133",
+      "groupe": "AAOC202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S128",
+      "module": "ID_EGTS102",
+      "formateur": "13133",
+      "groupe": "ID101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S130",
+      "module": "ID_EGTS102",
+      "formateur": "13133",
+      "groupe": "ID102",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S132",
+      "module": "ID_EGTS102",
+      "formateur": "13133",
+      "groupe": "ID103",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S136",
+      "module": "IDOSR_EGTS202",
+      "formateur": "13133",
+      "groupe": "IDOSR201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S138",
+      "module": "IDOSR_EGTS202",
+      "formateur": "13133",
+      "groupe": "IDOSR202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S140",
+      "module": "IDOSR_EGTS202",
+      "formateur": "13133",
+      "groupe": "IDOSR203",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S142",
+      "module": "DEV_M104",
+      "formateur": "13155",
+      "groupe": "DEV101",
+      "volume": 2,
+      "type_salle": "Informatique"
+    },
+    {
+      "id": "S144",
+      "module": "DEV_M104",
+      "formateur": "13155",
+      "groupe": "DEV102",
+      "volume": 3,
+      "type_salle": "Informatique"
+    },
+    {
+      "id": "S146",
+      "module": "DEV_EGTS105",
+      "formateur": "13155",
+      "groupe": "DEV103",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S147",
+      "module": "DEV_M104",
+      "formateur": "13155",
+      "groupe": "DEV103",
+      "volume": 2,
+      "type_salle": "Informatique"
+    },
+    {
+      "id": "S149",
+      "module": "DEV_M104",
+      "formateur": "13155",
+      "groupe": "DEV104",
+      "volume": 2,
+      "type_salle": "Informatique"
+    },
+    {
+      "id": "S151",
+      "module": "GE_M103",
+      "formateur": "13243",
+      "groupe": "GE101",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S153",
+      "module": "GE_M103",
+      "formateur": "13243",
+      "groupe": "GE102",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S155",
+      "module": "GE_M103",
+      "formateur": "13243",
+      "groupe": "GE103",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S157",
+      "module": "GE_M101",
+      "formateur": "13243",
+      "groupe": "GE104",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S159",
+      "module": "GE_M103",
+      "formateur": "13243",
+      "groupe": "GE105",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S161",
+      "module": "GE_M103",
+      "formateur": "13243",
+      "groupe": "GE106",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S163",
+      "module": "GEOCM_M209",
+      "formateur": "13426",
+      "groupe": "GEOCM201",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S165",
+      "module": "GEOCM_M209",
+      "formateur": "13426",
+      "groupe": "GEOCM202",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S167",
+      "module": "GEOCM_M209",
+      "formateur": "13426",
+      "groupe": "GEOCM203",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S169",
+      "module": "GEOCM_M209",
+      "formateur": "13426",
+      "groupe": "GEOCM204",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S171",
+      "module": "COMPT_M307",
+      "formateur": "13580",
+      "groupe": "COMPT301",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S172",
+      "module": "GE_M104",
+      "formateur": "13580",
+      "groupe": "GE104",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S174",
+      "module": "GEOCF_M202",
+      "formateur": "13580",
+      "groupe": "GEOCF201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S176",
+      "module": "GEOCF_M202",
+      "formateur": "13580",
+      "groupe": "GEOCF202",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S178",
+      "module": "GEOCF_M202",
+      "formateur": "13580",
+      "groupe": "GEOCF203",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S180",
+      "module": "GEOCM_M205",
+      "formateur": "13582",
+      "groupe": "GEOCM201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S182",
+      "module": "GEOCM_M205",
+      "formateur": "13582",
+      "groupe": "GEOCM202",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S184",
+      "module": "GEOCM_M205",
+      "formateur": "13582",
+      "groupe": "GEOCM203",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S186",
+      "module": "GEOCM_M205",
+      "formateur": "13582",
+      "groupe": "GEOCM204",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S188",
+      "module": "GEOCM_EGTS203",
+      "formateur": "13587",
+      "groupe": "GEOCM201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S189",
+      "module": "GEOCM_EGTS203",
+      "formateur": "13587",
+      "groupe": "GEOCM202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S190",
+      "module": "HB_EGT103",
+      "formateur": "13587",
+      "groupe": "HB102",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S191",
+      "module": "HB_EGT103",
+      "formateur": "13587",
+      "groupe": "HB103",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S194",
+      "module": "TMMC_EGTS103",
+      "formateur": "13587",
+      "groupe": "TMMC101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S196",
+      "module": "AA_M103",
+      "formateur": "13801",
+      "groupe": "AA104",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S197",
+      "module": "AA_M104",
+      "formateur": "13801",
+      "groupe": "AA104",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S199",
+      "module": "AA_M103",
+      "formateur": "13801",
+      "groupe": "AA105",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S200",
+      "module": "AA_M104",
+      "formateur": "13801",
+      "groupe": "AA105",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S202",
+      "module": "DEV_M102",
+      "formateur": "14017",
+      "groupe": "DEV103",
+      "volume": 4,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S204",
+      "module": "DEVOAM_M202",
+      "formateur": "14017",
+      "groupe": "DEVOAM201",
+      "volume": 2,
+      "type_salle": "Informatique"
+    },
+    {
+      "id": "S205",
+      "module": "DEVOAM_M202",
+      "formateur": "14017",
+      "groupe": "DEVOAM202",
+      "volume": 2,
+      "type_salle": "Informatique"
+    },
+    {
+      "id": "S206",
+      "module": "DEVOWFS_M202",
+      "formateur": "14017",
+      "groupe": "DEVOWFS201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S207",
+      "module": "DEVOWFS_M202",
+      "formateur": "14017",
+      "groupe": "DEVOWFS202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S208",
+      "module": "DEVOWFS_M202",
+      "formateur": "14017",
+      "groupe": "DEVOWFS203",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S209",
+      "module": "ID_M103",
+      "formateur": "14039",
+      "groupe": "ID101",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S211",
+      "module": "ID_M103",
+      "formateur": "14039",
+      "groupe": "ID102",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S213",
+      "module": "ID_M104",
+      "formateur": "14039",
+      "groupe": "ID102",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S214",
+      "module": "ID_M104",
+      "formateur": "14039",
+      "groupe": "ID104",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S216",
+      "module": "ID_M104",
+      "formateur": "14039",
+      "groupe": "ID105",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S218",
+      "module": "ID_M105",
+      "formateur": "14039",
+      "groupe": "ID105",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S219",
+      "module": "DEVOWFS_EGTS205",
+      "formateur": "14159",
+      "groupe": "DEVOWFS201",
+      "volume": 1,
+      "type_salle": "Informatique"
+    },
+    {
+      "id": "S220",
+      "module": "DEVOWFS_M204",
+      "formateur": "14159",
+      "groupe": "DEVOWFS201",
+      "volume": 3,
+      "type_salle": "Informatique"
+    },
+    {
+      "id": "S222",
+      "module": "DEVOWFS_M204",
+      "formateur": "14159",
+      "groupe": "DEVOWFS202",
+      "volume": 4,
+      "type_salle": "Informatique"
+    },
+    {
+      "id": "S224",
+      "module": "DEVOWFS_M204",
+      "formateur": "14159",
+      "groupe": "DEVOWFS203",
+      "volume": 3,
+      "type_salle": "Informatique"
+    },
+    {
+      "id": "S226",
+      "module": "COMPT_M202",
+      "formateur": "1985_1",
+      "groupe": "COMPT201",
+      "volume": 4,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S227",
+      "module": "TCPS_M : TCS02",
+      "formateur": "1985_1",
+      "groupe": "TCPS101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S228",
+      "module": "HB_M114",
+      "formateur": "1985_10",
+      "groupe": "HB102",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S232",
+      "module": "AA_M102",
+      "formateur": "1985_11",
+      "groupe": "AA104",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S234",
+      "module": "AA_M102",
+      "formateur": "1985_11",
+      "groupe": "AA105",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S236",
+      "module": "ID_M107",
+      "formateur": "1985_12",
+      "groupe": "ID101",
+      "volume": 2,
+      "type_salle": "Informatique"
+    },
+    {
+      "id": "S238",
+      "module": "ID_M107",
+      "formateur": "1985_12",
+      "groupe": "ID102",
+      "volume": 2,
+      "type_salle": "Informatique"
+    },
+    {
+      "id": "S240",
+      "module": "ID_M107",
+      "formateur": "1985_12",
+      "groupe": "ID103",
+      "volume": 2,
+      "type_salle": "Informatique"
+    },
+    {
+      "id": "S242",
+      "module": "ID_M107",
+      "formateur": "1985_12",
+      "groupe": "ID104",
+      "volume": 2,
+      "type_salle": "Informatique"
+    },
+    {
+      "id": "S244",
+      "module": "ID_M107",
+      "formateur": "1985_12",
+      "groupe": "ID105",
+      "volume": 2,
+      "type_salle": "Informatique"
+    },
+    {
+      "id": "S246",
+      "module": "GEOCF_EGTSA206",
+      "formateur": "1985_13",
+      "groupe": "GEOCF201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S247",
+      "module": "GEOCF_M205",
+      "formateur": "1985_13",
+      "groupe": "GEOCF201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S248",
+      "module": "GEOCF_EGTSA206",
+      "formateur": "1985_13",
+      "groupe": "GEOCF202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S249",
+      "module": "GEOCF_M205",
+      "formateur": "1985_13",
+      "groupe": "GEOCF203",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S250",
+      "module": "AA_EGT102",
+      "formateur": "1985_14",
+      "groupe": "AA101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S251",
+      "module": "AA_EGT102",
+      "formateur": "1985_14",
+      "groupe": "AA102",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S252",
+      "module": "GE_EGTS102",
+      "formateur": "1985_14",
+      "groupe": "GE105",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S253",
+      "module": "GE_EGTS102",
+      "formateur": "1985_14",
+      "groupe": "GE106",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S254",
+      "module": "DEV_EGTS105",
+      "formateur": "1985_15",
+      "groupe": "DEV101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S255",
+      "module": "DEV_EGTS102",
+      "formateur": "1985_15",
+      "groupe": "DEV104",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S256",
+      "module": "DEVOWFS_EGTS205",
+      "formateur": "1985_15",
+      "groupe": "DEVOWFS202",
+      "volume": 1,
+      "type_salle": "Informatique"
+    },
+    {
+      "id": "S257",
+      "module": "DEVOWFS_EGTS205",
+      "formateur": "1985_15",
+      "groupe": "DEVOWFS203",
+      "volume": 1,
+      "type_salle": "Informatique"
+    },
+    {
+      "id": "S258",
+      "module": "GEOCM_M204",
+      "formateur": "1985_16",
+      "groupe": "GEOCM201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S260",
+      "module": "GEOCM_M204",
+      "formateur": "1985_16",
+      "groupe": "GEOCM202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S262",
+      "module": "GEOCM_M204",
+      "formateur": "1985_16",
+      "groupe": "GEOCM203",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S264",
+      "module": "GEOCM_M204",
+      "formateur": "1985_16",
+      "groupe": "GEOCM204",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S266",
+      "module": "COMPT_M205",
+      "formateur": "1985_17",
+      "groupe": "COMPT201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S267",
+      "module": "GEOCF_M204",
+      "formateur": "1985_17",
+      "groupe": "GEOCF201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S268",
+      "module": "GEOCF_M204",
+      "formateur": "1985_17",
+      "groupe": "GEOCF202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S269",
+      "module": "GEOCF_M204",
+      "formateur": "1985_17",
+      "groupe": "GEOCF203",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S270",
+      "module": "GEOOM_M203",
+      "formateur": "1985_17",
+      "groupe": "GEOOM201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S271",
+      "module": "TMMC_M107",
+      "formateur": "1985_2",
+      "groupe": "TMMC101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S272",
+      "module": "TMMC_M202",
+      "formateur": "1985_2",
+      "groupe": "TMMC201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S273",
+      "module": "TCPS_M : TCS01",
+      "formateur": "1985_3",
+      "groupe": "TCPS101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S274",
+      "module": "AAOC_M203",
+      "formateur": "1985_4",
+      "groupe": "AAOC201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S275",
+      "module": "AAOC_M203",
+      "formateur": "1985_4",
+      "groupe": "AAOC202",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S276",
+      "module": "AAOC_M203",
+      "formateur": "1985_4",
+      "groupe": "AAOC203",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S277",
+      "module": "AAOG_EGTS204",
+      "formateur": "1985_4",
+      "groupe": "AAOG201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S278",
+      "module": "AAOG_EGT204",
+      "formateur": "1985_4",
+      "groupe": "AAOG202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S279",
+      "module": "GEOCM_EGTS204",
+      "formateur": "1985_4",
+      "groupe": "GEOCM201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S280",
+      "module": "GEOCM_EGTS204",
+      "formateur": "1985_4",
+      "groupe": "GEOCM202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S281",
+      "module": "GEOCM_EGTS204",
+      "formateur": "1985_4",
+      "groupe": "GEOCM203",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S282",
+      "module": "GEOCM_EGTS204",
+      "formateur": "1985_4",
+      "groupe": "GEOCM204",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S283",
+      "module": "HB_M103",
+      "formateur": "1985_5",
+      "groupe": "HB101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S284",
+      "module": "HB_M103",
+      "formateur": "1985_5",
+      "groupe": "HB102",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S285",
+      "module": "THI_M103",
+      "formateur": "1985_5",
+      "groupe": "THI101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S286",
+      "module": "THI_M106",
+      "formateur": "1985_5",
+      "groupe": "THI101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S287",
+      "module": "THI_M201",
+      "formateur": "1985_5",
+      "groupe": "THI201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S288",
+      "module": "THP_M201",
+      "formateur": "1985_5",
+      "groupe": "THP201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S289",
+      "module": "TMI_M205",
+      "formateur": "1985_5",
+      "groupe": "TMI201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S291",
+      "module": "TMI_M205",
+      "formateur": "1985_5",
+      "groupe": "TMI202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S293",
+      "module": "AAOC_M204",
+      "formateur": "1985_6",
+      "groupe": "AAOC201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S295",
+      "module": "AAOC_M204",
+      "formateur": "1985_6",
+      "groupe": "AAOC202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S297",
+      "module": "AAOC_M204",
+      "formateur": "1985_6",
+      "groupe": "AAOC203",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S299",
+      "module": "AAOG_M204",
+      "formateur": "1985_6",
+      "groupe": "AAOG201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S300",
+      "module": "AAOG_M204",
+      "formateur": "1985_6",
+      "groupe": "AAOG202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S301",
+      "module": "COMPT_M306",
+      "formateur": "1985_6",
+      "groupe": "COMPT301",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S302",
+      "module": "GE_M104",
+      "formateur": "1985_6",
+      "groupe": "GE103",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S304",
+      "module": "GEOCM_M 210",
+      "formateur": "1985_6",
+      "groupe": "GEOCM203",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S305",
+      "module": "GEOCM_M 210",
+      "formateur": "1985_6",
+      "groupe": "GEOCM204",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S306",
+      "module": "TCPS_M : TCS01",
+      "formateur": "1985_7",
+      "groupe": "TCPS102",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S307",
+      "module": "TCPS_M : TCS02",
+      "formateur": "1985_7",
+      "groupe": "TCPS102",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S308",
+      "module": "AA_M103",
+      "formateur": "1985_8",
+      "groupe": "AA101",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S310",
+      "module": "AA_M103",
+      "formateur": "1985_8",
+      "groupe": "AA102",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S312",
+      "module": "GE_M102",
+      "formateur": "1985_8",
+      "groupe": "GE101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S313",
+      "module": "GE_M102",
+      "formateur": "1985_8",
+      "groupe": "GE102",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S314",
+      "module": "GE_M102",
+      "formateur": "1985_8",
+      "groupe": "GE103",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S315",
+      "module": "GE_M104",
+      "formateur": "1985_8",
+      "groupe": "GE105",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S317",
+      "module": "GE_M104",
+      "formateur": "1985_8",
+      "groupe": "GE106",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S319",
+      "module": "AAOG_M208",
+      "formateur": "1985_9",
+      "groupe": "AAOG201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S320",
+      "module": "AAOG_M208",
+      "formateur": "1985_9",
+      "groupe": "AAOG202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S321",
+      "module": "GE_M105",
+      "formateur": "1985_9",
+      "groupe": "GE104",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S323",
+      "module": "GE_M105",
+      "formateur": "1985_9",
+      "groupe": "GE105",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S325",
+      "module": "GE_M105",
+      "formateur": "1985_9",
+      "groupe": "GE106",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S327",
+      "module": "HB_EGTA106",
+      "formateur": "1985_9",
+      "groupe": "HB101",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S328",
+      "module": "THI_EGTSA106",
+      "formateur": "1985_9",
+      "groupe": "THI101",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S329",
+      "module": "AA_ M106",
+      "formateur": "7497",
+      "groupe": "AA101",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S330",
+      "module": "AA_EGTA106",
+      "formateur": "7497",
+      "groupe": "AA102",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S331",
+      "module": "AA_EGTA106",
+      "formateur": "7497",
+      "groupe": "AA103",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S332",
+      "module": "AA_EGTA106",
+      "formateur": "7497",
+      "groupe": "AA104",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S333",
+      "module": "AA_EGTA106",
+      "formateur": "7497",
+      "groupe": "AA105",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S334",
+      "module": "AAOC_M205",
+      "formateur": "7497",
+      "groupe": "AAOC201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S335",
+      "module": "AAOC_M205",
+      "formateur": "7497",
+      "groupe": "AAOC202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S336",
+      "module": "AAOC_M205",
+      "formateur": "7497",
+      "groupe": "AAOC203",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S340",
+      "module": "HB_EGTA106",
+      "formateur": "7497",
+      "groupe": "HB103",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S341",
+      "module": "HB_M107",
+      "formateur": "8403",
+      "groupe": "HB101",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S342",
+      "module": "HB_M107",
+      "formateur": "8403",
+      "groupe": "HB102",
+      "volume": 4,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S343",
+      "module": "THI_M107",
+      "formateur": "8403",
+      "groupe": "THI101",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S344",
+      "module": "THI_M202",
+      "formateur": "8403",
+      "groupe": "THI201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S345",
+      "module": "GE_M101",
+      "formateur": "8539",
+      "groupe": "GE101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S346",
+      "module": "GE_M104",
+      "formateur": "8539",
+      "groupe": "GE101",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S348",
+      "module": "GE_M101",
+      "formateur": "8539",
+      "groupe": "GE102",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S349",
+      "module": "GE_M104",
+      "formateur": "8539",
+      "groupe": "GE102",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S354",
+      "module": "AA_M105",
+      "formateur": "8741",
+      "groupe": "AA101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S356",
+      "module": "AA_M105",
+      "formateur": "8741",
+      "groupe": "AA102",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S358",
+      "module": "AA_M105",
+      "formateur": "8741",
+      "groupe": "AA103",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S360",
+      "module": "AA_M105",
+      "formateur": "8741",
+      "groupe": "AA104",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S362",
+      "module": "AA_M105",
+      "formateur": "8741",
+      "groupe": "AA105",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S364",
+      "module": "AAOG_M205",
+      "formateur": "8741",
+      "groupe": "AAOG202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S365",
+      "module": "GEOOM_M206",
+      "formateur": "8741",
+      "groupe": "GEOOM201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S366",
+      "module": "HB_M109",
+      "formateur": "D121187",
+      "groupe": "HB101",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S367",
+      "module": "HB_M109",
+      "formateur": "D121187",
+      "groupe": "HB102",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S368",
+      "module": "HB_M109",
+      "formateur": "D121187",
+      "groupe": "HB103",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S369",
+      "module": "THI_M205",
+      "formateur": "D121187",
+      "groupe": "THI201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S370",
+      "module": "THP_M205",
+      "formateur": "D121187",
+      "groupe": "THP201",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S372",
+      "module": "HB_M104",
+      "formateur": "D143887",
+      "groupe": "HB101",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S373",
+      "module": "HB_M104",
+      "formateur": "D143887",
+      "groupe": "HB102",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S374",
+      "module": "TMI_M201",
+      "formateur": "D143887",
+      "groupe": "TMI201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S375",
+      "module": "TMI_M201",
+      "formateur": "D143887",
+      "groupe": "TMI202",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S376",
+      "module": "TMMC_M106",
+      "formateur": "D143887",
+      "groupe": "TMMC101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S378",
+      "module": "AA_EGT103",
+      "formateur": "D145987",
+      "groupe": "AA101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S379",
+      "module": "AA_EGT103",
+      "formateur": "D145987",
+      "groupe": "AA103",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S380",
+      "module": "AAOG_EGT203",
+      "formateur": "D145987",
+      "groupe": "AAOG201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S381",
+      "module": "AAOG_EGT203",
+      "formateur": "D145987",
+      "groupe": "AAOG202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S382",
+      "module": "GE_EGTS103",
+      "formateur": "D145987",
+      "groupe": "GE103",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S383",
+      "module": "GE_EGTS103",
+      "formateur": "D145987",
+      "groupe": "GE104",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S384",
+      "module": "GE_EGTS103",
+      "formateur": "D145987",
+      "groupe": "GE105",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S385",
+      "module": "GE_EGTS103",
+      "formateur": "D145987",
+      "groupe": "GE106",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S386",
+      "module": "DEVOWFS_M202",
+      "formateur": "D161271",
+      "groupe": "DEVOWFS201",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S388",
+      "module": "DEVOWFS_M202",
+      "formateur": "D161271",
+      "groupe": "DEVOWFS202",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S390",
+      "module": "DEVOWFS_M202",
+      "formateur": "D161271",
+      "groupe": "DEVOWFS203",
+      "volume": 3,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S392",
+      "module": "HB_M104",
+      "formateur": "D304508",
+      "groupe": "HB103",
+      "volume": 4,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S393",
+      "module": "TMI_M203",
+      "formateur": "D304508",
+      "groupe": "TMI201",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S394",
+      "module": "TMI_M203",
+      "formateur": "D304508",
+      "groupe": "TMI202",
+      "volume": 4,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S395",
+      "module": "TMMC_M102",
+      "formateur": "D49474",
+      "groupe": "TMMC101",
+      "volume": 2,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S397",
+      "module": "TMMC_M201",
+      "formateur": "D49474",
+      "groupe": "TMMC201",
+      "volume": 4,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S399",
+      "module": "DEV_EGTS102",
+      "formateur": "D618126",
+      "groupe": "DEV101",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S400",
+      "module": "DEV_EGTS102",
+      "formateur": "D618126",
+      "groupe": "DEV102",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S401",
+      "module": "DEV_EGTS102",
+      "formateur": "D618126",
+      "groupe": "DEV103",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S402",
+      "module": "DEV_EGTS102",
+      "formateur": "D618126",
+      "groupe": "DEV104",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S403",
+      "module": "DEVOAM_M201",
+      "formateur": "UC3690",
+      "groupe": "DEVOAM201",
+      "volume": 5,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S405",
+      "module": "DEVOAM_M201",
+      "formateur": "UC3690",
+      "groupe": "DEVOAM202",
+      "volume": 5,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S407",
+      "module": "AAOC_M201",
+      "formateur": "V30169",
+      "groupe": "AAOC201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S409",
+      "module": "AAOC_M201",
+      "formateur": "V30169",
+      "groupe": "AAOC202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S411",
+      "module": "AAOC_M201",
+      "formateur": "V30169",
+      "groupe": "AAOC203",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S413",
+      "module": "GEOOM_EGTS204",
+      "formateur": "V30169",
+      "groupe": "GEOOM201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S414",
+      "module": "IDOCC_EGTS204",
+      "formateur": "V30169",
+      "groupe": "IDOCC201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S415",
+      "module": "IDOCC_EGTS204",
+      "formateur": "V30169",
+      "groupe": "IDOCC202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S416",
+      "module": "IDOSR_EGTS204",
+      "formateur": "V30169",
+      "groupe": "IDOSR201",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S417",
+      "module": "IDOSR_EGTS204",
+      "formateur": "V30169",
+      "groupe": "IDOSR202",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S418",
+      "module": "IDOSR_EGTS204",
+      "formateur": "V30169",
+      "groupe": "IDOSR203",
+      "volume": 1,
+      "type_salle": "Cours"
+    },
+    {
+      "id": "S419",
+      "formateur": "14017",
+      "groupe": "DEV101_DEV102_DEV106",
+      "module": "DEVM102",
+      "volume": 2,
+      "type_salle": "Virtuelle"
+    }
+  ]
+}

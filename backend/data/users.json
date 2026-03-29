@@ -2,34 +2,46 @@
   "users": [
     {
       "id": "admin",
-      "name": "Admin",
+      "name": "admin",
       "password": "pbkdf2:sha256:1000000$X8Q9BEAX0GHWub7V$4c4fcf3ef3406a6f341782222d22c47caa6069adaaed98263d04c6bcdd1f2259",
-      "lastLogin": "2026-03-27T00:15:55.987827+00:00",
       "role": "admin",
-      "lastPasswordChange": "2026-02-28T01:18:25.702870+00:00"
+      "email": "admin@perform.local",
+      "lastLogin": "2026-03-28T23:47:33.901927+00:00"
     },
     {
-      "id": "surv1",
-      "name": "Surveillant",
-      "password": "pbkdf2:sha256:1000000$c2QNbBDYTVPapRZD$fbe5a1286da1fb78ce7b7a14c5c01ab097bc5cfa1c2221011383ec8fa70ed52e",
-      "lastLogin": "2026-02-05T15:37:28.978022+00:00",
-      "role": "surveillant"
+      "id": "2",
+      "name": "moubezza",
+      "password": "$2b$12$VD771dbk.3H37h4lbeDXturvgOizrKzuddhsrlPsqtB64XvDhy5mq",
+      "role": "teacher",
+      "email": "moubezza@gmail.com"
     },
     {
-      "id": "14017",
-      "name": "MOHAMED OUBEZZA",
-      "password": "pbkdf2:sha256:1000000$X8Q9BEAX0GHWub7V$4c4fcf3ef3406a6f341782222d22c47caa6069adaaed98263d04c6bcdd1f2259",
-      "lastLogin": "2026-03-27T00:13:18.943024+00:00",
-      "role": "formateur",
-      "phone": "0600221040",
-      "email": "MOUBEZZA@gmail.com"
+      "id": "3",
+      "name": "HASSAN",
+      "password": "$2b$12$c48aLNaBrHAJgmOxQFcM1.f4nhBzGqcKReQIv/L7O9UJC.tUKRjv2",
+      "role": "teacher",
+      "email": "HASSAN@perform.local"
     },
     {
-      "id": "8403",
-      "name": "HOUDA SENTISSI",
-      "password": "pbkdf2:sha256:1000000$mjUV4vnJtYh3xf6m$c2781c6c531afa78b625080184c6cc77b66f9e37a0c2f5ea52fb3c968b641434",
-      "lastLogin": "",
-      "role": "formateur"
+      "id": "4",
+      "name": "ABDESLAM",
+      "password": "$2b$12$4AqV0bGQl0MLHwIt2Erjy.BtiVfHAfViZuYlg4Tpuus.bOS73Yjbu",
+      "role": "teacher",
+      "email": "ABDESLAM@perform.local"
+    },
+    {
+      "id": "5",
+      "name": "almaudni",
+      "password": "$2b$12$uWr/2t7yG0JMrtV3YHyRz.EBbpbb42bzWF4aSg.aal7hAwhY71UBa",
+      "role": "teacher",
+      "email": "almaudni@perform.local"
+    },
+    {
+      "id": "6",
+      "name": "sadiqui",
+      "password": "$2b$12$f/sbiOsIuV72hsDWarZYQudlG.gMd6vn8WAq0oNCT.wQeJIOoeFy.",
+      "role": "teacher",
+      "email": "sadiqui@perform.local"
     }
   ]
 }

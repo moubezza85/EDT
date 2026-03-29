@@ -1,0 +1,47 @@
+{
+  "indisponibilites": [
+    {
+      "creneaux": [
+        1,
+        2
+      ],
+      "id": "14017",
+      "jour": "lundi",
+      "type": "formateur"
+    },
+    {
+      "creneaux": [
+        3,
+        4
+      ],
+      "id": "DEV101",
+      "jour": "lundi",
+      "type": "groupe"
+    },
+    {
+      "creneaux": [
+        4
+      ],
+      "id": "S21",
+      "jour": "samedi",
+      "type": "salle"
+    }
+  ],
+  "exigences_specifiques": [
+    {
+      "id": "14017",
+      "salle_obligatoire": "S21",
+      "type": "formateur"
+    },
+    {
+      "id": "UC3690",
+      "salle_obligatoire": "S19",
+      "type": "formateur"
+    },
+    {
+      "id": "14039",
+      "salle_obligatoire": "S4",
+      "type": "formateur"
+    }
+  ]
+}

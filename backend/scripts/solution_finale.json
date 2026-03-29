@@ -19,25 +19,25 @@
   },
   {
     "seance": "S1_2",
-    "jour": "mercredi",
+    "jour": "lundi",
     "creneau": 1,
-    "salle": "S19",
+    "salle": "S5",
     "formateur": "3",
     "groupe": "ID103",
     "module": "M101"
   },
   {
     "seance": "S2_0",
-    "jour": "mardi",
+    "jour": "vendredi",
     "creneau": 4,
-    "salle": "S21",
+    "salle": "S15",
     "formateur": "3",
     "groupe": "ID102",
     "module": "M102"
   },
   {
     "seance": "S2_1",
-    "jour": "mardi",
+    "jour": "samedi",
     "creneau": 3,
     "salle": "S5",
     "formateur": "3",
@@ -46,9 +46,9 @@
   },
   {
     "seance": "S3_0",
-    "jour": "samedi",
-    "creneau": 4,
-    "salle": "S19",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "S15",
     "formateur": "3",
     "groupe": "ID104",
     "module": "M102"
@@ -64,9 +64,9 @@
   },
   {
     "seance": "S5_0",
-    "jour": "mercredi",
-    "creneau": 4,
-    "salle": "S15",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "S5",
     "formateur": "4",
     "groupe": "DEV101",
     "module": "M101"
@@ -82,9 +82,9 @@
   },
   {
     "seance": "S5_2",
-    "jour": "mercredi",
-    "creneau": 3,
-    "salle": "S4",
+    "jour": "jeudi",
+    "creneau": 4,
+    "salle": "S5",
     "formateur": "4",
     "groupe": "DEV101",
     "module": "M101"
@@ -100,9 +100,9 @@
   },
   {
     "seance": "S6_1",
-    "jour": "samedi",
-    "creneau": 3,
-    "salle": "S19",
+    "jour": "lundi",
+    "creneau": 4,
+    "salle": "S21",
     "formateur": "4",
     "groupe": "DEV104",
     "module": "M101"
@@ -110,26 +110,26 @@
   {
     "seance": "S6_2",
     "jour": "lundi",
-    "creneau": 1,
-    "salle": "S5",
+    "creneau": 2,
+    "salle": "S19",
     "formateur": "4",
     "groupe": "DEV104",
     "module": "M101"
   },
   {
     "seance": "S7_0",
-    "jour": "jeudi",
-    "creneau": 1,
-    "salle": "S4",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "S19",
     "formateur": "4",
     "groupe": "DEV105",
     "module": "M101"
   },
   {
     "seance": "S7_1",
-    "jour": "lundi",
-    "creneau": 4,
-    "salle": "S15",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "S21",
     "formateur": "4",
     "groupe": "DEV105",
     "module": "M101"
@@ -145,36 +145,36 @@
   },
   {
     "seance": "S8_0",
-    "jour": "vendredi",
-    "creneau": 4,
-    "salle": "S4",
+    "jour": "mercredi",
+    "creneau": 2,
+    "salle": "S15",
     "formateur": "4",
     "groupe": "DEV106",
     "module": "M101"
   },
   {
     "seance": "S8_1",
-    "jour": "mardi",
-    "creneau": 4,
-    "salle": "S4",
+    "jour": "vendredi",
+    "creneau": 3,
+    "salle": "S5",
     "formateur": "4",
     "groupe": "DEV106",
     "module": "M101"
   },
   {
     "seance": "S9_0",
-    "jour": "vendredi",
-    "creneau": 1,
-    "salle": "S15",
+    "jour": "samedi",
+    "creneau": 2,
+    "salle": "S5",
     "formateur": "U150988",
     "groupe": "DEV103",
     "module": "M101"
   },
   {
     "seance": "S9_1",
-    "jour": "jeudi",
-    "creneau": 4,
-    "salle": "S21",
+    "jour": "samedi",
+    "creneau": 1,
+    "salle": "S4",
     "formateur": "U150988",
     "groupe": "DEV103",
     "module": "M101"
@@ -208,18 +208,18 @@
   },
   {
     "seance": "S11_0",
-    "jour": "mercredi",
-    "creneau": 3,
-    "salle": "S15",
+    "jour": "mardi",
+    "creneau": 2,
+    "salle": "S4",
     "formateur": "14017",
     "groupe": "DEVOWFS203",
     "module": "M201"
   },
   {
     "seance": "S11_1",
-    "jour": "samedi",
+    "jour": "mardi",
     "creneau": 1,
-    "salle": "S4",
+    "salle": "S5",
     "formateur": "14017",
     "groupe": "DEVOWFS203",
     "module": "M201"
@@ -244,9 +244,9 @@
   },
   {
     "seance": "S14_0",
-    "jour": "lundi",
-    "creneau": 1,
-    "salle": "S21",
+    "jour": "mercredi",
+    "creneau": 3,
+    "salle": "S5",
     "formateur": "3",
     "groupe": "ID101",
     "module": "M101"
@@ -262,8 +262,8 @@
   },
   {
     "seance": "S15_0",
-    "jour": "jeudi",
-    "creneau": 1,
+    "jour": "mercredi",
+    "creneau": 3,
     "salle": "S15",
     "formateur": "14017",
     "groupe": "ID105",
@@ -271,9 +271,9 @@
   },
   {
     "seance": "S15_1",
-    "jour": "samedi",
-    "creneau": 3,
-    "salle": "S15",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "S5",
     "formateur": "14017",
     "groupe": "ID105",
     "module": "M102"
@@ -298,9 +298,9 @@
   },
   {
     "seance": "S16_2",
-    "jour": "mardi",
-    "creneau": 1,
-    "salle": "Atel Conf",
+    "jour": "mercredi",
+    "creneau": 4,
+    "salle": "S19",
     "formateur": "U150988",
     "groupe": "DEV106",
     "module": "M102"
@@ -316,9 +316,9 @@
   },
   {
     "seance": "S17_1",
-    "jour": "lundi",
-    "creneau": 1,
-    "salle": "S4",
+    "jour": "vendredi",
+    "creneau": 2,
+    "salle": "Atel Conf",
     "formateur": "5",
     "groupe": "ID102",
     "module": "M101"
@@ -326,25 +326,25 @@
   {
     "seance": "S17_2",
     "jour": "samedi",
-    "creneau": 4,
-    "salle": "Atel Conf",
+    "creneau": 2,
+    "salle": "S21",
     "formateur": "5",
     "groupe": "ID102",
     "module": "M101"
   },
   {
     "seance": "S18_0",
-    "jour": "vendredi",
-    "creneau": 3,
-    "salle": "S4",
+    "jour": "jeudi",
+    "creneau": 2,
+    "salle": "S5",
     "formateur": "14017",
     "groupe": "DEV102",
     "module": "M101"
   },
   {
     "seance": "S19_0",
-    "jour": "mercredi",
-    "creneau": 1,
+    "jour": "mardi",
+    "creneau": 2,
     "salle": "S15",
     "formateur": "U150988",
     "groupe": "DEV102",
@@ -352,27 +352,27 @@
   },
   {
     "seance": "S19_1",
-    "jour": "mercredi",
-    "creneau": 4,
-    "salle": "S5",
+    "jour": "mardi",
+    "creneau": 3,
+    "salle": "S15",
     "formateur": "U150988",
     "groupe": "DEV102",
     "module": "M102"
   },
   {
     "seance": "S19_2",
-    "jour": "mardi",
-    "creneau": 2,
-    "salle": "S4",
+    "jour": "jeudi",
+    "creneau": 3,
+    "salle": "S21",
     "formateur": "U150988",
     "groupe": "DEV102",
     "module": "M102"
   },
   {
     "seance": "S20_0",
-    "jour": "samedi",
-    "creneau": 2,
-    "salle": "S19",
+    "jour": "vendredi",
+    "creneau": 1,
+    "salle": "S4",
     "formateur": "U150988",
     "groupe": "DEV105",
     "module": "M102"

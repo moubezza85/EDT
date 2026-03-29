@@ -1,0 +1,44 @@
+{
+  "teachers": {
+    "14017": {
+      "jeudi": [
+        3
+      ],
+      "lundi": [
+        1,
+        2
+      ],
+      "mardi": [],
+      "vendredi": [
+        1
+      ],
+      "mercredi": [
+        1,
+        2
+      ]
+    },
+    "11111": {
+      "mardi": [
+        1,
+        4
+      ]
+    }
+  },
+  "groups": {
+    "DEVOWFS201": {
+      "samedi": [
+        1,
+        2
+      ]
+    }
+  },
+  "rooms": {
+    "S21": {
+      "jeudi": [],
+      "samedi": [
+        3,
+        4
+      ]
+    }
+  }
+}
