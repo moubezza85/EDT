@@ -371,37 +371,55 @@ class SoftConstraintEvaluator:
         return pen
 
     @staticmethod
-    def _pref_salle(individual: List[Dict[str, Any]], params: Dict[str, Any]) -> int:
+    def _pref_salle(
+        individual: List[Dict[str, Any]],
+        params: Dict[str, Any],
+        target: str = "formateur",
+    ) -> int:
+        """
+        Pénalise chaque séance où l'entité (formateur ou groupe) n'est pas
+        dans sa salle préférée.
+        target = "formateur" → SC1  |  target = "groupe" → SC9
+        """
         prefs = (params or {}).get("preferences", {}) or {}
         pen = 0
         for c in individual:
-            p = str(c["formateur"])
-            pref = prefs.get(p)
+            entity = str(c[target])
+            pref = prefs.get(entity)
             if pref and str(c["salle"]) != str(pref):
                 pen += 1
         return pen
 
     @staticmethod
-    def _pref_creneaux(individual: List[Dict[str, Any]], params: Dict[str, Any]) -> int:
+    def _pref_creneaux(
+        individual: List[Dict[str, Any]],
+        params: Dict[str, Any],
+        target: str = "formateur",
+    ) -> int:
+        """
+        Pénalise chaque séance où l'entité (formateur ou groupe) enseigne
+        hors de ses créneaux préférés.
+        target = "formateur" → SC7  |  target = "groupe" → SC8
+        """
         prefs = (params or {}).get("preferences", {}) or {}
         if not prefs:
             return 0
 
         allowed: Dict[str, Set[Tuple[str, int]]] = {}
-        for prof, rules in prefs.items():
-            s = set()
+        for entity_id, rules in prefs.items():
+            s: Set[Tuple[str, int]] = set()
             for r in rules:
                 j = str(r["jour"]).lower()
                 for cr in r["creneaux"]:
                     s.add((j, int(cr)))
-            allowed[str(prof)] = s
+            allowed[str(entity_id)] = s
 
         pen = 0
         for c in individual:
-            p = str(c["formateur"])
-            if p in allowed:
+            entity = str(c[target])
+            if entity in allowed:
                 k = (str(c["jour"]).lower(), int(c["creneau"]))
-                if k not in allowed[p]:
+                if k not in allowed[entity]:
                     pen += 1
         return pen
 
@@ -430,9 +448,13 @@ class SoftConstraintEvaluator:
             elif ctype == "minChar":
                 pen = self._min_char_groupe(g_plan)
             elif ctype == "preference_salle":
-                pen = self._pref_salle(individual, params)
+                # SC9 = salle préférée des GROUPES  |  SC1 (et autres) = salle des FORMATEURS
+                target = "groupe" if sc_id == "SC9" else "formateur"
+                pen = self._pref_salle(individual, params, target)
             elif ctype == "preference_creneaux":
-                pen = self._pref_creneaux(individual, params)
+                # SC8 = créneaux préférés des GROUPES  |  SC7 (et autres) = créneaux des FORMATEURS
+                target = "groupe" if sc_id == "SC8" else "formateur"
+                pen = self._pref_creneaux(individual, params, target)
 
             breakdown[f"{sc_id}({ctype})"] = poids * float(pen)
 
